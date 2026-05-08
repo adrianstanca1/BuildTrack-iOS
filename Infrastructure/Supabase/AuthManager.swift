@@ -2,7 +2,7 @@ import SwiftUI
 import OSLog
 import Supabase
 
-@MainActor
+@Observable
 final class AuthManager {
     var isAuthenticated = false
     var currentUser: UserInfo?
