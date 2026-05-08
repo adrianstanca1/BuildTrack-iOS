@@ -1,4 +1,5 @@
 import UIKit
+import OSLog
 import UserNotifications
 
 @MainActor
@@ -28,7 +29,7 @@ final class PushNotificationService: NSObject, ObservableObject, @unchecked Send
             }
             return granted
         } catch {
-            print("Notification auth error: \(error)")
+            Logger.push.error("Notification auth error: \(error)")
             return false
         }
     }
@@ -110,7 +111,7 @@ final class PushNotificationService: NSObject, ObservableObject, @unchecked Send
         do {
             try await center.add(request)
         } catch {
-            print("Failed to schedule task reminder: \(error)")
+            Logger.push.error("Failed to schedule task reminder: \(error)")
         }
     }
     
@@ -139,7 +140,7 @@ final class PushNotificationService: NSObject, ObservableObject, @unchecked Send
         do {
             try await center.add(request)
         } catch {
-            print("Failed to schedule inspection: \(error)")
+            Logger.push.error("Failed to schedule inspection: \(error)")
         }
     }
     
@@ -162,7 +163,7 @@ final class PushNotificationService: NSObject, ObservableObject, @unchecked Send
             try await center.add(request)
             badgeCount += 1
         } catch {
-            print("Failed to send notification: \(error)")
+            Logger.push.error("Failed to send notification: \(error)")
         }
     }
     

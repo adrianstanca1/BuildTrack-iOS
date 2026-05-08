@@ -1,4 +1,5 @@
 import SwiftUI
+import OSLog
 import Supabase
 
 @MainActor
@@ -73,7 +74,7 @@ final class AuthManager {
             self.isAuthenticated = false
             self.currentUser = nil
         } catch {
-            print("Sign out error: \(error)")
+            Logger.auth.error("Sign out error: \(error)")
         }
     }
 }

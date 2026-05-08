@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 import Supabase
 
@@ -107,7 +108,7 @@ final class RealtimeService {
             reconnectAttempt = 0
             lastSync = Date()
         } catch {
-            print("[Realtime] Project subscribe error: \(error)")
+            Logger.realtime.error("Project subscribe error: \(error)")
             await scheduleReconnect()
         }
     }
@@ -155,7 +156,7 @@ final class RealtimeService {
             connectionState = .connected
             reconnectAttempt = 0
         } catch {
-            print("[Realtime] Task subscribe error: \(error)")
+            Logger.realtime.error("Task subscribe error: \(error)")
             await scheduleReconnect()
         }
     }

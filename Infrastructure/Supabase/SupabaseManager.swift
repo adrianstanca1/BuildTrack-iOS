@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import Supabase
 
 // MARK: - Environment Configuration
@@ -78,9 +79,9 @@ final class SupabaseManager {
             """)
         }
         
-        print("[BuildTrack] Initialising Supabase client")
-        print("[BuildTrack] Environment: \(BuildEnvironment.current)")
-        print("[BuildTrack] URL: \(supabaseURL.absoluteString)")
+        Logger.network.info("Initialising Supabase client")
+        Logger.network.info("Environment: \(BuildEnvironment.current)")
+        Logger.network.info("URL: \(supabaseURL.absoluteString)")
         
         self.client = SupabaseClient(
             supabaseURL: supabaseURL,

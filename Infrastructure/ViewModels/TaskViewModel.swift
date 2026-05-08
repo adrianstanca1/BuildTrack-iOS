@@ -1,4 +1,5 @@
 import SwiftUI
+import OSLog
 import SwiftData
 
 @MainActor
@@ -39,7 +40,7 @@ final class TaskViewModel {
             syncLocal(tasks)
             return tasks
         } catch {
-            print("Load tasks error: \(error)")
+            Logger.tasks.error("Load tasks error: \(error)")
             return []
         }
     }
@@ -150,7 +151,7 @@ final class TaskViewModel {
             await loadAllTasks()
             return created
         } catch {
-            print("Create task error: \(error)")
+            Logger.tasks.error("Create task error: \(error)")
             return nil
         }
     }
@@ -169,7 +170,7 @@ final class TaskViewModel {
         do {
             try await repository.update(task)
         } catch {
-            print("Update task error: \(error)")
+            Logger.tasks.error("Update task error: \(error)")
             // Reload to resync
             await loadAllTasks()
         }
@@ -186,7 +187,7 @@ final class TaskViewModel {
         do {
             try await repository.update(task)
         } catch {
-            print("Toggle task error: \(error)")
+            Logger.tasks.error("Toggle task error: \(error)")
             await loadAllTasks()
         }
     }
@@ -199,7 +200,7 @@ final class TaskViewModel {
             try await repository.delete(task.id)
             await loadAllTasks()
         } catch {
-            print("Delete task error: \(error)")
+            Logger.tasks.error("Delete task error: \(error)")
             await loadAllTasks()
         }
     }

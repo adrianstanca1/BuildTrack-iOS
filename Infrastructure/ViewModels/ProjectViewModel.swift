@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 import Observation
 
@@ -318,7 +319,7 @@ final class ProjectViewModel {
             }
             try ctx.save()
         } catch {
-            print("[ProjectViewModel] SwiftData sync error: \(error)")
+            Logger.projects.error("SwiftData sync error: \(error)")
         }
     }
 
