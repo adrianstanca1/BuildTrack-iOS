@@ -1,0 +1,25 @@
+// BuildTrack Development Configuration
+// ═══════════════════════════════════════════════════════════
+// Used for Debug builds targeting the local/staging backend.
+
+// ── Supabase ──────────────────────────────────────────────
+SUPABASE_URL = http://localhost:54321
+SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+
+// ── API ───────────────────────────────────────────────────
+API_BASE_URL = http://localhost:3000/api
+
+// ── App Metadata ──────────────────────────────────────────
+PRODUCT_BUNDLE_IDENTIFIER = ro.stancainvest.buildtrack.dev
+PRODUCT_NAME = BuildTrack
+PRODUCT_DISPLAY_NAME = BuildTrack Dev
+
+// ── Build Settings ────────────────────────────────────────
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SWIFT_VERSION = 5.9
+ENABLE_BITCODE = NO
+GCC_OPTIMIZATION_LEVEL = 0
+SWIFT_OPTIMIZATION_LEVEL = -Onone
+SWIFT_COMPILATION_MODE = singlefile
+VALIDATE_PRODUCT = NO
+DEBUG_INFORMATION_FORMAT = dwarf

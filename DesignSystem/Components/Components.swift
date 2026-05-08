@@ -1,0 +1,231 @@
+import SwiftUI
+
+struct StatCard: View {
+    let icon: String
+    let label: String
+    let value: Int
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+                .frame(width: 44, height: 44)
+                .background(color.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            Text("\(value)")
+                .font(.title.bold())
+                .foregroundStyle(Color(.label))
+            
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(Color(.secondaryLabel))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
+    }
+}
+
+struct StatusBadge: View {
+    let status: ProjectStatus
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Circle()
+                .fill(BuildTrackColors.statusColor(status))
+                .frame(width: 8, height: 8)
+            Text(status.label)
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(BuildTrackColors.statusColor(status))
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(BuildTrackColors.statusColor(status).opacity(0.12))
+        .clipShape(Capsule())
+    }
+}
+
+struct PriorityBadge: View {
+    let priority: TaskPriority
+    
+    var body: some View {
+        Text(priority.label)
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .foregroundStyle(BuildTrackColors.priorityColor(priority))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(BuildTrackColors.priorityColor(priority).opacity(0.12))
+            .clipShape(Capsule())
+    }
+}
+
+struct SeverityBadge: View {
+    let severity: IncidentSeverity
+    
+    var color: Color {
+        switch severity {
+        case .low: .yellow
+        case .medium: .orange
+        case .high: .red
+        case .critical: .purple
+        }
+    }
+    
+    var body: some View {
+        Text(severity.label)
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .foregroundStyle(color)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(color.opacity(0.12))
+            .clipShape(Capsule())
+    }
+}
+
+struct CardView<Content: View>: View {
+    let content: Content
+    
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+    
+    var body: some View {
+        content
+            .padding()
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: .black.opacity(0.04), radius: 8, y: 2)
+    }
+}
+
+struct SectionHeader: View {
+    let title: String
+    var actionLabel: String?
+    var action: (() -> Void)?
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.headline)
+                .fontWeight(.semibold)
+            Spacer()
+            if let actionLabel, let action {
+                Button(action: action) {
+                    Text(actionLabel)
+                        .font(.subheadline)
+                        .foregroundStyle(BuildTrackColors.primary)
+                }
+            }
+        }
+    }
+}
+
+struct LoadingView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+                .scaleEffect(1.2)
+            Text("Loading...")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct ErrorView: View {
+    let message: String
+    var retryAction: (() -> Void)?
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 48))
+                .foregroundStyle(.orange)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            if let retryAction {
+                Button("Retry", action: retryAction)
+                    .buttonStyle(.bordered)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+    }
+}
+
+struct EmptyStateView: View {
+    let icon: String
+    let title: String
+    let message: String
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary.opacity(0.5))
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+    }
+}
+
+struct FilterChip: View {
+    let label: String
+    let isSelected: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.subheadline)
+                .fontWeight(isSelected ? .semibold : .regular)
+                .foregroundStyle(isSelected ? .white : BuildTrackColors.primary)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? BuildTrackColors.primary : BuildTrackColors.primary.opacity(0.1))
+                )
+                .overlay(
+                    Capsule()
+                        .strokeBorder(isSelected ? Color.clear : BuildTrackColors.primary.opacity(0.3), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+#Preview {
+    VStack(spacing: 16) {
+        HStack {
+            StatCard(icon: "hammer.fill", label: "Active Projects", value: 12, color: .green)
+            StatCard(icon: "list.clipboard", label: "Today's Tasks", value: 8, color: .blue)
+        }
+        StatusBadge(status: .active)
+        PriorityBadge(priority: .high)
+        SeverityBadge(severity: .high)
+        FilterChip(label: "All", isSelected: true) {}
+    }
+    .padding()
+    .background(Color(.systemGroupedBackground))
+}

@@ -1,0 +1,20 @@
+# ──────────────────────────────────────────────
+# fastlane Appfile — app identifiers & team
+# ──────────────────────────────────────────────
+
+# Apple Developer Team ID (found at https://developer.apple.com/account)
+team_id("4G3G5MX9BH")
+
+# App Store Connect App ID (found in App Store Connect under "App Information" → "General Information")
+# This is the Apple ID used for the App Store Connect login, not your personal Apple ID.
+apple_id("adrian.stanca1@icloud.com")
+
+# Bundle identifier for the main app target
+app_identifier("ro.stancainvest.buildtrack")
+
+# Additional target bundle identifiers (extensions, widgets, etc.)
+# app_identifier("com.buildtrack.ios.widget", extension: true)
+
+# If using multiple team accounts, uncomment and configure:
+# ENV["FASTLANE_ITC_TEAM_ID"]   = "123456789"   # App Store Connect team
+# ENV["FASTLANE_ITC_TEAM_NAME"] = "Your Company" # App Store Connect team name

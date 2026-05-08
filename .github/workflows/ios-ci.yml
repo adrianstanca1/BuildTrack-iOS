@@ -1,0 +1,242 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/**'  # Don't re-trigger self
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip test step?'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ════════════════════════════════════════════
+  # 1. SwiftLint — static analysis
+  # ════════════════════════════════════════════
+  lint:
+    name: SwiftLint
+    runs-on: macos-14
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache SwiftLint
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/swiftlint
+          key: swiftlint-0.55.1-${{ runner.os }}
+
+      - name: Install SwiftLint
+        run: |
+          if ! command -v swiftlint &> /dev/null; then
+            brew install swiftlint
+          fi
+
+      - name: Run SwiftLint (strict)
+        run: |
+          swiftlint lint \
+            --reporter github-actions-logging \
+            --strict \
+            --config .swiftlint.yml \
+            --quiet \
+            2>&1 | tee swiftlint-report.txt
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint-report
+          path: swiftlint-report.txt
+          retention-days: 7
+
+  # ════════════════════════════════════════════
+  # 2. Tests — unit + UI across sim matrix
+  # ════════════════════════════════════════════
+  test:
+    name: Test (iOS ${{ matrix.ios }} — ${{ matrix.device }})
+    runs-on: macos-14
+    timeout-minutes: 45
+    needs: lint
+    if: ${{ github.event.inputs.skip_tests != 'true' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ios: ['17.5']
+        device:
+          - 'iPhone 15'
+          - 'iPhone 15 Pro'
+        include:
+          - ios: '17.5'
+            device: 'iPhone 15'
+            runner: macos-14
+          - ios: '17.5'
+            device: 'iPhone 15 Pro Max'
+            runner: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          XCODE_PATH=$(mktemp -d)
+          sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Restore SPM cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved', '*.xcodeproj/project.pbxproj') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Resolve SPM dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -workspace BuildTrack.xcworkspace \
+            -scheme BuildTrack \
+            -derivedDataPath fastlane/DerivedData
+
+      - name: Build for testing
+        run: |
+          xcodebuild build-for-testing \
+            -workspace BuildTrack.xcworkspace \
+            -scheme BuildTrack \
+            -destination "platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.ios }}" \
+            -derivedDataPath fastlane/DerivedData \
+            -enableCodeCoverage YES \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | xcbeautify --report junit --report-path test-output/build-${{ matrix.device }}.xml
+
+      - name: Run unit tests
+        run: |
+          xcodebuild test-without-building \
+            -workspace BuildTrack.xcworkspace \
+            -scheme BuildTrack \
+            -destination "platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.ios }}" \
+            -derivedDataPath fastlane/DerivedData \
+            -only-testing:BuildTrackTests \
+            -resultBundlePath fastlane/test_output/BuildTrack_${{ matrix.device }}.xcresult \
+            2>&1 | xcbeautify --report junit --report-path test-output/unit-${{ matrix.device }}.xml
+
+      - name: Run UI tests
+        run: |
+          xcodebuild test-without-building \
+            -workspace BuildTrack.xcworkspace \
+            -scheme BuildTrack \
+            -destination "platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.ios }}" \
+            -derivedDataPath fastlane/DerivedData \
+            -only-testing:BuildTrackUITests \
+            -resultBundlePath fastlane/test_output/BuildTrackUI_${{ matrix.device }}.xcresult \
+            2>&1 | xcbeautify --report junit --report-path test-output/ui-${{ matrix.device }}.xml
+
+      - name: Upload xcresult bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresults-${{ matrix.device }}
+          path: |
+            fastlane/test_output/*.xcresult
+            test-output/*.xml
+          retention-days: 14
+
+      - name: Generate coverage report
+        if: always()
+        run: |
+          xcrun xccov view --report \
+            fastlane/test_output/BuildTrack_${{ matrix.device }}.xcresult \
+            --json > fastlane/test_output/coverage-${{ matrix.device }}.json 2>/dev/null || true
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.device }}
+          path: fastlane/test_output/coverage-${{ matrix.device }}.json
+          retention-days: 14
+
+  # ════════════════════════════════════════════
+  # 3. Build — archive to verify no build errors
+  # ════════════════════════════════════════════
+  build:
+    name: Archive Build
+    runs-on: macos-14
+    timeout-minutes: 30
+    needs: [lint, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Restore SPM cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved', '*.xcodeproj/project.pbxproj') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Archive (Release)
+        run: |
+          xcodebuild archive \
+            -workspace BuildTrack.xcworkspace \
+            -scheme BuildTrack \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath fastlane/build/BuildTrack.xcarchive \
+            -derivedDataPath fastlane/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | xcbeautify
+
+      - name: Upload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-archive
+          path: fastlane/build/BuildTrack.xcarchive
+          retention-days: 7
+
+  # ════════════════════════════════════════════
+  # 4. Summary — collate results
+  # ════════════════════════════════════════════
+  summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [lint, test, build]
+    if: always()
+    steps:
+      - name: Report status
+        run: |
+          echo "## iOS CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Job    | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint   | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test   | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build  | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY

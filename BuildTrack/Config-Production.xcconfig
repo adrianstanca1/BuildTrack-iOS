@@ -1,0 +1,38 @@
+// BuildTrack Production Configuration
+// ═══════════════════════════════════════════════════════════
+// Used for Release builds targeting the production backend.
+// Set this as the project-level xcconfig for Release scheme
+// in Xcode: Project → Info → Configurations → Release.
+//
+// NEVER commit secrets directly here in a real project.
+// Consider using a secrets management system or environment
+// variables injected at build time. For now, these values
+// are compiled directly for production deployment.
+// ═══════════════════════════════════════════════════════════
+
+// ── Supabase ──────────────────────────────────────────────
+SUPABASE_URL = https://buildtrack.cortexbuildpro.com
+SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1aWxkdHJhY2siLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc0NjcxMzYwMCwiZXhwIjoyMDYyMjg5NjAwfQ.demo-key
+
+// ── API ───────────────────────────────────────────────────
+API_BASE_URL = https://buildtrack.cortexbuildpro.com/api
+
+// ── App Metadata ──────────────────────────────────────────
+PRODUCT_BUNDLE_IDENTIFIER = ro.stancainvest.buildtrack
+PRODUCT_NAME = BuildTrack
+PRODUCT_DISPLAY_NAME = BuildTrack
+
+// ── Build Settings Overrides ──────────────────────────────
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SWIFT_VERSION = 5.9
+ENABLE_BITCODE = NO
+GCC_OPTIMIZATION_LEVEL = s
+SWIFT_OPTIMIZATION_LEVEL = -O
+SWIFT_COMPILATION_MODE = wholemodule
+VALIDATE_PRODUCT = YES
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+
+// ── Code Signing (set per-environment) ────────────────────
+// DEVELOPMENT_TEAM = YOUR_TEAM_ID
+// CODE_SIGN_STYLE = Automatic
+// PROVISIONING_PROFILE_SPECIFIER = match AppStore ro.stancainvest.buildtrack

@@ -1,0 +1,353 @@
+# frozen_string_literal: true
+
+default_platform(:ios)
+
+ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"] = ENV["APPLE_APP_SPECIFIC_PASSWORD"]
+ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
+ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
+
+# ──────────────────────────────────────────────
+# Before All — ensure match & keychain are ready
+# ──────────────────────────────────────────────
+before_all do |lane, options|
+  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  team_id        = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+
+  # Create a temporary macOS keychain for CI
+  if ENV["CI"]
+    create_keychain(
+      name:       "buildtrack.keychain",
+      password:   ENV["MATCH_KEYCHAIN_PASSWORD"] || "buildtrack- temp",
+      default_keychain: true,
+      unlock:     true,
+      timeout:    7200,
+      lock_when_sleeps: false
+    )
+  end
+
+  setup_ci if ENV["CI"]
+end
+
+# ──────────────────────────────────────────────
+# Lane: test — run the full unit + UI test suite
+# ──────────────────────────────────────────────
+desc "Run unit + UI tests across simulator matrix"
+lane :test do |options|
+  devices = options[:devices] || ["iPhone 15", "iPhone 15 Pro"]
+
+  run_all_tests(
+    workspace:          "BuildTrack.xcworkspace",
+    scheme:             "BuildTrack",
+    devices:            devices,
+    code_coverage:      true,
+    output_directory:   "fastlane/test_output",
+    output_types:       "html,junit",
+    result_bundle:      true,
+    number_of_retries:  options[:retries] || 1,
+    derived_data_path:  "fastlane/DerivedData",
+    prelaunch_simulator: true,
+    concurrent_workers: options[:workers] || 2,
+  )
+
+  # Collate coverage
+  if is_ci?
+    slather(
+      scheme:               "BuildTrack",
+      output_directory:     "fastlane/test_output/coverage",
+      cobertura_xml:        true,
+      html:                 true,
+      ignore:               ["**/Tests/**", "**/Preview Content/**"],
+      source_directory:     ".",
+    )
+  end
+end
+
+# ──────────────────────────────────────────────
+# Lane: beta — build + upload to TestFlight
+# ──────────────────────────────────────────────
+desc "Build and upload a beta to TestFlight"
+lane :beta do |options|
+  # Ensure certs and provisioning profiles via match
+  match(
+    type:             "appstore",
+    app_identifier:   ENV["APP_IDENTIFIER"],
+    readonly:         is_ci?,
+    keychain_name:    ENV["CI"] ? "buildtrack.keychain" : nil,
+    keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+  )
+
+  # Bump build number from git rev count
+  build_number = latest_testflight_build_number(
+    app_identifier: ENV["APP_IDENTIFIER"],
+    initial_build_number: 1,
+  ) + 1
+
+  increment_build_number(build_number: build_number)
+
+  # Build
+  gym(
+    workspace:            "BuildTrack.xcworkspace",
+    scheme:               "BuildTrack",
+    configuration:        "Release",
+    export_method:        "app-store",
+    clean:                true,
+    output_directory:     "fastlane/build",
+    output_name:          "BuildTrack.ipa",
+    include_symbols:      true,
+    include_bitcode:      false,
+    xcargs:               "SWIFT_VERSION=5.9",
+    derived_data_path:    "fastlane/DerivedData",
+    skip_profile_detection: false,
+    export_options: {
+      manageAppVersionAndBuildNumber: false,
+      thinning: "<thin-for-all-variants>",
+    },
+  )
+
+  # Upload to TestFlight
+  pilot(
+    ipa:                        lane_context[SharedValues::IPA_OUTPUT_PATH],
+    app_identifier:             ENV["APP_IDENTIFIER"],
+    skip_waiting_for_build_processing: false,
+    distribute_external:        true,
+    groups:                     options[:groups] || ["Internal Testers", "External Beta"],
+    notify_external_testers:    true,
+    changelog:                  changelog_from_git_commits(
+                                  between: [last_git_tag, "HEAD"],
+                                  pretty:   "- %s (%an)",
+                                ),
+    uses_non_exempt_encryption: false,
+  )
+
+  # Post notification
+  notify_slack_build(
+    lane:       "beta",
+    build:      build_number,
+    app_name:   "BuildTrack",
+    changelog:  changelog_from_git_commits(between: [last_git_tag, "HEAD"]),
+  )
+end
+
+# ──────────────────────────────────────────────
+# Lane: release — build + submit to App Store
+# ──────────────────────────────────────────────
+desc "Build and submit a release to the App Store"
+lane :release do |options|
+  # Ensure certs and provisioning profiles
+  match(
+    type:             "appstore",
+    app_identifier:   ENV["APP_IDENTIFIER"],
+    readonly:         is_ci?,
+    keychain_name:    ENV["CI"] ? "buildtrack.keychain" : nil,
+    keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+  )
+
+  version_number = get_version_number(
+    xcodeproj: "BuildTrack.xcodeproj",
+    target:    "BuildTrack",
+  )
+
+  build_number = latest_testflight_build_number(
+    app_identifier: ENV["APP_IDENTIFIER"],
+    initial_build_number: 1,
+  ) + 1
+
+  increment_build_number(build_number: build_number)
+
+  ensure_git_status_clean
+
+  # Build
+  gym(
+    workspace:            "BuildTrack.xcworkspace",
+    scheme:               "BuildTrack",
+    configuration:        "Release",
+    export_method:        "app-store",
+    clean:                true,
+    output_directory:     "fastlane/build",
+    output_name:          "BuildTrack.ipa",
+    include_symbols:      true,
+    include_bitcode:      false,
+    xcargs:               "SWIFT_VERSION=5.9",
+    derived_data_path:    "fastlane/DerivedData",
+    skip_profile_detection: false,
+    export_options: {
+      manageAppVersionAndBuildNumber: false,
+    },
+  )
+
+  # Submit to App Store Review
+  deliver(
+    ipa:                          lane_context[SharedValues::IPA_OUTPUT_PATH],
+    app_identifier:               ENV["APP_IDENTIFIER"],
+    skip_screenshots:             false,
+    skip_metadata:                false,
+    submit_for_review:            options[:submit_for_review] || true,
+    automatic_release:            options[:automatic_release] || false,
+    phased_release:               options[:phased_release] || true,
+    precheck_include_in_app_purchases: false,
+    force:                        options[:force] || false,
+    overwrite_screenshots:        false,
+    run_precheck_before_submit:   true,
+    price_tier:                   0,
+    app_rating_config_path:       "fastlane/metadata/rating_config.json",
+  )
+
+  # Tag and create GitHub release
+  tag = "v#{version_number}-#{build_number}"
+
+  add_git_tag(tag: tag)
+  push_git_tags(tag: tag)
+
+  set_github_release(
+    repository_name:   ENV["GITHUB_REPOSITORY"] || "BuildTrack-iOS",
+    api_token:         ENV["GITHUB_TOKEN"],
+    name:              tag,
+    tag_name:          tag,
+    description:       changelog_from_git_commits(
+                         between: [last_git_tag, "HEAD"],
+                         pretty:   "- %s (%an)",
+                       ),
+    commitish:         "main",
+    is_prerelease:     false,
+    is_draft:          false,
+  )
+
+  notify_slack_build(
+    lane:       "release",
+    build:      build_number,
+    app_name:   "BuildTrack",
+    version:    version_number,
+    changelog:  changelog_from_git_commits(between: [last_git_tag, "HEAD"]),
+  )
+end
+
+# ──────────────────────────────────────────────
+# Lane: screenshots — capture for all device sizes
+# ──────────────────────────────────────────────
+desc "Capture App Store screenshots for all device sizes"
+lane :screenshots do |options|
+  devices = [
+    "iPhone 15 Pro Max",           # 6.7″
+    "iPhone 15 Pro",               # 6.1″
+    "iPhone 15 Plus",              # 6.7″
+    "iPhone 15",                   # 6.1″
+    "iPad Pro (12.9-inch) (6th generation)",  # iPad
+    "iPad Air (5th generation)",                 # iPad
+  ]
+
+  capture_screenshots(
+    workspace:          "BuildTrack.xcworkspace",
+    scheme:             "BuildTrackUITests",
+    devices:            devices,
+    languages:          options[:languages] || ["en-US", "en-GB"],
+    output_directory:   "fastlane/screenshots",
+    clear_previous_screenshots: true,
+    reinstall_app:      true,
+    erase_simulator:    true,
+    override_status_bar: true,
+    concurrent_simulators: 3,
+    number_of_retries:  2,
+    headless:           is_ci?,
+    localize_simulator: true,
+    dark_mode:          true,
+    override_status_bar_arguments: "--time 09:41 --batteryState charged --batteryLevel 100 --cellularBars 4",
+  )
+
+  # Frame the screenshots
+  frame_screenshots(
+    white:   false,
+    silver:  true,
+    path:    "fastlane/screenshots",
+  )
+
+  # Upload to App Store Connect
+  deliver(
+    app_identifier:        ENV["APP_IDENTIFIER"],
+    skip_binary_upload:    true,
+    skip_metadata:         true,
+    overwrite_screenshots: true,
+    screenshots_path:      "fastlane/screenshots",
+  )
+end
+
+# ──────────────────────────────────────────────
+# Lane: refresh_dsyms — download missing dSYMs
+# ──────────────────────────────────────────────
+desc "Download dSYM files from App Store Connect"
+lane :refresh_dsyms do
+  download_dsyms(
+    app_identifier: ENV["APP_IDENTIFIER"],
+    wait_for_dsym_processing: true,
+    output_directory: "fastlane/dsyms",
+  )
+
+  upload_symbols_to_crashlytics(
+    dsym_path: "fastlane/dsyms",
+    gsp_path:  "BuildTrack/GoogleService-Info.plist",
+  )
+end
+
+# ──────────────────────────────────────────────
+# Lane: nuke — clean all certs and start fresh
+# ──────────────────────────────────────────────
+desc "Delete all provisioning profiles and certificates via match"
+lane :nuke_profiles do
+  match_nuke(
+    type:           "development",
+    app_identifier: ENV["APP_IDENTIFIER"],
+  )
+  match_nuke(
+    type:           "appstore",
+    app_identifier: ENV["APP_IDENTIFIER"],
+  )
+end
+
+
+# ──────────────────────────────────────────────
+# Private helpers
+# ──────────────────────────────────────────────
+private_lane :notify_slack_build do |options|
+  next unless ENV["SLACK_WEBHOOK_URL"]
+
+  lane_name  = options[:lane]
+  build      = options[:build]
+  version    = options[:version]
+  app_name   = options[:app_name] || "BuildTrack"
+  changelog  = options[:changelog] || "No changelog available."
+
+  # Determine if this was a success or failure
+  build_status = lane_context[SharedValues::LANE_NAME] == lane_name ? "✅ Success" : "❌ Failed"
+
+  slack(
+    message: "#{build_status}: #{app_name} #{lane_name} build ##{build}",
+    channel: "#builds",
+    success: true,
+    payload: {
+      "App"        => app_name,
+      "Version"    => version || "—",
+      "Build"      => build.to_s,
+      "Lane"       => lane_name,
+      "Changelog"  => changelog,
+      "Branch"     => git_branch,
+      "Commit"     => last_git_commit[:abbreviated_commit_hash],
+    },
+    default_payloads: [:git_branch, :last_git_commit],
+    attachment_properties: {
+      fields: [
+        { title: "App",       value: app_name,              short: true },
+        { title: "Version",   value: version || "—",        short: true },
+        { title: "Build",     value: build.to_s,            short: true },
+        { title: "Lane",      value: lane_name,             short: true },
+        { title: "Branch",    value: git_branch,            short: true },
+        { title: "Commit",    value: last_git_commit[:abbreviated_commit_hash], short: true },
+        { title: "Changelog", value: changelog,             short: false },
+      ],
+    },
+  )
+end
+
+private_lane :changelog_from_git_commits do |options|
+  between = options[:between]
+  pretty  = options[:pretty] || "- %s"
+  sh("git log #{pretty} #{between[0]}..#{between[1]} --no-merges 2>/dev/null || echo 'Initial build'")
+end

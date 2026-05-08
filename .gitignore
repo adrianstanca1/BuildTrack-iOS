@@ -1,0 +1,92 @@
+# BuildTrack iOS — .gitignore
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/*.pbxuser
+*.xcodeproj/*.mode1v3
+*.xcodeproj/*.mode2v3
+*.xcodeproj/*.perspectivev3
+*.xcuserstate
+
+# Build products
+build/
+DerivedData/
+*.ipa
+*.app
+*.dSYM.zip
+*.dSYM
+*.bcsymbolmap
+
+# SPM
+.build/
+Package.resolved
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Checkouts
+Carthage/Build/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/screenshots/screenshots.html
+fastlane/test_output/
+fastlane/build/
+fastlane/dsyms/
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Secrets (never commit real keys)
+*.xcconfig.bak
+BuildTrack/Config-Production.xcconfig.local
+BuildTrack/Config-Development.xcconfig.local
+
+# Firebase / Google Services
+GoogleService-Info.plist
+google-services.json
+
+# App Store Connect API Key
+*.p8
+
+# Certificates & provisioning
+*.cer
+*.mobileprovision
+*.provisionprofile
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Node (if using any JS tooling)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+*.log

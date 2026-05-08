@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- ═══════════════════════════════════════════════════ -->
+	<!-- BuildTrack iOS — Production Info.plist              -->
+	<!-- Bundle: ro.stancainvest.buildtrack                  -->
+	<!-- Min iOS: 17.0                                       -->
+	<!-- ═══════════════════════════════════════════════════ -->
+
+	<!-- ── Core Bundle Metadata ──────────────────────────── -->
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>BuildTrack</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+
+	<!-- ── Platform Requirements ─────────────────────────── -->
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>MinimumOSVersion</key>
+	<string>17.0</string>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+
+	<!-- ── Supported Orientations ────────────────────────── -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+
+	<!-- ── Status Bar & Appearance ───────────────────────── -->
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+
+	<!-- ── Launch Screen ─────────────────────────────────── -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchScreenBackground</string>
+		<key>UIImageName</key>
+		<string>LaunchIcon</string>
+	</dict>
+
+	<!-- ═══════════════════════════════════════════════════ -->
+	<!-- PRODUCTION BACKEND CONFIGURATION                    -->
+	<!-- These values are injected via Config-Production     -->
+	<!-- .xcconfig for Release builds, or set directly       -->
+	<!-- for development. See SupabaseManager.swift for      -->
+	<!-- debug/release switching logic.                      -->
+	<!-- ═══════════════════════════════════════════════════ -->
+
+	<!-- Supabase -->
+	<key>SUPABASE_URL</key>
+	<string>$(SUPABASE_URL)</string>
+	<key>SUPABASE_ANON_KEY</key>
+	<string>$(SUPABASE_ANON_KEY)</string>
+
+	<!-- REST API -->
+	<key>API_BASE_URL</key>
+	<string>$(API_BASE_URL)</string>
+
+	<!-- ═══════════════════════════════════════════════════ -->
+	<!-- APP TRANSPORT SECURITY                             -->
+	<!-- ═══════════════════════════════════════════════════ -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>buildtrack.cortexbuildpro.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSTemporaryExceptionMinimumTLSVersion</key>
+				<string>TLSv1.2</string>
+			</dict>
+		</dict>
+	</dict>
+
+	<!-- ═══════════════════════════════════════════════════ -->
+	<!-- PRIVACY & PERMISSIONS                              -->
+	<!-- ═══════════════════════════════════════════════════ -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>BuildTrack uses your location to show nearby projects and verify site visits.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>BuildTrack needs photo access to attach images to safety reports and inspections.</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>BuildTrack uses the camera to capture photos for safety incidents and project documentation.</string>
+
+	<!-- ═══════════════════════════════════════════════════ -->
+	<!-- BACKGROUND MODES                                   -->
+	<!-- ═══════════════════════════════════════════════════ -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<!-- ═══════════════════════════════════════════════════ -->
+	<!-- PUSH NOTIFICATIONS                                 -->
+	<!-- ═══════════════════════════════════════════════════ -->
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
+</dict>
+</plist>
