@@ -2,16 +2,25 @@ import SwiftUI
 import LocalAuthentication
 
 @MainActor
-@Observable
-final class AuthViewModel {
+final class AuthViewModel: ObservableObject {
     enum AuthState: Equatable {
         case loggedOut
         case authenticating
         case authenticated(UserInfo)
         case error(String)
+        
+        static func == (lhs: AuthState, rhs: AuthState) -> Bool {
+            switch (lhs, rhs) {
+            case (.loggedOut, .loggedOut): return true
+            case (.authenticating, .authenticating): return true
+            case (.authenticated(let a), .authenticated(let b)): return a.id == b.id
+            case (.error(let a), .error(let b)): return a == b
+            default: return false
+            }
+        }
     }
     
-    private(set) var state: AuthState = .loggedOut
+    @Published private(set) var state: AuthState = .loggedOut
     private let authManager: AuthManager
     private let context = LAContext()
     
@@ -20,109 +29,29 @@ final class AuthViewModel {
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
     }
     
-    var biometricType: String {
-        switch context.biometryType {
-        case .faceID: "Face ID"
-        case .touchID: "Touch ID"
-        case .opticID: "Optic ID"
-        default: "Biometrics"
-        }
-    }
-    
-    init(authManager: AuthManager) {
+    init(authManager: AuthManager = AuthManager()) {
         self.authManager = authManager
     }
     
-    // MARK: - Password Validation
-    
-    func validatePassword(_ password: String) -> [String] {
-        var issues: [String] = []
-        if password.count < 8 { issues.append("At least 8 characters") }
-        if !password.contains(where: \.isUppercase) { issues.append("One uppercase letter") }
-        if !password.contains(where: \.isNumber) { issues.append("One number") }
-        if !password.contains(where: { "!@#$%^&*()_+-=[]{}|;':\",./<>?".contains($0) }) {
-            issues.append("One special character")
-        }
-        return issues
-    }
-    
-    var passwordIsValid: Bool {
-        // Used by the form view for visual feedback
-        true
-    }
-    
-    // MARK: - Auth Actions
-    
     func signIn(email: String, password: String) async {
-        guard !email.isEmpty, !password.isEmpty else {
-            state = .error("Email and password are required")
-            return
-        }
-        
         state = .authenticating
         await authManager.signIn(email: email, password: password)
-        
         if authManager.isAuthenticated, let user = authManager.currentUser {
             state = .authenticated(user)
-        } else if let error = authManager.error {
-            state = .error(error)
         } else {
-            state = .loggedOut
+            state = .error(authManager.error ?? "Unknown error")
         }
     }
-    
-    func signUp(email: String, password: String, fullName: String) async {
-        let issues = validatePassword(password)
-        guard issues.isEmpty else {
-            state = .error("Password requirements not met: \(issues.joined(separator: ", "))")
-            return
-        }
-        
-        state = .authenticating
-        await authManager.signUp(email: email, password: password, fullName: fullName)
-        
-        if let error = authManager.error {
-            state = .error(error)
-        }
-    }
-    
-    func signOut() async {
-        await authManager.signOut()
-        state = .loggedOut
-    }
-    
-    // MARK: - Biometric
     
     func authenticateWithBiometrics() async {
-        guard isBiometricAvailable else {
-            state = .error("\(biometricType) is not available")
-            return
-        }
-        
         do {
-            let _ = try await context.evaluatePolicy(
+            let success = try await context.evaluatePolicy(
                 .deviceOwnerAuthenticationWithBiometrics,
-                localizedReason: "Unlock BuildTrack to access your projects"
+                localizedReason: "Authenticate to access BuildTrack"
             )
-            
-            // Biometric success — attempt Supabase session refresh
-            await authManager.checkSession()
-            if let user = authManager.currentUser {
-                state = .authenticated(user)
-            }
+            if success { state = .authenticating }
         } catch {
-            switch error {
-            case LAError.userCancel:
-                break // User cancelled — stay on current state
-            case LAError.biometryLockout:
-                state = .error("\(biometricType) is locked. Use password instead.")
-            default:
-                state = .error("Authentication failed")
-            }
+            state = .error(error.localizedDescription)
         }
-    }
-    
-    func clearError() {
-        if case .error = state { state = .loggedOut }
     }
 }

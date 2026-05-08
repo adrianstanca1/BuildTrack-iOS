@@ -268,6 +268,8 @@ final class Incident: Identifiable, Codable {
     var location: String
     var date: Date
     var createdAt: Date
+    @Relationship
+    var project: Project?
     
     var severity: IncidentSeverity {
         get { IncidentSeverity(rawValue: severityRaw) ?? .low }
@@ -288,7 +290,8 @@ final class Incident: Identifiable, Codable {
         reportedBy: String = "",
         location: String = "",
         date: Date = Date(),
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        project: Project? = nil
     ) {
         self.id = id
         self.title = title
@@ -299,11 +302,12 @@ final class Incident: Identifiable, Codable {
         self.location = location
         self.date = date
         self.createdAt = createdAt
+        self.project = project
     }
     
     enum CodingKeys: String, CodingKey {
         case id, title, descriptionText, severityRaw, statusRaw
-        case reportedBy, location, date, createdAt
+        case reportedBy, location, date, createdAt, project
     }
     
     required init(from decoder: Decoder) throws {
@@ -317,6 +321,7 @@ final class Incident: Identifiable, Codable {
         self.location = try container.decodeIfPresent(String.self, forKey: .location) ?? ""
         self.date = try container.decode(Date.self, forKey: .date)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.project = try container.decodeIfPresent(Project.self, forKey: .project)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -330,6 +335,7 @@ final class Incident: Identifiable, Codable {
         try container.encode(location, forKey: .location)
         try container.encode(date, forKey: .date)
         try container.encode(createdAt, forKey: .createdAt)
+        try container.encodeIfPresent(project, forKey: .project)
     }
 }
 

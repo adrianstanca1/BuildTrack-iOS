@@ -3,7 +3,6 @@ import OSLog
 import Supabase
 
 @MainActor
-@Observable
 final class AuthManager {
     var isAuthenticated = false
     var currentUser: UserInfo?
@@ -15,53 +14,29 @@ final class AuthManager {
     
     init() {
         self.client = SupabaseManager.shared.client
-        
-        Task {
-            await checkSession()
-        }
-    }
-    
-    func checkSession() async {
-        do {
-            let session = try await client.auth.session
-            self.currentUser = UserInfo(
-                id: session.user.id.uuidString,
-                email: session.user.email ?? "",
-                fullName: session.user.userMetadata["full_name"]?.stringValue
-                    ?? session.user.userMetadata["name"]?.stringValue
-            )
-            self.isAuthenticated = true
-        } catch {
-            self.isAuthenticated = false
-        }
+        Task { await restoreSession() }
     }
     
     func signIn(email: String, password: String) async {
-        isLoading = true
-        error = nil
+        isLoading = true; error = nil
         do {
-            let _ = try await client.auth.signIn(email: email, password: password)
-            await checkSession()
-        } catch let authError as AuthError {
-            self.error = authError.localizedDescription
+            let session = try await client.auth.signIn(email: email, password: password)
+            isAuthenticated = true
+            currentUser = UserInfo(from: session.user)
+            Logger.auth.info("User signed in: \(session.user.id)")
         } catch {
             self.error = error.localizedDescription
+            Logger.auth.error("Sign in failed: \(error.localizedDescription)")
         }
         isLoading = false
     }
     
     func signUp(email: String, password: String, fullName: String) async {
-        isLoading = true
-        error = nil
+        isLoading = true; error = nil
         do {
-            let _ = try await client.auth.signUp(
-                email: email,
-                password: password,
-                data: ["full_name": .string(fullName)]
-            )
-            self.error = "Check your email for a confirmation link."
-        } catch let authError as AuthError {
-            self.error = authError.localizedDescription
+            let session = try await client.auth.signUp(email: email, password: password, data: ["full_name": .string(fullName)])
+            isAuthenticated = true
+            currentUser = UserInfo(from: session.user)
         } catch {
             self.error = error.localizedDescription
         }
@@ -71,16 +46,32 @@ final class AuthManager {
     func signOut() async {
         do {
             try await client.auth.signOut()
-            self.isAuthenticated = false
-            self.currentUser = nil
+            isAuthenticated = false
+            currentUser = nil
         } catch {
-            Logger.auth.error("Sign out error: \(error)")
+            Logger.auth.error("Sign out failed: \(error.localizedDescription)")
+        }
+    }
+    
+    private func restoreSession() async {
+        do {
+            let session = try await client.auth.session
+            isAuthenticated = true
+            currentUser = UserInfo(from: session.user)
+        } catch {
+            isAuthenticated = false
         }
     }
 }
 
-struct UserInfo: Sendable {
+struct UserInfo: Identifiable, Equatable, Sendable {
     let id: String
     let email: String
     let fullName: String?
+    
+    init(from user: Supabase.User) {
+        self.id = user.id.uuidString
+        self.email = user.email ?? ""
+        self.fullName = user.userMetadata["full_name"]?.stringValue
+    }
 }
