@@ -487,7 +487,7 @@ final class Worker: Identifiable, Codable {
 
 enum WorkerRole: String, CaseIterable, Codable {
     case labourer, carpenter, electrician, plumber
-    case supervisor, foreman, engineer, operator
+    case supervisor, foreman, engineer, `operator`
     
     var label: String { rawValue.capitalized }
     var icon: String {

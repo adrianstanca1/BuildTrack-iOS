@@ -25,7 +25,7 @@ end
 # Add Swift files
 groups = {}
 Dir.glob('**/*.swift').each do |path|
-  next if path.start_with?('Tests/') || path.start_with?('fastlane/') || path.start_with?('scripts/')
+  next if path.start_with?('Package.swift') || path.start_with?('Tests/') || path.start_with?('fastlane/') || path.start_with?('scripts/')
   parts = File.dirname(path).split('/')
   parts.unshift('.') if parts == ['.'] || parts.empty?
   
