@@ -401,16 +401,15 @@ struct ExportDataView: View {
 // MARK: - View Model
 
 @MainActor
-@Observable
-final class SettingsViewModel {
+final class SettingsViewModel: ObservableObject {
     @AppStorage("isDarkMode") var isDarkMode = false
     @AppStorage("wifiOnlySync") var wifiOnlySync = true
     @AppStorage("offlineMode") var offlineMode = false
     
-    var isSyncing = false
-    var showingSignOutConfirmation = false
-    var showingClearDataConfirmation = false
-    var showingExportConfirmation = false
+    @Published var isSyncing = false
+    @Published var showingSignOutConfirmation = false
+    @Published var showingClearDataConfirmation = false
+    @Published var showingExportConfirmation = false
     
     var versionString: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
