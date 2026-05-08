@@ -23,10 +23,8 @@ final class AuthManager {
             let session = try await client.auth.signIn(email: email, password: password)
             isAuthenticated = true
             currentUser = UserInfo(from: session.user)
-            Logger.auth.info("User signed in: \(session.user.id)")
         } catch {
             self.error = error.localizedDescription
-            Logger.auth.error("Sign in failed: \(error.localizedDescription)")
         }
         isLoading = false
     }
@@ -34,9 +32,7 @@ final class AuthManager {
     func signUp(email: String, password: String, fullName: String) async {
         isLoading = true; error = nil
         do {
-            let session = try await client.auth.signUp(email: email, password: password, data: ["full_name": .string(fullName)])
-            isAuthenticated = true
-            currentUser = UserInfo(from: session.user)
+            _ = try await client.auth.signUp(email: email, password: password, data: ["full_name": .string(fullName)])
         } catch {
             self.error = error.localizedDescription
         }
@@ -49,7 +45,7 @@ final class AuthManager {
             isAuthenticated = false
             currentUser = nil
         } catch {
-            Logger.auth.error("Sign out failed: \(error.localizedDescription)")
+            Logger.auth.error("Sign out failed")
         }
     }
     

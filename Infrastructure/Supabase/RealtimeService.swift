@@ -2,8 +2,7 @@ import Foundation
 import OSLog
 import Supabase
 
-@MainActor
-final class RealtimeService: ObservableObject {
+final class RealtimeService {
     static let shared = RealtimeService()
     
     private let client: SupabaseClient
@@ -20,13 +19,13 @@ final class RealtimeService: ObservableObject {
         
         let channel = client.realtime.channel(channelName)
         
-        let _ = channel.on(.insert) { _ in
+        channel.on(RealtimeChannel.Event.insert) { _ in
             self.debouncer.debounce(key: "insert-\(projectId)") { onUpdate() }
         }
-        let _ = channel.on(.update) { _ in
+        channel.on(RealtimeChannel.Event.update) { _ in
             self.debouncer.debounce(key: "update-\(projectId)") { onUpdate() }
         }
-        let _ = channel.on(.delete) { _ in
+        channel.on(RealtimeChannel.Event.delete) { _ in
             self.debouncer.debounce(key: "delete-\(projectId)") { onUpdate() }
         }
         
