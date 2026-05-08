@@ -2,17 +2,28 @@ import SwiftUI
 import SwiftData
 
 struct TasksListView: View {
-    @Query(sort: \TaskItem.dueDate) private var tasks: [TaskItem]
-    @State private var searchText = ""
-    @State private var statusFilter: TaskStatus?
-    @State private var priorityFilter: TaskPriority?
-    @State private var showAddTask = false
+    @Query(sort: \TaskItem.dueDate)
+    private var tasks: [TaskItem]
+    @State
+    private var searchText = ""
+    @State
+    private var statusFilter: TaskStatus?
+    @State
+    private var priorityFilter: TaskPriority?
+    @State
+    private var showAddTask = false
     
     var filteredTasks: [TaskItem] {
         var result = tasks
-        if let s = statusFilter { result = result.filter { $0.status == s } }
-        if let p = priorityFilter { result = result.filter { $0.priority == p } }
-        if !searchText.isEmpty { result = result.filter { $0.title.localizedCaseInsensitiveContains(searchText) } }
+        if let status = statusFilter {
+            result = result.filter { $0.status == status }
+        }
+        if let priority = priorityFilter {
+            result = result.filter { $0.priority == priority }
+        }
+        if !searchText.isEmpty {
+            result = result.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        }
         return result
     }
     
@@ -22,89 +33,84 @@ struct TasksListView: View {
                 // Priority filter
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        FilterChip(label: "All", isSelected: priorityFilter == nil) { priorityFilter = nil }
-                        ForEach(TaskPriority.allCases, id: \.self) { p in
-                            FilterChip(label: p.label, isSelected: priorityFilter == p) {
-                                priorityFilter = p == priorityFilter ? nil : p
+                        FilterChip(
+                            label: "All",
+                            isSelected: priorityFilter == nil
+                        ) { priorityFilter = nil }
+                        ForEach(TaskPriority.allCases, id: \.self) { priority in
+                            FilterChip(
+                                label: priority.label,
+                                isSelected: priorityFilter == priority
+                            ) {
+                                priorityFilter = priority == priorityFilter ? nil : priority
                             }
                         }
                     }
                     .padding(.horizontal)
                 }
                 
+                // Search
+                TextField("Search tasks...", text: $searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.horizontal)
+                
+                // Tasks list
                 LazyVStack(spacing: 12) {
-                    if filteredTasks.isEmpty {
-                        EmptyStateView(icon: "checklist", title: "No Tasks", message: "Tap + to add your first task")
-                    }
                     ForEach(filteredTasks) { task in
-                        NavigationLink { TaskDetailView(task: task) } label: { TaskCard(task: task) }
-                            .buttonStyle(.plain)
+                        TaskRow(task: task)
                     }
                 }
                 .padding(.horizontal)
             }
-            .padding(.vertical)
         }
-        .background(Color(.systemGroupedBackground))
-        .searchable(text: $searchText, prompt: "Search tasks...")
         .navigationTitle("Tasks")
-        .toolbar { Button { showAddTask = true } label: { Image(systemName: "plus") } }
-        .sheet(isPresented: $showAddTask) { TaskFormView() }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showAddTask = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showAddTask) {
+            TaskFormView(mode: .create)
+        }
     }
 }
 
-struct TaskCard: View {
+struct TaskRow: View {
     let task: TaskItem
-    
-    var isOverdue: Bool {
-        guard let due = task.dueDate else { return false }
-        return due < Date() && task.status != .completed
-    }
+    @Environment(\.modelContext)
+    private var modelContext
     
     var body: some View {
-        HStack(spacing: 12) {
-            Button {
-                withAnimation {
-                    task.status = task.status == .completed ? .pending : .completed
-                    task.updatedAt = Date()
-                }
-            } label: {
-                Image(systemName: task.status == .completed ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(task.status == .completed ? .green : .gray.opacity(0.4))
-            }
-            
+        HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(task.title)
-                    .font(.subheadline.weight(.medium))
-                    .strikethrough(task.status == .completed)
-                HStack(spacing: 8) {
-                    PriorityBadge(priority: task.priority)
-                    if let due = task.dueDate {
-                        Text(due.formatted(date: .abbreviated, time: .omitted))
-                            .font(.caption2)
-                            .foregroundStyle(isOverdue ? .red : .secondary)
-                    }
-                }
+                    .font(.headline)
+                Text(task.project?.name ?? "No project")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
             Spacer()
-            if task.status == .completed {
-                Image(systemName: "checkmark").font(.caption).foregroundStyle(.green)
-            }
+            PriorityBadge(priority: task.priority)
         }
         .padding()
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.04), radius: 8, y: 2)
-        .opacity(task.status == .completed ? 0.6 : 1)
+        .cornerRadius(12)
+        .shadow(color: .black.opacity(0.05), radius: 4)
     }
 }
 
 struct TaskDetailView: View {
     let task: TaskItem
-    @State private var showEdit = false
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
+    @State
+    private var showEdit = false
+    @Environment(\.dismiss)
+    private var dismiss
+    @Environment(\.modelContext)
+    private var modelContext
     
     var body: some View {
         ScrollView {
@@ -115,45 +121,81 @@ struct TaskDetailView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(task.title).font(.title3.bold())
                                 if !task.descriptionText.isEmpty {
-                                    Text(task.descriptionText).font(.subheadline).foregroundStyle(.secondary)
+                                    Text(task.descriptionText)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
                                 }
                             }
                             Spacer()
                             PriorityBadge(priority: task.priority)
                         }
                         HStack {
-                            StatusBadge(status: task.status == .completed ? .completed : (task.status == .inProgress ? .active : .planning))
+                            StatusBadge(
+                                status: task.status == .completed
+                                ? .completed
+                                : (task.status == .inProgress ? .active : .planning)
+                            )
                             Spacer()
                             Text("Due: \(task.dueDate?.formatted(date: .abbreviated, time: .omitted) ?? "N/A")")
-                                .font(.caption).foregroundStyle(.secondary)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
                 
-                if !task.assignedTo.isEmpty {
-                    CardView {
-                        DetailRow(label: "Assigned To", value: task.assignedTo)
+                CardView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Assignment")
+                            .font(.headline)
+                        if let assignee = task.assignee {
+                            HStack {
+                                Image(systemName: "person.circle")
+                                    .font(.title2)
+                                VStack(alignment: .leading) {
+                                    Text(assignee.name)
+                                        .font(.subheadline)
+                                    Text(assignee.role)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        } else {
+                            Text("Unassigned")
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 
-                VStack(spacing: 12) {
-                    Button { showEdit = true } label: { Label("Edit Task", systemImage: "pencil").frame(maxWidth: .infinity) }
-                        .buttonStyle(.bordered).controlSize(.large)
-                    Button(role: .destructive) {
-                        modelContext.delete(task)
-                        dismiss()
-                    } label: { Label("Delete Task", systemImage: "trash").frame(maxWidth: .infinity) }
-                        .buttonStyle(.borderedProminent).controlSize(.large)
+                CardView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Timeline")
+                            .font(.headline)
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Created")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(task.createdAt.formatted())
+                                    .font(.subheadline)
+                            }
+                            Spacer()
+                        }
+                    }
                 }
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
         .navigationTitle("Task Details")
-        .sheet(isPresented: $showEdit) { TaskFormView(task: task) }
+        .toolbar {
+            Button("Edit") { showEdit = true }
+        }
+        .sheet(isPresented: $showEdit) {
+            TaskFormView(mode: .edit(task))
+        }
     }
 }
 
 #Preview {
-    TasksListView().modelContainer(for: [TaskItem.self])
+    TasksListView()
+        .modelContainer(SwiftDataStack.previewContainer())
 }
