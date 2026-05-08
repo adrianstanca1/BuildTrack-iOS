@@ -4,7 +4,8 @@ import SwiftData
 // MARK: - Project
 @Model
 final class Project: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
+    @Attribute(.unique)
+    var id: UUID
     var name: String
     var descriptionText: String
     var statusRaw: String
@@ -20,9 +21,12 @@ final class Project: Identifiable, Codable {
     var createdAt: Date
     var updatedAt: Date
     
-    @Relationship(deleteRule: .cascade) var tasks: [TaskItem]? = []
-    @Relationship(deleteRule: .cascade) var incidents: [Incident]? = []
-    @Relationship(deleteRule: .cascade) var workers: [Worker]? = []
+    @Relationship(deleteRule: .cascade)
+    var tasks: [TaskItem]? = []
+    @Relationship(deleteRule: .cascade)
+    var incidents: [Incident]? = []
+    @Relationship(deleteRule: .cascade)
+    var workers: [Worker]? = []
     
     var status: ProjectStatus {
         get { ProjectStatus(rawValue: statusRaw) ?? .planning }
@@ -147,7 +151,8 @@ enum ProjectStatus: String, CaseIterable, Codable, Identifiable {
 // MARK: - TaskItem
 @Model
 final class TaskItem: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
+    @Attribute(.unique)
+    var id: UUID
     var title: String
     var descriptionText: String
     var priorityRaw: String
@@ -253,7 +258,8 @@ enum TaskStatus: String, CaseIterable, Codable {
 // MARK: - Safety Models
 @Model
 final class Incident: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
+    @Attribute(.unique)
+    var id: UUID
     var title: String
     var descriptionText: String
     var severityRaw: String
@@ -348,7 +354,8 @@ enum IncidentStatus: String, CaseIterable, Codable {
 
 @Model
 final class Inspection: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
+    @Attribute(.unique)
+    var id: UUID
     var title: String
     var inspector: String
     var resultRaw: String
@@ -414,7 +421,8 @@ enum InspectionResult: String, CaseIterable, Codable {
 // MARK: - Worker
 @Model
 final class Worker: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
+    @Attribute(.unique)
+    var id: UUID
     var name: String
     var roleRaw: String
     var phone: String

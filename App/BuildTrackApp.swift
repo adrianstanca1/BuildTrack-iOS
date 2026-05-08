@@ -4,32 +4,29 @@ import SwiftData
 @main
 struct BuildTrackApp: App {
     @State private var authManager = AuthManager()
+    let modelContainer: ModelContainer
     
-    var modelContainer: ModelContainer {
+    init() {
         let schema = Schema([
             Project.self,
             TaskItem.self,
             Incident.self,
             Inspection.self,
-            Worker.self,
+            Worker.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        return try! ModelContainer(for: schema, configurations: config)
+        do {
+            self.modelContainer = try ModelContainer(for: schema, configurations: config)
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
     }
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                if authManager.isAuthenticated {
-                    ContentView()
-                        .modelContainer(modelContainer)
-                        .environment(authManager)
-                } else {
-                    AuthView()
-                        .environment(authManager)
-                }
-            }
-            .preferredColorScheme(authManager.colorScheme)
+            ContentView()
+                .environment(authManager)
         }
+        .modelContainer(modelContainer)
     }
 }

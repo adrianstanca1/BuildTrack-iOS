@@ -2,7 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(AuthManager.self) private var authManager
+    @Environment(AuthManager.self)
+    private var authManager
     @State private var selectedTab = 0
     
     var body: some View {
