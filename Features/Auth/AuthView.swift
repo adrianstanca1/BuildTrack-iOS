@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct AuthView: View {
-    @Environment(AuthManager.self) private var authManager
+    @Environment(AuthManager.self)
+    private var authManager
     @State private var showRegister = false
     
     var body: some View {
@@ -59,7 +60,8 @@ struct AuthView: View {
 }
 
 struct LoginForm: View {
-    @Environment(AuthManager.self) private var authManager
+    @Environment(AuthManager.self)
+    private var authManager
     @State private var email = ""
     @State private var password = ""
     

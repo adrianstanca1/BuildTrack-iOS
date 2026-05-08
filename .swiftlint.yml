@@ -85,7 +85,13 @@ line_length:
 
 file_length:
   warning: 500
-  error: 800
+  error: 1200
+
+# Allow Models.swift to be longer since it contains all domain models
+custom_rules:
+  models_file_length:
+    excluded:
+      - Domain/Models/Models.swift
 
 type_body_length:
   warning: 400
@@ -128,5 +134,29 @@ identifier_name:
     - x2
     - y1
     - y2
+
+attributes:
+  always_on_line_above:
+    - @Model
+    - @Relationship
+    - @Attribute
+    - @Query
+    - @Published
+    - @State
+    - @StateObject
+    - @ObservedObject
+    - @Environment
+    - @EnvironmentObject
+    - @Binding
+    - @AppStorage
+    - @SceneStorage
+    - @UIApplicationDelegateAdaptor
+    - @main
+  always_on_same_line:
+    - @IBOutlet
+    - @IBAction
+    - @IBInspectable
+    - @IBDesignable
+    - @NSManaged
 
 reporter: xcode

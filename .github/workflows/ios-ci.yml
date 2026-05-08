@@ -126,7 +126,7 @@ jobs:
             -derivedDataPath fastlane/DerivedData \
             -enableCodeCoverage YES \
             COMPILER_INDEX_STORE_ENABLE=NO \
-            2>&1 | xcbeautify --report junit --report-path test-output/build-${{ matrix.device }}.xml
+            2>&1 | xcbeautify --report junit --report-path "test-output/build-${{ matrix.device }}.xml"
 
       - name: Run unit tests
         run: |
@@ -137,7 +137,7 @@ jobs:
             -derivedDataPath fastlane/DerivedData \
             -only-testing:BuildTrackTests \
             -resultBundlePath fastlane/test_output/BuildTrack_${{ matrix.device }}.xcresult \
-            2>&1 | xcbeautify --report junit --report-path test-output/unit-${{ matrix.device }}.xml
+            2>&1 | xcbeautify --report junit --report-path "test-output/unit-${{ matrix.device }}.xml"
 
       - name: Run UI tests
         run: |
@@ -148,7 +148,7 @@ jobs:
             -derivedDataPath fastlane/DerivedData \
             -only-testing:BuildTrackUITests \
             -resultBundlePath fastlane/test_output/BuildTrackUI_${{ matrix.device }}.xcresult \
-            2>&1 | xcbeautify --report junit --report-path test-output/ui-${{ matrix.device }}.xml
+            2>&1 | xcbeautify --report junit --report-path "test-output/ui-${{ matrix.device }}.xml"
 
       - name: Upload xcresult bundles
         if: always()
