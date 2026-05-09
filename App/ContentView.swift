@@ -39,7 +39,8 @@ struct MainTabView: View {
         TabItem(icon: "building.2.fill", label: "Projects"),
         TabItem(icon: "checklist", label: "Tasks"),
         TabItem(icon: "map.fill", label: "Map"),
-        TabItem(icon: "shield.fill", label: "Safety")
+        TabItem(icon: "shield.fill", label: "Safety"),
+        TabItem(icon: "gear", label: "Admin")
     ]
     
     struct TabItem: Identifiable {
@@ -65,6 +66,9 @@ struct MainTabView: View {
                 
                 NavigationStack { SafetyView() }
                     .tag(4)
+                
+                NavigationStack { AdminDashboardView() }
+                    .tag(5)
             }
             .toolbar(.hidden, for: .tabBar)
             
