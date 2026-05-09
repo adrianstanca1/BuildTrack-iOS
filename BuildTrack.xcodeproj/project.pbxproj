@@ -7,15 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2D2D7C5B8B04474A9F3EF666 /* AdminModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374B7B07CEF4E179D8F5353 /* AdminModels.swift */; };
-		374326587CBF4F48940A5B2A /* AdminDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FBA688C0744E6CAE7A115C /* AdminDashboardView.swift */; };
-		B898D1B57DDF499E903A8102 /* AdminUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6639E972EF0D43E3AFF383DE /* AdminUsersView.swift */; };
-		D1F55038004E454D849A7768 /* AdminProjectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9F4C240FC41A1B128A481 /* AdminProjectsView.swift */; };
-		F6CAB50456504D71848D6D32 /* AdminBillingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392872C249D458A9A34A0BF /* AdminBillingView.swift */; };
-		3DE1D285A8D54CDBBED38E13 /* AdminRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E906FE72F8A4B9E9E7C7CA0 /* AdminRepository.swift */; };
-		58C38D6516084E6DB8BBD7CB /* AdminDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B433A6677DA24E3781B92E5A /* AdminDashboardViewModel.swift */; };
-		784EE8EF0B7E4AB3A51604E0 /* AdminProjectsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960987DD350D42A18EA48981 /* AdminProjectsViewModel.swift */; };
-		2077EE46285A4974AFC44CCD /* AdminUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE7C470B5C4719B7DB8891 /* AdminUsersViewModel.swift */; };
 		066324BA21E0C31342E0A127 /* TaskFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */; };
 		1C296C12F7AF3D643E6BB7E3 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D57830E3FF49E079B502B7F /* DashboardView.swift */; };
 		1C79F2DE391A76E0CDB11985 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D7E42852231909C2157A70 /* NotificationSettingsView.swift */; };
@@ -54,15 +45,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0374B7B07CEF4E179D8F5353 /* AdminModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminModels.swift; path = Domain/Models/AdminModels.swift; sourceTree = "<group>"; };
-		F5FBA688C0744E6CAE7A115C /* AdminDashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminDashboardView.swift; path = Features/Admin/AdminDashboardView.swift; sourceTree = "<group>"; };
-		6639E972EF0D43E3AFF383DE /* AdminUsersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminUsersView.swift; path = Features/Admin/AdminUsersView.swift; sourceTree = "<group>"; };
-		C6C9F4C240FC41A1B128A481 /* AdminProjectsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminProjectsView.swift; path = Features/Admin/AdminProjectsView.swift; sourceTree = "<group>"; };
-		C392872C249D458A9A34A0BF /* AdminBillingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminBillingView.swift; path = Features/Admin/AdminBillingView.swift; sourceTree = "<group>"; };
-		4E906FE72F8A4B9E9E7C7CA0 /* AdminRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminRepository.swift; path = Infrastructure/Supabase/AdminRepository.swift; sourceTree = "<group>"; };
-		B433A6677DA24E3781B92E5A /* AdminDashboardViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminDashboardViewModel.swift; path = Infrastructure/ViewModels/AdminDashboardViewModel.swift; sourceTree = "<group>"; };
-		960987DD350D42A18EA48981 /* AdminProjectsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminProjectsViewModel.swift; path = Infrastructure/ViewModels/AdminProjectsViewModel.swift; sourceTree = "<group>"; };
-		01DE7C470B5C4719B7DB8891 /* AdminUsersViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdminUsersViewModel.swift; path = Infrastructure/ViewModels/AdminUsersViewModel.swift; sourceTree = "<group>"; };
 		0283DBEBC53CABB3C04380AF /* AuthView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthView.swift; path = Features/Auth/AuthView.swift; sourceTree = "<group>"; };
 		0D57830E3FF49E079B502B7F /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DashboardView.swift; path = Features/Dashboard/DashboardView.swift; sourceTree = "<group>"; };
 		117F179E406D876E3BFECEAC /* ProjectFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectFormView.swift; path = Features/Projects/ProjectFormView.swift; sourceTree = "<group>"; };
@@ -203,8 +185,7 @@
 				B4207DC8CB30A7F8C579FE68 /* Settings */,
 				0EF88DF21B74CA8E232E8CFA /* Tasks */,
 				8BDBF604D517C9B1E0BC3BDE /* Team */,
-				4AFB13B0DE78A04F7950499F /* Onboarding */
-				2CEBFDA2FF894D4F85F67AB7 /* Admin */,,
+				4AFB13B0DE78A04F7950499F /* Onboarding */,
 			);
 			name = Features;
 			sourceTree = "<group>";
@@ -262,8 +243,7 @@
 		C97C3204CA5F65F580F76F41 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1F5488D5D1727FE7FF6C08E3 /* Models.swift */
-				0374B7B07CEF4E179D8F5353 /* AdminModels.swift */,,
+				1F5488D5D1727FE7FF6C08E3 /* Models.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -290,8 +270,7 @@
 			children = (
 				B9CE6F132951504A7C41EED5 /* AuthManager.swift */,
 				18A5773BF000214D16452EF0 /* RealtimeService.swift */,
-				7818EA60012E7A0AA2C6A817 /* Repositories.swift */
-				4E906FE72F8A4B9E9E7C7CA0 /* AdminRepository.swift */,,
+				7818EA60012E7A0AA2C6A817 /* Repositories.swift */,
 				ADE9D58F34D9D8B7553BD15D /* SupabaseManager.swift */,
 			);
 			name = Supabase;
@@ -376,28 +355,14 @@
 				46572E81D098EBFDA1387BCA /* AuthViewModel.swift */,
 				97BC7FF3389B6F8E416263CC /* NotificationViewModel.swift */,
 				5145C6B27A5710157EA01A0D /* ProjectViewModel.swift */,
-				137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */
-				01DE7C470B5C4719B7DB8891 /* AdminUsersViewModel.swift */,
-				960987DD350D42A18EA48981 /* AdminProjectsViewModel.swift */,
-				B433A6677DA24E3781B92E5A /* AdminDashboardViewModel.swift */,,
+				137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */,
 				A95B1A16A1D85BA5C2B2A8DE /* TaskViewModel.swift */,
 				8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */,
 			);
 			name = ViewModels;
 			sourceTree = "<group>";
 		};
-		2CEBFDA2FF894D4F85F67AB7 /* Admin */ = {
-			isa = PBXGroup;
-			children = (
-				F5FBA688C0744E6CAE7A115C /* AdminDashboardView.swift */,
-				6639E972EF0D43E3AFF383DE /* AdminUsersView.swift */,
-				C6C9F4C240FC41A1B128A481 /* AdminProjectsView.swift */,
-				C392872C249D458A9A34A0BF /* AdminBillingView.swift */,
-			);
-			name = Admin;
-			sourceTree = "<group>";
-		};
-		/* End PBXGroup section */
+/* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
 		BBD7208B46A87FB1202BAD06 /* BuildTrack */ = {

@@ -9,7 +9,7 @@ struct AdminDashboardView: View {
                 Text("Admin Dashboard")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(BuildTrackColors.primary)
+                    .foregroundColor(AppColors.primary)
                     .padding(.top)
                 
                 if viewModel.isLoading {
@@ -55,7 +55,7 @@ struct StatCard: View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundColor(BuildTrackColors.primary)
+                .foregroundColor(AppColors.primary)
             Text(value)
                 .font(.title)
                 .fontWeight(.bold)
@@ -78,7 +78,7 @@ struct AdminRow: View {
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(BuildTrackColors.primary)
+                .foregroundColor(AppColors.primary)
             Text(title)
             Spacer()
             Image(systemName: "chevron.right")
