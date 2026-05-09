@@ -1,12 +1,10 @@
 disabled_rules:
-  - attributes
   - trailing_whitespace
   - vertical_whitespace_opening_braces
   - vertical_whitespace_closing_braces
 
 opt_in_rules:
   - array_init
-  - attributes
   - closure_end_indentation
   - closure_spacing
   - collection_alignment
