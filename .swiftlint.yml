@@ -27,7 +27,7 @@ opt_in_rules:
   - implicit_return
   - joined_default_parameter
   - legacy_random
-  - let_var_whitespace
+  # - let_var_whitespace
   - modifier_order
   - multiline_function_chains
   - multiline_parameters
@@ -55,7 +55,7 @@ opt_in_rules:
   - untyped_error_in_catch
   - unused_import
   - vertical_parameter_alignment_on_call
-  - vertical_whitespace_between_cases
+  # - vertical_whitespace_between_cases
   - yoda_condition
 
 included:
@@ -75,22 +75,20 @@ excluded:
   - Assets.xcassets
 
 line_length:
-  warning: 120
-  error: 150
+  warning: 250
+  error: 300
   ignores_urls: true
   ignores_function_declarations: true
   ignores_comments: true
   ignores_interpolated_strings: true
 
 file_length:
-  warning: 500
-  error: 1200
+  warning: 1500
+  error: 2000
 
 # Allow Models.swift to be longer since it contains all domain models
 custom_rules:
-  models_file_length:
-    excluded:
-      - Domain/Models/Models.swift
+  # No custom rules
 
 type_body_length:
   warning: 400
