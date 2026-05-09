@@ -19,13 +19,16 @@ final class RealtimeService {
         
         let channel = client.realtime.channel(channelName)
         
-        channel.on(RealtimeChannel.Event.insert) { _ in
+        channel.on("*") { message in
+            guard message.event == "INSERT" else { return }
             self.debouncer.debounce(key: "insert-\(projectId)") { onUpdate() }
         }
-        channel.on(RealtimeChannel.Event.update) { _ in
+        channel.on("*") { message in
+            guard message.event == "UPDATE" else { return }
             self.debouncer.debounce(key: "update-\(projectId)") { onUpdate() }
         }
-        channel.on(RealtimeChannel.Event.delete) { _ in
+        channel.on("*") { message in
+            guard message.event == "DELETE" else { return }
             self.debouncer.debounce(key: "delete-\(projectId)") { onUpdate() }
         }
         

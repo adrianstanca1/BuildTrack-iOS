@@ -50,7 +50,10 @@ final class SafetyViewModel {
     }
     
     func resolveIncident(_ incident: Incident) {
-        incident.status = .resolved
+        withAnimation {
+            incident.status = .resolved
+            incident.resolvedAt = Date()
+        }
         do {
             try modelContext.save()
         } catch {

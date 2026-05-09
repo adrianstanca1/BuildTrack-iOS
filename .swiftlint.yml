@@ -143,15 +143,15 @@ attributes:
     - "@Query"
     - "@Published"
     - "@State"
-    - "@State"Object
-    - @ObservedObject
-    - @Environment
-    - @EnvironmentObject
-    - @Binding
-    - @AppStorage
-    - @SceneStorage
-    - @UIApplicationDelegateAdaptor
-    - @main
+    - "@StateObject"
+    - "@ObservedObject"
+    - "@Environment"
+    - "@Environment"Object
+    - "@Binding"
+    - "@AppStorage"
+    - "@SceneStorage"
+    - "@UIApplicationDelegateAdaptor"
+    - "@main"
   always_on_same_line:
     - @IBOutlet
     - @IBAction
