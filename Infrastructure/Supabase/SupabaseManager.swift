@@ -4,9 +4,16 @@ import Supabase
 
 // MARK: - Environment Configuration
 
-enum BuildEnvironment {
+enum BuildEnvironment: CustomStringConvertible {
     case debug
     case release
+    
+    var description: String {
+        switch self {
+        case .debug: return "debug"
+        case .release: return "release"
+        }
+    }
     
     static var current: BuildEnvironment {
         #if DEBUG
