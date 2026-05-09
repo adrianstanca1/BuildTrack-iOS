@@ -61,7 +61,7 @@ final class TeamViewModel {
         }
     }
     
-    func workersExpiringSoon(days: Int = 30) -> [Worker] {
+        func workersExpiringSoon(days: Int = 30) -> [Worker] {
         let cutoff = Date().addingTimeInterval(TimeInterval(days * 86400))
         var result = [Worker]()
         for worker in workers {
@@ -70,6 +70,10 @@ final class TeamViewModel {
                     result.append(worker)
                     break
                 }
+            }
+        }
+        return result
+    }
             }
         }
         return result
