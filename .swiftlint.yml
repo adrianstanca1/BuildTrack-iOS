@@ -13,6 +13,9 @@ disabled_rules:
   - implicit_return
   - prefer_self_in_static_references
   - prefer_self_type_over_type_of_self
+  - redundant_discardable_let
+  - implicit_optional_initialization
+  - function_parameter_count
 
 opt_in_rules:
   - array_init
