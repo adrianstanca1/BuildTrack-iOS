@@ -11,7 +11,7 @@ final class SafetyViewModel {
     
     private let modelContext: ModelContext
     
-    init(context: ModelContext? = nil) {
+    nonisolated init(context: ModelContext? = nil) {
         self.modelContext = context ?? SwiftDataStack.shared.mainContext
         loadData()
     }
