@@ -542,9 +542,9 @@ struct ProjectsListView: View {
         guard project.budget > 0 else { return .secondary }
         let ratio = project.spentToDate / project.budget
         switch ratio {
-        case 0..<0.6: .green
-        case 0.6..<0.85: .orange
-        default: .red
+        case 0..<0.6: Color.green
+        case 0.6..<0.85: Color.orange
+        default: Color.red
         }
     }
     

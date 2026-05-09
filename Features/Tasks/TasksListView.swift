@@ -74,7 +74,7 @@ struct TasksListView: View {
             }
         }
         .sheet(isPresented: $showAddTask) {
-            TaskFormView(mode: .create)
+            TaskFormView()
         }
     }
 }
@@ -147,22 +147,9 @@ struct TaskDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Assignment")
                             .font(.headline)
-                        if let assignee = task.assignee {
-                            HStack {
-                                Image(systemName: "person.circle")
-                                    .font(.title2)
-                                VStack(alignment: .leading) {
-                                    Text(assignee.name)
-                                        .font(.subheadline)
-                                    Text(assignee.role)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        } else {
-                            Text("Unassigned")
-                                .foregroundStyle(.secondary)
-                        }
+                        Text("Assigned to: \(task.assignedTo.isEmpty ? "Unassigned" : task.assignedTo)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 
@@ -190,7 +177,7 @@ struct TaskDetailView: View {
             Button("Edit") { showEdit = true }
         }
         .sheet(isPresented: $showEdit) {
-            TaskFormView(mode: .edit(task))
+            TaskFormView(task: task)
         }
     }
 }

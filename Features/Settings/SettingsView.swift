@@ -231,6 +231,10 @@ struct SecuritySettingsView: View {
     
     private var context = LAContext()
     
+    init(authManager: AuthManager) {
+        self.authManager = authManager
+    }
+    
     var body: some View {
         List {
             Section {
