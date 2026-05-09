@@ -1,6 +1,7 @@
 import SwiftUI
 import OSLog
 import Supabase
+import AuthenticationServices
 
 @Observable
 final class AuthManager {
@@ -69,5 +70,32 @@ struct UserInfo: Identifiable, Equatable, Sendable {
         self.id = user.id.uuidString
         self.email = user.email ?? ""
         self.fullName = user.userMetadata["full_name"]?.stringValue
+    }
+}
+
+extension AuthManager {
+    func signInWithApple(credential: ASAuthorizationAppleIDCredential) async {
+        isLoading = true; error = nil
+        do {
+            guard let identityToken = credential.identityToken,
+                  let tokenString = String(data: identityToken, encoding: .utf8) else {
+                self.error = "Failed to get identity token"
+                isLoading = false
+                return
+            }
+            
+            let session = try await client.auth.signInWithIdToken(
+                credentials: .init(
+                    provider: .apple,
+                    idToken: tokenString,
+                    accessToken: credential.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
+                )
+            )
+            isAuthenticated = true
+            currentUser = UserInfo(from: session.user)
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isLoading = false
     }
 }

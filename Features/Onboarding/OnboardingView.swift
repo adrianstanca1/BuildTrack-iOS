@@ -41,28 +41,43 @@ struct OnboardingView: View {
             BuildTrackColors.heroGradient
                 .ignoresSafeArea()
                 .overlay(
-                    MeshGradient(
-                        width: 3,
-                        height: 3,
-                        points: [
-                            .init(x: 0, y: 0), .init(x: 0.5, y: 0), .init(x: 1, y: 0),
-                            .init(x: 0, y: 0.5), .init(x: 0.5, y: 0.5), .init(x: 1, y: 0.5),
-                            .init(x: 0, y: 1), .init(x: 0.5, y: 1), .init(x: 1, y: 1)
-                        ],
-                        colors: [
-                            BuildTrackColors.primary.opacity(0.3),
-                            BuildTrackColors.primaryLight.opacity(0.2),
-                            Color.purple.opacity(0.15),
-                            BuildTrackColors.primaryDark.opacity(0.2),
-                            BuildTrackColors.primary.opacity(0.25),
-                            BuildTrackColors.primaryLight.opacity(0.15),
-                            Color.blue.opacity(0.1),
-                            BuildTrackColors.primary.opacity(0.2),
-                            Color.indigo.opacity(0.15)
-                        ]
-                    )
-                    .ignoresSafeArea()
-                    .opacity(0.6)
+                    // MeshGradient requires iOS 18+; fallback for iOS 17
+                    if #available(iOS 18.0, *) {
+                        MeshGradient(
+                            width: 3,
+                            height: 3,
+                            points: [
+                                .init(x: 0, y: 0), .init(x: 0.5, y: 0), .init(x: 1, y: 0),
+                                .init(x: 0, y: 0.5), .init(x: 0.5, y: 0.5), .init(x: 1, y: 0.5),
+                                .init(x: 0, y: 1), .init(x: 0.5, y: 1), .init(x: 1, y: 1)
+                            ],
+                            colors: [
+                                BuildTrackColors.primary.opacity(0.3),
+                                BuildTrackColors.primaryLight.opacity(0.2),
+                                Color.purple.opacity(0.15),
+                                BuildTrackColors.primaryDark.opacity(0.2),
+                                BuildTrackColors.primary.opacity(0.25),
+                                BuildTrackColors.primaryLight.opacity(0.15),
+                                Color.blue.opacity(0.1),
+                                BuildTrackColors.primary.opacity(0.2),
+                                Color.indigo.opacity(0.15)
+                            ]
+                        )
+                        .ignoresSafeArea()
+                        .opacity(0.6)
+                    } else {
+                        LinearGradient(
+                            colors: [
+                                BuildTrackColors.primary.opacity(0.3),
+                                BuildTrackColors.primaryLight.opacity(0.2),
+                                Color.purple.opacity(0.15)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .ignoresSafeArea()
+                        .opacity(0.6)
+                    }
                 )
             
             VStack(spacing: 0) {
