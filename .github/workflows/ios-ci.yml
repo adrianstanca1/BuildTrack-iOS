@@ -68,9 +68,9 @@ jobs:
       - name: Build for testing
         run: xcodebuild build-for-testing -workspace BuildTrack.xcworkspace -scheme BuildTrack -destination "platform=iOS Simulator,name=iPhone 15,OS=17.5" -derivedDataPath fastlane/DerivedData -enableCodeCoverage YES COMPILER_INDEX_STORE_ENABLE=NO
       - name: Run unit tests
-        run: xcodebuild test-without-building -workspace BuildTrack.xcworkspace -scheme BuildTrack -destination "platform=iOS Simulator,name=iPhone 15,OS=17.5" -derivedDataPath fastlane/DerivedData -only-testing:BuildTrackTests -resultBundlePath fastlane/test_output/BuildTrack.xcresult
+        run: xcodebuild test -workspace BuildTrack.xcworkspace -scheme BuildTrack -destination "platform=iOS Simulator,name=iPhone 15,OS=17.5" -derivedDataPath fastlane/DerivedData -only-testing:BuildTrackTests -resultBundlePath fastlane/test_output/BuildTrack.xcresult
       - name: Run UI tests
-        run: xcodebuild test-without-building -workspace BuildTrack.xcworkspace -scheme BuildTrack -destination "platform=iOS Simulator,name=iPhone 15,OS=17.5" -derivedDataPath fastlane/DerivedData -only-testing:BuildTrackUITests -resultBundlePath fastlane/test_output/BuildTrackUI.xcresult
+        run: xcodebuild test -workspace BuildTrack.xcworkspace -scheme BuildTrack -destination "platform=iOS Simulator,name=iPhone 15,OS=17.5" -derivedDataPath fastlane/DerivedData -only-testing:BuildTrackUITests -resultBundlePath fastlane/test_output/BuildTrackUI.xcresult
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
