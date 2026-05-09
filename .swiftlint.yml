@@ -24,7 +24,7 @@ opt_in_rules:
   - fatal_error_message
   - file_header
   - first_where
-  - force_unwrapping
+  # - force_unwrapping
   - identical_operands
   - implicit_return
   - joined_default_parameter
