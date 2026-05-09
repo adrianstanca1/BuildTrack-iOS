@@ -1,6 +1,8 @@
 import SwiftUI
 import SwiftData
 
+
+@MainActor
 struct DashboardView: View {
     @Query(sort: \Project.updatedAt, order: .reverse) private var projects: [Project]
     @Query(sort: \TaskItem.updatedAt, order: .reverse) private var tasks: [TaskItem]
