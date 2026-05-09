@@ -15,6 +15,10 @@ struct ProjectsListView: View {
                 Color(.systemGroupedBackground).ignoresSafeArea()
                 
                 switch viewModel.loadingState {
+                case .idle:
+                    Color.clear.onAppear {
+                        Task { await viewModel.loadProjects(context: modelContext) }
+                    }
                 case .loading:
                     projectsShimmerList
                 case .loaded, .refreshing:
@@ -93,6 +97,7 @@ struct ProjectsListView: View {
         }
     }
     
+    @MainActor
     private func filterChip(_ filter: ProjectStatusFilter) -> some View {
         let isSelected = viewModel.selectedFilter == filter
         
@@ -339,6 +344,7 @@ struct ProjectsListView: View {
     
     // MARK: - Sort Menu
     
+    @MainActor
     private var sortMenu: some View {
         Menu {
             ForEach(ProjectSortOrder.allCases) { order in

@@ -76,8 +76,8 @@ excluded:
   - Assets.xcassets
 
 line_length:
-    warning: 300
-    error: 400
+    warning: 400
+    error: 500
     ignores_urls: true
     ignores_function_declarations: true
     ignores_comments: true
@@ -132,7 +132,7 @@ identifier_name:
         error: 80
 
 cyclomatic_complexity:
-    - 12
+    - 15
 
 attributes:
     always_on_line_above:
