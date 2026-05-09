@@ -1,197 +1,233 @@
 import SwiftUI
 
+// MARK: - Notifications Inbox (Redesigned)
+
 struct NotificationInboxView: View {
     @State private var notifications: [AppNotification] = []
-    @State private var showUnreadOnly = false
+    @State private var filter: NotificationFilter = .all
     
-    var grouped: [(String, [AppNotification])] {
-        let filtered = showUnreadOnly ? notifications.filter { !$0.isRead } : notifications
-        let calendar = Calendar.current
+    enum NotificationFilter: String, CaseIterable {
+        case all, unread, task, incident, info
         
-        let groups = Dictionary(grouping: filtered) { notification -> String in
-            if calendar.isDateInToday(notification.createdAt) { return "Today" }
-            if calendar.isDateInYesterday(notification.createdAt) { return "Yesterday" }
-            if calendar.isDate(notification.createdAt, equalTo: Date(), toGranularity: .weekOfYear) {
-                return "This Week"
+        var label: String {
+            switch self {
+            case .all: return "All"
+            case .unread: return "Unread"
+            case .task: return "Tasks"
+            case .incident: return "Safety"
+            case .info: return "Info"
             }
-            return "Earlier"
-        }
-        
-        let order = ["Today", "Yesterday", "This Week", "Earlier"]
-        return order.compactMap { key in
-            if let items = groups[key], !items.isEmpty {
-                return (key, items.sorted { $0.createdAt > $1.createdAt })
-            }
-            return nil
         }
     }
     
-    var unreadCount: Int { notifications.filter { !$0.isRead }.count }
+    var filteredNotifications: [AppNotification] {
+        switch filter {
+        case .all: return notifications
+        case .unread: return notifications.filter { !$0.isRead }
+        case .task: return notifications.filter { $0.type == .task }
+        case .incident: return notifications.filter { $0.type == .incident }
+        case .info: return notifications.filter { $0.type == .info }
+        }
+    }
+    
+    var unreadCount: Int {
+        notifications.filter { !$0.isRead }.count
+    }
     
     var body: some View {
-        List {
-            if notifications.isEmpty {
-                ContentUnavailableView(
-                    "No Notifications",
-                    systemImage: "bell.slash",
-                    description: Text("You'll see alerts and updates here")
-                )
-            }
-            
-            ForEach(grouped, id: \.0) { section in
-                Section(section.0) {
-                    ForEach(section.1) { notification in
-                        NotificationRow(notification: notification)
-                            .swipeActions(edge: .trailing) {
-                                Button("Delete", role: .destructive) {
-                                    remove(notification)
-                                }
+        ScrollView {
+            VStack(spacing: 16) {
+                // Filter chips
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(NotificationFilter.allCases, id: \.self) { f in
+                            ModernFilterChip(
+                                label: f == .unread && unreadCount > 0 ? "\(f.label) (\(unreadCount))" : f.label,
+                                isSelected: filter == f
+                            ) {
+                                filter = f
                             }
-                            .swipeActions(edge: .leading) {
-                                Button(notification.isRead ? "Unread" : "Read") {
-                                    toggleRead(notification)
-                                }
-                                .tint(notification.isRead ? .orange : .blue)
-                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                // Notifications list
+                LazyVStack(spacing: 10) {
+                    if filteredNotifications.isEmpty {
+                        EmptyStateView(
+                            icon: "bell.slash",
+                            title: "No Notifications",
+                            message: "You're all caught up!"
+                        )
+                        .padding(.top, 40)
+                    } else {
+                        ForEach(filteredNotifications) { notification in
+                            ModernNotificationRow(notification: notification)
+                        }
                     }
                 }
+                .padding(.horizontal)
+                .padding(.bottom, 24)
             }
+            .padding(.vertical, 12)
         }
-        .listStyle(.insetGrouped)
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("Notifications")
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    withAnimation { showUnreadOnly.toggle() }
-                } label: {
-                    Image(systemName: showUnreadOnly ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 if unreadCount > 0 {
-                    Button("Mark All Read") { markAllRead() }
-                        .font(.caption)
+                    Button("Mark All") {
+                        markAllAsRead()
+                    }
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(BuildTrackColors.primary)
                 }
             }
         }
-        .onAppear { loadDemo() }
+        .onAppear {
+            loadDemoNotifications()
+        }
     }
     
-    func toggleRead(_ notification: AppNotification) {
-        if let idx = notifications.firstIndex(where: { $0.id == notification.id }) {
-            var updated = notification
-            updated = AppNotification(
-                id: updated.id, title: updated.title, body: updated.body,
-                type: updated.type, isRead: !updated.isRead,
-                createdAt: updated.createdAt, relatedId: updated.relatedId
+    private func markAllAsRead() {
+        for index in notifications.indices {
+            notifications[index] = AppNotification(
+                id: notifications[index].id,
+                title: notifications[index].title,
+                body: notifications[index].body,
+                type: notifications[index].type,
+                isRead: true,
+                createdAt: notifications[index].createdAt,
+                relatedId: notifications[index].relatedId
             )
-            notifications[idx] = updated
         }
     }
     
-    func markAllRead() {
-        notifications = notifications.map {
-            AppNotification(id: $0.id, title: $0.title, body: $0.body, type: $0.type,
-                          isRead: true, createdAt: $0.createdAt, relatedId: $0.relatedId)
-        }
-    }
-    
-    func remove(_ notification: AppNotification) {
-        notifications.removeAll { $0.id == notification.id }
-    }
-    
-    func loadDemo() {
-        let now = Date()
+    private func loadDemoNotifications() {
         notifications = [
             AppNotification(
-                title: "Safety Inspection Due", body: "High-rise Tower project needs inspection by Friday.",
-                type: .warning, isRead: false,
-                createdAt: now.addingTimeInterval(-3600), relatedId: nil
+                id: UUID(),
+                title: "Task Completed",
+                body: "Foundation excavation has been marked as complete.",
+                type: .task,
+                isRead: false,
+                createdAt: Date().addingTimeInterval(-3600),
+                relatedId: nil
             ),
             AppNotification(
-                title: "Task Completed", body: "Foundation pour completed at Riverside Complex.",
-                type: .success, isRead: false,
-                createdAt: now.addingTimeInterval(-7200), relatedId: nil
+                id: UUID(),
+                title: "Safety Alert",
+                body: "Hard hat required zone has been updated on Site B.",
+                type: .incident,
+                isRead: false,
+                createdAt: Date().addingTimeInterval(-7200),
+                relatedId: nil
             ),
             AppNotification(
-                title: "Incident Reported", body: "Minor incident at Downtown Office — slip and fall.",
-                type: .incident, isRead: false,
-                createdAt: now.addingTimeInterval(-14400), relatedId: nil
+                id: UUID(),
+                title: "Budget Update",
+                body: "Project 'Downtown Office' has reached 75% of budget.",
+                type: .info,
+                isRead: true,
+                createdAt: Date().addingTimeInterval(-86400),
+                relatedId: nil
             ),
             AppNotification(
-                title: "Project Update", body: "City Mall renovation is now 75% complete.",
-                type: .info, isRead: true,
-                createdAt: now.addingTimeInterval(-86400), relatedId: nil
-            ),
-            AppNotification(
-                title: "Worker Certification", body: "John's forklift certification expires next month.",
-                type: .warning, isRead: true,
-                createdAt: now.addingTimeInterval(-172800), relatedId: nil
-            ),
-            AppNotification(
-                title: "New Project Added", body: "Suburban Housing development added to your portfolio.",
-                type: .success, isRead: true,
-                createdAt: now.addingTimeInterval(-259200), relatedId: nil
-            ),
-            AppNotification(
-                title: "Budget Alert", body: "Highway Overpass project has exceeded 90% of budget.",
-                type: .error, isRead: false,
-                createdAt: now.addingTimeInterval(-345600), relatedId: nil
-            ),
+                id: UUID(),
+                title: "New Task Assigned",
+                body: "Electrical rough-in has been assigned to Mike Johnson.",
+                type: .task,
+                isRead: true,
+                createdAt: Date().addingTimeInterval(-172800),
+                relatedId: nil
+            )
         ]
     }
 }
 
-struct NotificationRow: View {
+// MARK: - Modern Notification Row
+
+struct ModernNotificationRow: View {
     let notification: AppNotification
+    @State private var isRead: Bool
     
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: notification.type.icon)
-                .font(.title3)
-                .foregroundStyle(typeColor)
-                .frame(width: 36, height: 36)
-                .background(typeColor.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(notification.title)
-                    .font(.subheadline.weight(notification.isRead ? .regular : .semibold))
-                Text(notification.body)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
-            
-            Spacer()
-            
-            VStack(spacing: 4) {
-                Text(timeAgo)
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                if !notification.isRead {
-                    Circle().fill(.blue).frame(width: 8, height: 8)
-                }
-            }
-        }
-        .padding(.vertical, 4)
+    init(notification: AppNotification) {
+        self.notification = notification
+        _isRead = State(initialValue: notification.isRead)
     }
     
     var typeColor: Color {
         switch notification.type {
-        case .info: .blue; case .warning: .orange; case .success: .green
-        case .error: .red; case .task: .indigo; case .incident: .purple
+        case .info: return BuildTrackColors.primary
+        case .warning: return BuildTrackColors.warning
+        case .success: return BuildTrackColors.success
+        case .error: return BuildTrackColors.danger
+        case .task: return BuildTrackColors.info
+        case .incident: return BuildTrackColors.danger
         }
     }
     
-    var timeAgo: String {
-        let interval = Date().timeIntervalSince(notification.createdAt)
-        if interval < 3600 { return "\(Int(interval / 60))m" }
-        if interval < 86400 { return "\(Int(interval / 3600))h" }
-        return "\(Int(interval / 86400))d"
+    var typeIcon: String {
+        switch notification.type {
+        case .info: return "info.circle.fill"
+        case .warning: return "exclamationmark.triangle.fill"
+        case .success: return "checkmark.circle.fill"
+        case .error: return "xmark.circle.fill"
+        case .task: return "list.clipboard.fill"
+        case .incident: return "shield.exclamation"
+        }
+    }
+    
+    var body: some View {
+        HStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(typeColor.opacity(0.12))
+                    .frame(width: 40, height: 40)
+                Image(systemName: typeIcon)
+                    .font(.system(size: 16))
+                    .foregroundStyle(typeColor)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(notification.title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(isRead ? BuildTrackColors.textSecondary : BuildTrackColors.textPrimary)
+                    
+                    if !isRead {
+                        Circle()
+                            .fill(BuildTrackColors.primary)
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                
+                Text(notification.body)
+                    .font(.caption)
+                    .foregroundStyle(BuildTrackColors.textSecondary)
+                    .lineLimit(2)
+                
+                Text(notification.createdAt, style: .relative)
+                    .font(.caption2)
+                    .foregroundStyle(BuildTrackColors.textTertiary)
+            }
+            
+            Spacer()
+        }
+        .padding(14)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .shadow(color: .black.opacity(0.03), radius: 8, x: 0, y: 2)
+        .opacity(isRead ? 0.7 : 1)
+        .onTapGesture {
+            isRead = true
+        }
     }
 }
 
 #Preview {
-    NavigationStack { NotificationInboxView() }
+    NavigationStack {
+        NotificationInboxView()
+    }
 }
