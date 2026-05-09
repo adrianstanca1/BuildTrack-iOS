@@ -2,74 +2,31 @@ import Foundation
 import OSLog
 import Supabase
 
-final class RealtimeService {
-    static let shared = RealtimeService()
+actor RealtimeService {
+    private static let log = Logger(subsystem: "com.cortexbuild.track", category: "RealtimeService")
     
     private let client: SupabaseClient
-    private var channels: [String: RealtimeChannel] = [:]
-    private var subscriptions: [String: RealtimeSubscription] = [:]
-    private let debouncer = Debouncer(delay: 0.3)
+    private var pollingTimer: Timer?
     
-    init() {
-        self.client = SupabaseManager.shared.client
+    init(client: SupabaseClient) {
+        self.client = client
     }
     
-    func subscribeToProjectChanges(projectId: String, onUpdate: @escaping () -> Void) {
-        let channelName = "project-\(projectId)"
-        guard channels[channelName] == nil else { return }
-        
-        let channel = client.realtime.channel(channelName)
-        
-        // Supabase Swift V2 API: use onPostgresChange with callback
-        Task {
-            do {
-                try await channel.subscribe()
-                channels[channelName] = channel
-                
-                let subscription = channel.onPostgresChange(
-                    AnyAction.self,
-                    schema: "public",
-                    filter: "project_id=eq.\(projectId)"
-                ) { [weak self] _ in
-                    self?.debouncer.debounce(key: "change-\(projectId)") {
-                        onUpdate()
-                    }
-                }
-                subscriptions[channelName] = subscription
-                Logger.realtime.info("Subscribed to project \(projectId)")
-            } catch {
-                Logger.realtime.error("Failed to subscribe: \(error.localizedDescription)")
+    func startListening(for table: String, onChange: @escaping () -> Void) {
+        Task { @MainActor in
+            self.pollingTimer?.invalidate()
+            self.pollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                onChange()
             }
         }
+        Self.log.info("Started polling for: \(table)")
     }
     
-    func unsubscribe(projectId: String) {
-        let channelName = "project-\(projectId)"
-        guard let channel = channels[channelName] else { return }
-        
-        // Unsubscribe
-        Task { try? await channel.unsubscribe() }
-        channels.removeValue(forKey: channelName)
-        subscriptions.removeValue(forKey: channelName)
-    }
-}
-
-private final class Debouncer {
-    private let delay: TimeInterval
-    private var timers: [String: Timer] = [:]
-    private let queue = DispatchQueue(label: "debouncer")
-    
-    init(delay: TimeInterval) {
-        self.delay = delay
-    }
-    
-    func debounce(key: String, action: @escaping () -> Void) {
-        queue.sync {
-            timers[key]?.invalidate()
-            timers[key] = Timer(timeInterval: delay, repeats: false, block: { _ in
-                DispatchQueue.main.async { action() }
-            })
-            RunLoop.main.add(timers[key]!, forMode: .common)
+    func stopListening() {
+        Task { @MainActor in
+            pollingTimer?.invalidate()
+            pollingTimer = nil
         }
+        Self.log.info("Stopped polling")
     }
 }

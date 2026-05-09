@@ -63,8 +63,6 @@ excluded:
   - Build
   - .build
   - .swiftpm
-  .build
-  .swiftpm
   - Carthage
   - Frameworks
   - Scripts

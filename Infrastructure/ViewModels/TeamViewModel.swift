@@ -61,17 +61,11 @@ final class TeamViewModel {
         }
     }
 
+    // NOTE: certifications is [String], not objects with expiryDate
+    // Re-enable when Worker model includes certification objects with dates
     func workersExpiringSoon(days: Int = 30) -> [Worker] {
-        let cutoff = Date().addingTimeInterval(TimeInterval(days * 86400))
-        var result = [Worker]()
-        for worker in workers {
-            for cert in worker.certifications {
-                if cert.expiryDate < cutoff {
-                    result.append(worker)
-                    break
-                }
-            }
-        }
-        return result
+        // Placeholder - Worker.certifications is [String]
+        // Add Certification model with expiryDate to enable this
+        return []
     }
 }
