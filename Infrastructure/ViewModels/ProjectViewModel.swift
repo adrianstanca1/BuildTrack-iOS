@@ -1,1 +1,434 @@
-import Foundationimport OSLogimport SwiftDataimport Observation// MARK: - Loading Stateenum LoadingState<T: Sendable>: Equatable, Sendable {    case idle    case loading    case loaded(T)    case error(String)    static func == (lhs: LoadingState<T>, rhs: LoadingState<T>) -> Bool {        switch (lhs, rhs) {        case (.idle, .idle), (.loading, .loading): true        case (.loaded, .loaded): true        case let (.error(l), .error(r)): l == r        default: false        }    }    var value: T? {        if case let .loaded(v) = self { return v }        return nil    }    var errorMessage: String? {        if case let .error(msg) = self { return msg }        return nil    }    var isLoading: Bool {        if case .loading = self { return true }        return false    }}// MARK: - ProjectViewModel@MainActor@Observablefinal class ProjectViewModel {    // MARK: - State    var projectsState: LoadingState<[Project]> = .idle    var detailState: LoadingState<Project> = .idle    var operationState: LoadingState<Void> = .idle    var searchQuery: String = ""    var activeFilter: ProjectStatus? = nil    // MARK: - Dependencies    private let projectRepo: ProjectRepository    private let modelContext: ModelContext?    // MARK: - Init    init(        projectRepo: ProjectRepository = .live,        modelContext: ModelContext? = nil    ) {        self.projectRepo = projectRepo        self.modelContext = modelContext    }    // MARK: - Computed Properties    var projects: [Project] {        projectsState.value ?? []    }    var filteredProjects: [Project] {        var result = projects        if let status = activeFilter {            result = result.filter { $0.status == status }        }        if !searchQuery.isEmpty {            result = result.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }        }        return result    }    var activeProjects: [Project] {        projects.filter { $0.status == .active }    }    var activeProjectsCount: Int {        activeProjects.count    }    var completionRate: Double {        let completed = projects.filter { $0.status == .completed }.count        guard !projects.isEmpty else { return 0 }        return Double(completed) / Double(projects.count) * 100.0    }    var overdueCount: Int {        let now = Date()        return projects.filter { project in            if let endDate = project.endDate, endDate < now {                return project.status == .active || project.status == .planning            }            return false        }.count    }    var totalBudget: Double {        projects.reduce(0) { $0 + $1.budget }    }    var totalSpent: Double {        projects.reduce(0) { $0 + $1.spentToDate }    }    var averageProgress: Double {        guard !projects.isEmpty else { return 0 }        return projects.reduce(0) { $0 + $1.progress } / Double(projects.count)    }    var onHoldCount: Int {        projects.filter { $0.status == .onHold }.count    }    // MARK: - Fetch All Projects    func fetchProjects() async {        projectsState = .loading        do {            let fetched = try await projectRepo.fetchAll()            projectsState = .loaded(fetched)            await syncToLocal(fetched)        } catch {            projectsState = .error(error.localizedDescription)        }    }    func fetchProject(id: UUID) async {        detailState = .loading        do {            let project = try await projectRepo.fetchById(id)            detailState = .loaded(project)        } catch {            detailState = .error(error.localizedDescription)        }    }    // MARK: - Create Project    func createProject(        name: String,        description: String = "",        status: ProjectStatus = .planning,        budget: Double = 0,        startDate: Date = Date(),        endDate: Date? = nil,        locationName: String = "",        latitude: Double? = nil,        longitude: Double? = nil,        clientName: String = ""    ) async -> Project? {        operationState = .loading        let optimisticId = UUID()        let optimistic = Project(            id: optimisticId,            name: name,            descriptionText: description,            status: status,            budget: budget,            startDate: startDate,            endDate: endDate,            locationName: locationName,            latitude: latitude,            longitude: longitude,            clientName: clientName        )        // Optimistic local update        insertLocalOptimistic(optimistic)        do {            let created = try await projectRepo.create(optimistic)            // If the server-assigned id differs, remove optimistic and insert server version            if created.id != optimisticId {                removeLocalOptimistic(optimisticId)                insertLocal(created)            } else {                updateLocal(created)            }            // Reload to ensure consistency            await fetchProjects()            operationState = .loaded(())            return created        } catch {            // Rollback optimistic            removeLocalOptimistic(optimisticId)            operationState = .error(mapUserFacingError(error))            return nil        }    }    // MARK: - Update Project    func updateProject(_ project: Project) async -> Bool {        operationState = .loading        // Snapshot for rollback        let previousSnapshot = snapshotLocal(project.id)        // Optimistic update        project.updatedAt = Date()        updateLocalOptimistic(project)        do {            try await projectRepo.update(project)            operationState = .loaded(())            return true        } catch {            // Rollback            if let snap = previousSnapshot {                rollbackLocal(project.id, snapshot: snap)            }            operationState = .error(mapUserFacingError(error))            return false        }    }    // MARK: - Delete Project    func deleteProject(_ project: Project) async -> Bool {        operationState = .loading        // Snapshot for rollback        let snapshot = snapshotLocal(project.id)        // Optimistic remove        removeLocalOptimistic(project.id)        do {            try await projectRepo.delete(project.id)            operationState = .loaded(())            return true        } catch {            // Rollback            if let snap = snapshot {                restoreLocal(snap)            }            operationState = .error(mapUserFacingError(error))            return false        }    }    // MARK: - Search    func search(query: String) {        searchQuery = query    }    func filter(by status: ProjectStatus?) {        activeFilter = status    }    func clearSearch() {        searchQuery = ""    }    func clearFilter() {        activeFilter = nil    }    // MARK: - Reset    func reset() {        projectsState = .idle        detailState = .idle        operationState = .idle        searchQuery = ""        activeFilter = nil    }    // MARK: - Local Storage Helpers    private func syncToLocal(_ projects: [Project]) async {        guard let ctx = modelContext else { return }        do {            // Delete stale projects not in the server response            let serverIds = Set(projects.map(\.id))            let descriptor = FetchDescriptor<Project>()            let localProjects = try ctx.fetch(descriptor)            for local in localProjects where !serverIds.contains(local.id) {                ctx.delete(local)            }            // Upsert            for project in projects {                let pred = #Predicate<Project> { $0.id == project.id }                let localDescriptor = FetchDescriptor<Project>(predicate: pred)                if let existing = try ctx.fetch(localDescriptor).first {                    existing.name = project.name                    existing.descriptionText = project.descriptionText                    existing.statusRaw = project.statusRaw                    existing.budget = project.budget                    existing.spentToDate = project.spentToDate                    existing.progress = project.progress                    existing.startDate = project.startDate                    existing.endDate = project.endDate                    existing.locationName = project.locationName                    existing.latitude = project.latitude                    existing.longitude = project.longitude                    existing.clientName = project.clientName                    existing.createdAt = project.createdAt                    existing.updatedAt = project.updatedAt                } else {                    ctx.insert(project)                }            }            try ctx.save()        } catch {            Logger.projects.error("SwiftData sync error: \(error)")        }    }    private func insertLocalOptimistic(_ project: Project) {        guard let ctx = modelContext else { return }        ctx.insert(project)        try? ctx.save()    }    private func insertLocal(_ project: Project) {        guard let ctx = modelContext else { return }        ctx.insert(project)        try? ctx.save()    }    private func updateLocal(_ project: Project) {        guard let ctx = modelContext else { return }        try? ctx.save()    }    private func updateLocalOptimistic(_ project: Project) {        guard let ctx = modelContext else { return }        try? ctx.save()    }    private func removeLocalOptimistic(_ id: UUID) {        guard let ctx = modelContext else { return }        let pred = #Predicate<Project> { $0.id == id }        let descriptor = FetchDescriptor<Project>(predicate: pred)        if let local = try? ctx.fetch(descriptor).first {            ctx.delete(local)            try? ctx.save()        }    }    private func snapshotLocal(_ id: UUID) -> Project? {        guard let ctx = modelContext else { return nil }        let pred = #Predicate<Project> { $0.id == id }        let descriptor = FetchDescriptor<Project>(predicate: pred)        guard let local = try? ctx.fetch(descriptor).first else { return nil }        // Deep-copy snapshot        let snap = Project(            id: local.id,            name: local.name,            descriptionText: local.descriptionText,            status: local.status,            budget: local.budget,            spentToDate: local.spentToDate,            progress: local.progress,            startDate: local.startDate,            endDate: local.endDate,            locationName: local.locationName,            latitude: local.latitude,            longitude: local.longitude,            clientName: local.clientName,            createdAt: local.createdAt,            updatedAt: local.updatedAt        )        return snap    }    private func rollbackLocal(_ id: UUID, snapshot: Project) {        guard let ctx = modelContext else { return }        let pred = #Predicate<Project> { $0.id == id }        let descriptor = FetchDescriptor<Project>(predicate: pred)        if let local = try? ctx.fetch(descriptor).first {            local.name = snapshot.name            local.descriptionText = snapshot.descriptionText            local.statusRaw = snapshot.statusRaw            local.budget = snapshot.budget            local.spentToDate = snapshot.spentToDate            local.progress = snapshot.progress            local.startDate = snapshot.startDate            local.endDate = snapshot.endDate            local.locationName = snapshot.locationName            local.latitude = snapshot.latitude            local.longitude = snapshot.longitude            local.clientName = snapshot.clientName            local.createdAt = snapshot.createdAt            local.updatedAt = snapshot.updatedAt            try? ctx.save()        }    }    private func restoreLocal(_ snapshot: Project) {        guard let ctx = modelContext else { return }        ctx.insert(snapshot)        try? ctx.save()    }    // MARK: - Error Mapping    private func mapUserFacingError(_ error: Error) -> String {        let nsError = error as NSError        switch nsError.code {        case URLError.notConnectedToInternet.rawValue, URLError.networkConnectionLost.rawValue:            return "No internet connection. Changes saved locally and will sync when you're back online."        case URLError.timedOut.rawValue:            return "Request timed out. Please try again."        case 401:            return "Session expired. Please sign in again."        case 403:            return "You don't have permission to perform this action."        case 409:            return "A conflict occurred. The data may have been updated by another user."        case 500...599:            return "Server error. Our team has been notified. Please try again later."        default:            return error.localizedDescription        }    }}
+import Foundation
+import OSLog
+import SwiftData
+import Observation
+
+// MARK: - Loading State
+
+enum LoadingState<T: Sendable>: Equatable, Sendable {
+    case idle
+    case loading
+    case loaded(T)
+    case error(String)
+
+    static func == (lhs: LoadingState<T>, rhs: LoadingState<T>) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle), (.loading, .loading): true
+        case (.loaded, .loaded): true
+        case let (.error(l), .error(r)): l == r
+        default: false
+        }
+    }
+
+    var value: T? {
+        if case let .loaded(v) = self { return v }
+        return nil
+    }
+
+    var errorMessage: String? {
+        if case let .error(msg) = self { return msg }
+        return nil
+    }
+
+    var isLoading: Bool {
+        if case .loading = self { return true }
+        return false
+    }
+}
+
+// MARK: - ProjectViewModel
+
+@MainActor
+@Observable
+final class ProjectViewModel {
+    // MARK: - State
+
+    var projectsState: LoadingState<[Project]> = .idle
+    var detailState: LoadingState<Project> = .idle
+    var operationState: LoadingState<Void> = .idle
+    var searchQuery: String = ""
+    var activeFilter: ProjectStatus? = nil
+
+    // MARK: - Dependencies
+
+    private let projectRepo: ProjectRepository
+    private let modelContext: ModelContext?
+
+    // MARK: - Init
+
+    init(
+        projectRepo: ProjectRepository = .live,
+        modelContext: ModelContext? = nil
+    ) {
+        self.projectRepo = projectRepo
+        self.modelContext = modelContext
+    }
+
+    // MARK: - Computed Properties
+
+    var projects: [Project] {
+        projectsState.value ?? []
+    }
+
+    var filteredProjects: [Project] {
+        var result = projects
+        if let status = activeFilter {
+            result = result.filter { $0.status == status }
+        }
+        if !searchQuery.isEmpty {
+            result = result.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+        }
+        return result
+    }
+
+    var activeProjects: [Project] {
+        projects.filter { $0.status == .active }
+    }
+
+    var activeProjectsCount: Int {
+        activeProjects.count
+    }
+
+    var completionRate: Double {
+        let completed = projects.filter { $0.status == .completed }.count
+        guard !projects.isEmpty else { return 0 }
+        return Double(completed) / Double(projects.count) * 100.0
+    }
+
+    var overdueCount: Int {
+        let now = Date()
+        return projects.filter { project in
+            if let endDate = project.endDate, endDate < now {
+                return project.status == .active || project.status == .planning
+            }
+            return false
+        }.count
+    }
+
+    var totalBudget: Double {
+        projects.reduce(0) { $0 + $1.budget }
+    }
+
+    var totalSpent: Double {
+        projects.reduce(0) { $0 + $1.spentToDate }
+    }
+
+    var averageProgress: Double {
+        guard !projects.isEmpty else { return 0 }
+        return projects.reduce(0) { $0 + $1.progress } / Double(projects.count)
+    }
+
+    var onHoldCount: Int {
+        projects.filter { $0.status == .onHold }.count
+    }
+
+    // MARK: - Fetch All Projects
+
+    func fetchProjects() async {
+        projectsState = .loading
+        do {
+            let fetched = try await projectRepo.fetchAll()
+            projectsState = .loaded(fetched)
+            await syncToLocal(fetched)
+        } catch {
+            projectsState = .error(error.localizedDescription)
+        }
+    }
+
+    func fetchProject(id: UUID) async {
+        detailState = .loading
+        do {
+            let project = try await projectRepo.fetchById(id)
+            detailState = .loaded(project)
+        } catch {
+            detailState = .error(error.localizedDescription)
+        }
+    }
+
+    // MARK: - Create Project
+
+    func createProject(
+        name: String,
+        description: String = "",
+        status: ProjectStatus = .planning,
+        budget: Double = 0,
+        startDate: Date = Date(),
+        endDate: Date? = nil,
+        locationName: String = "",
+        latitude: Double? = nil,
+        longitude: Double? = nil,
+        clientName: String = ""
+    ) async -> Project? {
+        operationState = .loading
+
+        let optimisticId = UUID()
+        let optimistic = Project(
+            id: optimisticId,
+            name: name,
+            descriptionText: description,
+            status: status,
+            budget: budget,
+            startDate: startDate,
+            endDate: endDate,
+            locationName: locationName,
+            latitude: latitude,
+            longitude: longitude,
+            clientName: clientName
+        )
+
+        // Optimistic local update
+        insertLocalOptimistic(optimistic)
+
+        do {
+            let created = try await projectRepo.create(optimistic)
+
+            // If the server-assigned id differs, remove optimistic and insert server version
+            if created.id != optimisticId {
+                removeLocalOptimistic(optimisticId)
+                insertLocal(created)
+            } else {
+                updateLocal(created)
+            }
+
+            // Reload to ensure consistency
+            await fetchProjects()
+            operationState = .loaded(())
+            return created
+        } catch {
+            // Rollback optimistic
+            removeLocalOptimistic(optimisticId)
+            operationState = .error(mapUserFacingError(error))
+            return nil
+        }
+    }
+
+    // MARK: - Update Project
+
+    func updateProject(_ project: Project) async -> Bool {
+        operationState = .loading
+
+        // Snapshot for rollback
+        let previousSnapshot = snapshotLocal(project.id)
+
+        // Optimistic update
+        project.updatedAt = Date()
+        updateLocalOptimistic(project)
+
+        do {
+            try await projectRepo.update(project)
+            operationState = .loaded(())
+            return true
+        } catch {
+            // Rollback
+            if let snap = previousSnapshot {
+                rollbackLocal(project.id, snapshot: snap)
+            }
+            operationState = .error(mapUserFacingError(error))
+            return false
+        }
+    }
+
+    // MARK: - Delete Project
+
+    func deleteProject(_ project: Project) async -> Bool {
+        operationState = .loading
+
+        // Snapshot for rollback
+        let snapshot = snapshotLocal(project.id)
+
+        // Optimistic remove
+        removeLocalOptimistic(project.id)
+
+        do {
+            try await projectRepo.delete(project.id)
+            operationState = .loaded(())
+            return true
+        } catch {
+            // Rollback
+            if let snap = snapshot {
+                restoreLocal(snap)
+            }
+            operationState = .error(mapUserFacingError(error))
+            return false
+        }
+    }
+
+    // MARK: - Search
+
+    func search(query: String) {
+        searchQuery = query
+    }
+
+    func filter(by status: ProjectStatus?) {
+        activeFilter = status
+    }
+
+    func clearSearch() {
+        searchQuery = ""
+    }
+
+    func clearFilter() {
+        activeFilter = nil
+    }
+
+    // MARK: - Reset
+
+    func reset() {
+        projectsState = .idle
+        detailState = .idle
+        operationState = .idle
+        searchQuery = ""
+        activeFilter = nil
+    }
+
+    // MARK: - Local Storage Helpers
+
+    private func syncToLocal(_ projects: [Project]) async {
+        guard let ctx = modelContext else { return }
+        do {
+            // Delete stale projects not in the server response
+            let serverIds = Set(projects.map(\.id))
+            let descriptor = FetchDescriptor<Project>()
+            let localProjects = try ctx.fetch(descriptor)
+            for local in localProjects where !serverIds.contains(local.id) {
+                ctx.delete(local)
+            }
+
+            // Upsert
+            for project in projects {
+                let pred = #Predicate<Project> { $0.id == project.id }
+                let localDescriptor = FetchDescriptor<Project>(predicate: pred)
+                if let existing = try ctx.fetch(localDescriptor).first {
+                    existing.name = project.name
+                    existing.descriptionText = project.descriptionText
+                    existing.statusRaw = project.statusRaw
+                    existing.budget = project.budget
+                    existing.spentToDate = project.spentToDate
+                    existing.progress = project.progress
+                    existing.startDate = project.startDate
+                    existing.endDate = project.endDate
+                    existing.locationName = project.locationName
+                    existing.latitude = project.latitude
+                    existing.longitude = project.longitude
+                    existing.clientName = project.clientName
+                    existing.createdAt = project.createdAt
+                    existing.updatedAt = project.updatedAt
+                } else {
+                    ctx.insert(project)
+                }
+            }
+            try ctx.save()
+        } catch {
+            Logger.projects.error("SwiftData sync error: \(error)")
+        }
+    }
+
+    private func insertLocalOptimistic(_ project: Project) {
+        guard let ctx = modelContext else { return }
+        ctx.insert(project)
+        try? ctx.save()
+    }
+
+    private func insertLocal(_ project: Project) {
+        guard let ctx = modelContext else { return }
+        ctx.insert(project)
+        try? ctx.save()
+    }
+
+    private func updateLocal(_ project: Project) {
+        guard let ctx = modelContext else { return }
+        try? ctx.save()
+    }
+
+    private func updateLocalOptimistic(_ project: Project) {
+        guard let ctx = modelContext else { return }
+        try? ctx.save()
+    }
+
+    private func removeLocalOptimistic(_ id: UUID) {
+        guard let ctx = modelContext else { return }
+        let pred = #Predicate<Project> { $0.id == id }
+        let descriptor = FetchDescriptor<Project>(predicate: pred)
+        if let local = try? ctx.fetch(descriptor).first {
+            ctx.delete(local)
+            try? ctx.save()
+        }
+    }
+
+    private func snapshotLocal(_ id: UUID) -> Project? {
+        guard let ctx = modelContext else { return nil }
+        let pred = #Predicate<Project> { $0.id == id }
+        let descriptor = FetchDescriptor<Project>(predicate: pred)
+        guard let local = try? ctx.fetch(descriptor).first else { return nil }
+        // Deep-copy snapshot
+        let snap = Project(
+            id: local.id,
+            name: local.name,
+            descriptionText: local.descriptionText,
+            status: local.status,
+            budget: local.budget,
+            spentToDate: local.spentToDate,
+            progress: local.progress,
+            startDate: local.startDate,
+            endDate: local.endDate,
+            locationName: local.locationName,
+            latitude: local.latitude,
+            longitude: local.longitude,
+            clientName: local.clientName,
+            createdAt: local.createdAt,
+            updatedAt: local.updatedAt
+        )
+        return snap
+    }
+
+    private func rollbackLocal(_ id: UUID, snapshot: Project) {
+        guard let ctx = modelContext else { return }
+        let pred = #Predicate<Project> { $0.id == id }
+        let descriptor = FetchDescriptor<Project>(predicate: pred)
+        if let local = try? ctx.fetch(descriptor).first {
+            local.name = snapshot.name
+            local.descriptionText = snapshot.descriptionText
+            local.statusRaw = snapshot.statusRaw
+            local.budget = snapshot.budget
+            local.spentToDate = snapshot.spentToDate
+            local.progress = snapshot.progress
+            local.startDate = snapshot.startDate
+            local.endDate = snapshot.endDate
+            local.locationName = snapshot.locationName
+            local.latitude = snapshot.latitude
+            local.longitude = snapshot.longitude
+            local.clientName = snapshot.clientName
+            local.createdAt = snapshot.createdAt
+            local.updatedAt = snapshot.updatedAt
+            try? ctx.save()
+        }
+    }
+
+    private func restoreLocal(_ snapshot: Project) {
+        guard let ctx = modelContext else { return }
+        ctx.insert(snapshot)
+        try? ctx.save()
+    }
+
+    // MARK: - Error Mapping
+
+    private func mapUserFacingError(_ error: Error) -> String {
+        let nsError = error as NSError
+        switch nsError.code {
+        case URLError.notConnectedToInternet.rawValue, URLError.networkConnectionLost.rawValue:
+            return "No internet connection. Changes saved locally and will sync when you're back online."
+        case URLError.timedOut.rawValue:
+            return "Request timed out. Please try again."
+        case 401:
+            return "Session expired. Please sign in again."
+        case 403:
+            return "You don't have permission to perform this action."
+        case 409:
+            return "A conflict occurred. The data may have been updated by another user."
+        case 500...599:
+            return "Server error. Our team has been notified. Please try again later."
+        default:
+            return error.localizedDescription
+        }
+    }
+}
