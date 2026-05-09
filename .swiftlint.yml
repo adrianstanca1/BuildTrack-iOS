@@ -9,6 +9,10 @@ disabled_rules:
   - trailing_whitespace
   - vertical_whitespace_opening_braces
   - vertical_whitespace_closing_braces
+  - switch_case_alignment
+  - implicit_return
+  - prefer_self_in_static_references
+  - prefer_self_type_over_type_of_self
 
 opt_in_rules:
   - array_init
