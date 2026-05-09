@@ -3,6 +3,7 @@ import SwiftData
 
 // MARK: - Projects List View
 
+@MainActor
 struct ProjectsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Project.updatedAt, order: .reverse) private var projects: [Project]
@@ -97,8 +98,7 @@ struct ProjectsListView: View {
         }
     }
     
-    @MainActor
-    private func filterChip(_ filter: ProjectStatusFilter) -> some View {
+        private func filterChip(_ filter: ProjectStatusFilter) -> some View {
         let isSelected = viewModel.selectedFilter == filter
         
         return Button {
@@ -344,8 +344,7 @@ struct ProjectsListView: View {
     
     // MARK: - Sort Menu
     
-    @MainActor
-    private var sortMenu: some View {
+        private var sortMenu: some View {
         Menu {
             ForEach(ProjectSortOrder.allCases) { order in
                 Button {
