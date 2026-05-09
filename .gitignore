@@ -90,3 +90,6 @@ yarn-error.log
 
 # Logs
 *.log
+
+# Local Xcode config
+BuildTrack/Config.xcconfig
