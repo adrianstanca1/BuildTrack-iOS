@@ -65,26 +65,11 @@ struct UserInfo: Identifiable, Equatable, Sendable {
     let id: String
     let email: String
     let fullName: String?
-    var role: UserRole
     
     init(from user: Supabase.User) {
         self.id = user.id.uuidString
         self.email = user.email ?? ""
         self.fullName = user.userMetadata["full_name"]?.stringValue
-        let roleRaw = user.userMetadata["role"]?.stringValue ?? "worker"
-        self.role = UserRole(rawValue: roleRaw) ?? .worker
-    }
-    
-    static func mockAdmin() -> UserInfo {
-        UserInfo(id: "mock-admin-id", email: "admin@buildtrack.com", fullName: "Admin User", role: .admin)
-    }
-    
-    static func mockManager() -> UserInfo {
-        UserInfo(id: "mock-manager-id", email: "manager@buildtrack.com", fullName: "Manager User", role: .manager)
-    }
-    
-    static func mockWorker() -> UserInfo {
-        UserInfo(id: "mock-worker-id", email: "worker@buildtrack.com", fullName: "Worker User", role: .worker)
     }
 }
 
