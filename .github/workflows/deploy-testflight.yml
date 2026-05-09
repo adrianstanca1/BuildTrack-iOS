@@ -58,7 +58,7 @@ jobs:
             -destination "generic/platform=iOS" \
             -archivePath "build/BuildTrack.xcarchive" \
             -allowProvisioningUpdates \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=4G3G5MX9BH PROVISIONING_PROFILE_SPECIFIER="" COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
         run: |
