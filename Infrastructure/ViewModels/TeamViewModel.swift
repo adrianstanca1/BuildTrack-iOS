@@ -64,7 +64,7 @@ final class TeamViewModel {
     func workersExpiringSoon(days: Int = 30) -> [Worker] {
         let cutoff = Date().addingTimeInterval(TimeInterval(days * 86400))
         return workers.filter { worker in
-            worker.certifications.contains { $0.expiryDate < cutoff }
+            worker.certifications.contains(where: { $0.expiryDate < cutoff })
         }
     }
 }

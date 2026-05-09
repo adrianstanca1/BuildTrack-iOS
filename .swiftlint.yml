@@ -153,10 +153,10 @@ attributes:
     - "@UIApplicationDelegateAdaptor"
     - "@main"
   always_on_same_line:
-    - @IBOutlet
-    - @IBAction
-    - @IBInspectable
-    - @IBDesignable
-    - @NSManaged
+    - "@IBOutlet"
+    - "@IBAction"
+    - "@IBInspectable"
+    - "@IBDesignable"
+    - "@NSManaged"
 
 reporter: xcode
