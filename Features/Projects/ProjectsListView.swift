@@ -541,11 +541,9 @@ struct ProjectsListView: View {
     private func budgetColor(_ project: Project) -> Color {
         guard project.budget > 0 else { return .secondary }
         let ratio = project.spentToDate / project.budget
-        switch ratio {
-        case 0..<0.6: Color.green
-        case 0.6..<0.85: Color.orange
-        default: Color.red
-        }
+        if ratio < 0.6 { return Color.green }
+        else if ratio < 0.85 { return Color.orange }
+        else { return Color.red }
     }
     
     private func formatCurrency(_ value: Double) -> String {
