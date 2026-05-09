@@ -51,8 +51,7 @@ final class SafetyViewModel {
     
     func resolveIncident(_ incident: Incident) {
         withAnimation {
-            incident.status = .resolved
-            incident.resolvedAt = Date()
+            incident.incidentStatus = .resolved
         }
         do {
             try modelContext.save()
@@ -71,8 +70,8 @@ final class SafetyViewModel {
         }
     }
     
-    var openIncidents: [Incident] { incidents.filter { $0.status == .open } }
-    var resolvedIncidents: [Incident] { incidents.filter { $0.status == .resolved } }
+    var openIncidents: [Incident] { incidents.filter { $0.incidentStatus == .open } }
+    var resolvedIncidents: [Incident] { incidents.filter { $0.incidentStatus == .resolved } }
     var passRate: Double {
         guard !inspections.isEmpty else { return 0 }
         let passed = inspections.filter { $0.result == .pass }.count

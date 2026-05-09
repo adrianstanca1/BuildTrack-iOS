@@ -146,7 +146,7 @@ attributes:
     - "@StateObject"
     - "@ObservedObject"
     - "@Environment"
-    - "@Environment"Object
+    - "@EnvironmentObject"
     - "@Binding"
     - "@AppStorage"
     - "@SceneStorage"
