@@ -42,11 +42,21 @@ jobs:
       - name: Resolve dependencies
         run: xcodebuild -resolvePackageDependencies -workspace BuildTrack.xcworkspace -scheme BuildTrack
 
+      - name: Setup App Store Connect API key
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+          echo "ASC_KEY_ID=$ASC_KEY_ID" >> $GITHUB_ENV
+          echo "ASC_ISSUER_ID=$ASC_ISSUER_ID" >> $GITHUB_ENV
+
       - name: Bump build number
         run: |
           BUILD_NUMBER=$(git rev-list --count HEAD)
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
-          # Update plist
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" BuildTrack/Info.plist
 
       - name: Build archive
@@ -58,7 +68,10 @@ jobs:
             -destination "generic/platform=iOS" \
             -archivePath "build/BuildTrack.xcarchive" \
             -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=4G3G5MX9BH PROVISIONING_PROFILE_SPECIFIER="" COMPILER_INDEX_STORE_ENABLE=NO
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8 \
+            -authenticationKeyID $ASC_KEY_ID \
+            -authenticationKeyIssuerID $ASC_ISSUER_ID \
+            COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
         run: |
@@ -80,7 +93,7 @@ jobs:
             <key>signingStyle</key>
             <string>automatic</string>
             <key>thinning</key>
-            <string><thin-for-all-variants></string>
+            <string>&lt;thin-for-all-variants&gt;</string>
           </dict>
           </plist>
           EOF
@@ -88,7 +101,11 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath "build/BuildTrack.xcarchive" \
             -exportPath "build/BuildTrack.ipa" \
-            -exportOptionsPlist build/ExportOptions.plist
+            -exportOptionsPlist build/ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8 \
+            -authenticationKeyID $ASC_KEY_ID \
+            -authenticationKeyIssuerID $ASC_ISSUER_ID
 
       - name: Upload to TestFlight
         env:
@@ -96,15 +113,12 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
         run: |
-          # Create API key file
           mkdir -p ~/.appstoreconnect/private_keys
           echo "$ASC_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
 
-          # Find the IPA
           IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" | head -1)
           echo "Found IPA: $IPA_PATH"
 
-          # Upload
           xcrun altool --upload-app \
             --type ios \
             --file "$IPA_PATH" \
