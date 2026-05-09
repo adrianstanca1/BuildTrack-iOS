@@ -1,0 +1,127 @@
+name: Deploy to TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. 1.0.0)'
+        required: false
+        default: ''
+      skip_tests:
+        description: 'Skip test step'
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-testflight-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build & Deploy to TestFlight
+    runs-on: macos-14
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Restore SPM cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved', '*.xcodeproj/project.pbxproj') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Resolve dependencies
+        run: xcodebuild -resolvePackageDependencies -workspace BuildTrack.xcworkspace -scheme BuildTrack
+
+      - name: Bump build number
+        run: |
+          BUILD_NUMBER=$(git rev-list --count HEAD)
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+          # Update plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" BuildTrack/Info.plist
+
+      - name: Build archive
+        run: |
+          xcodebuild archive \
+            -workspace BuildTrack.xcworkspace \
+            -scheme BuildTrack \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "build/BuildTrack.xcarchive" \
+            -allowProvisioningUpdates \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Export IPA
+        run: |
+          cat > build/ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>4G3G5MX9BH</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>signingStyle</key>
+            <string>automatic</string>
+            <key>thinning</key>
+            <string><thin-for-all-variants></string>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath "build/BuildTrack.xcarchive" \
+            -exportPath "build/BuildTrack.ipa" \
+            -exportOptionsPlist build/ExportOptions.plist
+
+      - name: Upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+        run: |
+          # Create API key file
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+
+          # Find the IPA
+          IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" | head -1)
+          echo "Found IPA: $IPA_PATH"
+
+          # Upload
+          xcrun altool --upload-app \
+            --type ios \
+            --file "$IPA_PATH" \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuildTrack-IPA
+          path: |
+            build/BuildTrack.ipa/*.ipa
+            build/BuildTrack.xcarchive
+          retention-days: 7
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf ~/.appstoreconnect/private_keys || true
