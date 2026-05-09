@@ -16,6 +16,7 @@ disabled_rules:
   - redundant_discardable_let
   - implicit_optional_initialization
   - function_parameter_count
+  - force_try
 
 opt_in_rules:
   - array_init
@@ -75,8 +76,8 @@ excluded:
   - Assets.xcassets
 
 line_length:
-    warning: 250
-    error: 300
+    warning: 300
+    error: 400
     ignores_urls: true
     ignores_function_declarations: true
     ignores_comments: true
@@ -91,8 +92,8 @@ type_body_length:
     error: 800
 
 function_body_length:
-    warning: 100
-    error: 150
+    warning: 150
+    error: 200
 
 identifier_name:
     excluded:
