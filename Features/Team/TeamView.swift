@@ -3,83 +3,113 @@ import SwiftData
 
 struct TeamView: View {
     @Query(sort: \Worker.name) private var workers: [Worker]
-    @State private var searchText = ""
-    @State private var roleFilter: WorkerRole?
     @State private var showAddWorker = false
+    @State private var searchText = ""
     
     var filteredWorkers: [Worker] {
-        var result = workers
-        if let r = roleFilter { result = result.filter { $0.role == r } }
-        if !searchText.isEmpty { result = result.filter { $0.name.localizedCaseInsensitiveContains(searchText) } }
-        return result
-    }
-    
-    var roleBreakdown: [(WorkerRole, Int)] {
-        WorkerRole.allCases.map { role in (role, workers.filter { $0.role == role && $0.isActive }.count) }
-            .filter { $0.1 > 0 }
-            .sorted { $0.1 > $1.1 }
+        if searchText.isEmpty { return workers }
+        return workers.filter {
+            $0.name.localizedCaseInsensitiveContains(searchText) ||
+            $0.role.label.localizedCaseInsensitiveContains(searchText)
+        }
     }
     
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // Role summary
-                CardView {
-                    SectionHeader(title: "Role Breakdown")
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                        ForEach(roleBreakdown, id: \.0) { role, count in
-                            HStack {
-                                Image(systemName: role.icon).foregroundStyle(BuildTrackColors.primary)
-                                Text("\(count) \(role.label)").font(.caption).foregroundStyle(.secondary)
-                                Spacer()
-                            }
+                // Search
+                HStack(spacing: 12) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(BuildTrackColors.textTertiary)
+                    TextField("Search team members...", text: $searchText)
+                        .textFieldStyle(.plain)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal)
+                
+                // Team grid
+                LazyVStack(spacing: 12) {
+                    if filteredWorkers.isEmpty {
+                        EmptyStateView(
+                            icon: "person.3.fill",
+                            title: "No Team Members",
+                            message: "Add workers to build your construction team"
+                        )
+                        .padding(.top, 40)
+                    } else {
+                        ForEach(filteredWorkers) { worker in
+                            ModernWorkerCard(worker: worker)
                         }
                     }
                 }
-                
-                // Workers list
-                LazyVStack(spacing: 12) {
-                    if filteredWorkers.isEmpty {
-                        EmptyStateView(icon: "person.3", title: "No Workers", message: "Add team members")
-                    }
-                    ForEach(filteredWorkers) { worker in
-                        WorkerCard(worker: worker)
-                    }
-                }
+                .padding(.horizontal)
+                .padding(.bottom, 24)
             }
-            .padding()
+            .padding(.vertical, 12)
         }
         .background(Color(.systemGroupedBackground))
-        .searchable(text: $searchText, prompt: "Search workers...")
         .navigationTitle("Team")
-        .toolbar { Button { showAddWorker = true } label: { Image(systemName: "plus") } }
-        .sheet(isPresented: $showAddWorker) { WorkerFormView() }
+        .toolbar {
+            Button { showAddWorker = true } label: {
+                Image(systemName: "plus")
+                    .foregroundStyle(BuildTrackColors.primary)
+            }
+        }
+        .sheet(isPresented: $showAddWorker) {
+            WorkerFormView()
+        }
     }
 }
 
-struct WorkerCard: View {
+struct ModernWorkerCard: View {
     let worker: Worker
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 14) {
             ZStack {
-                Circle().fill(BuildTrackColors.primary.opacity(0.12)).frame(width: 44, height: 44)
-                Text(String(worker.name.prefix(2))).font(.headline).foregroundStyle(BuildTrackColors.primary)
+                Circle()
+                    .fill(BuildTrackColors.primary.opacity(0.12))
+                    .frame(width: 48, height: 48)
+                Image(systemName: worker.role.icon)
+                    .font(.system(size: 20))
+                    .foregroundStyle(BuildTrackColors.primary)
             }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(worker.name).font(.subheadline.weight(.medium))
-                Text(worker.role.label).font(.caption).foregroundStyle(.secondary)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(worker.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+                
+                HStack(spacing: 6) {
+                    Text(worker.role.label)
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(BuildTrackColors.primary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(BuildTrackColors.primary.opacity(0.1))
+                        .clipShape(Capsule())
+                    
+                    if !worker.phone.isEmpty {
+                        Label(worker.phone, systemImage: "phone.fill")
+                            .font(.caption2)
+                            .foregroundStyle(BuildTrackColors.textTertiary)
+                    }
+                }
             }
+            
             Spacer()
-            if !worker.certifications.isEmpty {
-                Text("\(worker.certifications.count) certs").font(.caption2).foregroundStyle(.blue)
-            }
-            Circle().fill(worker.isActive ? Color.green : Color.gray).frame(width: 8, height: 8)
+            
+            Circle()
+                .fill(worker.isActive ? BuildTrackColors.success : BuildTrackColors.textTertiary)
+                .frame(width: 10, height: 10)
         }
-        .padding()
+        .padding(16)
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.04), radius: 8, y: 2)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
     }
 }
 
@@ -90,39 +120,47 @@ struct WorkerFormView: View {
     @State private var role: WorkerRole = .labourer
     @State private var phone = ""
     @State private var email = ""
-    @State private var certText = ""
-    @State private var certifications: [String] = []
     
     var body: some View {
         NavigationStack {
             Form {
-                Section { TextField("Full Name", text: $name) }
-                Section { Picker("Role", selection: $role) { ForEach(WorkerRole.allCases, id: \.self) { Text($0.label).tag($0) } } }
-                Section("Contact") { TextField("Phone", text: $phone).keyboardType(.phonePad); TextField("Email", text: $email).keyboardType(.emailAddress) }
-                Section("Certifications") {
-                    HStack {
-                        TextField("Add certification", text: $certText)
-                        Button("Add") {
-                            if !certText.isEmpty { certifications.append(certText); certText = "" }
-                        }
-                    }
-                    ForEach(certifications, id: \.self) { cert in
-                        HStack {
-                            Image(systemName: "checkmark.seal.fill").foregroundStyle(.green).font(.caption)
-                            Text(cert).font(.subheadline)
+                Section("Info") {
+                    TextField("Full Name", text: $name)
+                    Picker("Role", selection: $role) {
+                        ForEach(WorkerRole.allCases, id: \.self) { r in
+                            Label(r.label, systemImage: r.icon).tag(r)
                         }
                     }
                 }
+                Section("Contact") {
+                    TextField("Phone", text: $phone)
+                        .keyboardType(.phonePad)
+                    TextField("Email", text: $email)
+                        .keyboardType(.emailAddress)
+                        .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                }
             }
-            .navigationTitle("Add Worker")
+            .navigationTitle("New Team Member")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        let worker = Worker(name: name, role: role, phone: phone, email: email, certifications: certifications)
+                    Button("Save") {
+                        let worker = Worker(
+                            name: name,
+                            role: role,
+                            phone: phone,
+                            email: email
+                        )
                         modelContext.insert(worker)
                         dismiss()
-                    }.disabled(name.isEmpty)
+                    }
+                    .disabled(name.isEmpty)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(BuildTrackColors.primary)
                 }
             }
         }
@@ -130,5 +168,6 @@ struct WorkerFormView: View {
 }
 
 #Preview {
-    TeamView().modelContainer(for: [Worker.self])
+    TeamView()
+        .modelContainer(for: [Worker.self])
 }

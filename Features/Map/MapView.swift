@@ -1,105 +1,161 @@
 import SwiftUI
 import MapKit
-import SwiftData
+
+// MARK: - Map View (Redesigned)
 
 struct MapView: View {
-    @Query(filter: #Predicate<Project> { $0.latitude != nil && $0.longitude != nil })
-    private var mappableProjects: [Project]
-    
-    @State private var camera: MapCameraPosition = .automatic
+    @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var selectedProject: Project?
-    @State private var showSheet = false
+    @State private var showProjectSheet = false
     
     var body: some View {
-        Map(position: $camera, selection: $selectedProject) {
-            ForEach(mappableProjects) { project in
-                if let lat = project.latitude, let lon = project.longitude {
-                    let coord = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                    
-                    Marker(project.name, systemImage: project.status.icon, coordinate: coord)
-                        .tint(BuildTrackColors.statusColor(project.status))
-                        .tag(project)
-                    
-                    Annotation(project.name, coordinate: coord) {
-                        ProjectAnnotationView(project: project)
-                    }
-                    .annotationTitles(.hidden)
+        Map(position: $cameraPosition) {
+            // Project markers will be added here
+            // For now, show a default region
+        }
+        .mapStyle(.standard)
+        .navigationTitle("Site Map")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    resetCamera()
+                } label: {
+                    Image(systemName: "location.fill")
+                        .foregroundStyle(BuildTrackColors.primary)
                 }
             }
         }
-        .mapStyle(.standard(pointsOfInterest: .all, showsTraffic: false))
-        .mapControls {
-            MapUserLocationButton()
-            MapCompass()
-            MapScaleView()
-        }
-        .onAppear {
-            if let first = mappableProjects.first,
-               let lat = first.latitude, let lon = first.longitude {
-                let region = MKCoordinateRegion(
-                    center: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                )
-                camera = .region(region)
-            }
-        }
-        .onChange(of: selectedProject) { _, project in
-            if project != nil { showSheet = true }
-        }
-        .sheet(isPresented: $showSheet) {
+        .sheet(isPresented: $showProjectSheet) {
             if let project = selectedProject {
-                NavigationStack {
-                    ProjectDetailView(project: project)
-                        .toolbar { Button("Done") { showSheet = false } }
+                ProjectDetailSheet(project: project)
+            }
+        }
+    }
+    
+    private func resetCamera() {
+        cameraPosition = .automatic
+    }
+}
+
+struct ProjectDetailSheet: View {
+    let project: Project
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Header
+                    VStack(spacing: 8) {
+                        Text(project.name)
+                            .font(.title2.bold())
+                            .foregroundStyle(BuildTrackColors.textPrimary)
+                        
+                        if !project.locationName.isEmpty {
+                            Label(project.locationName, systemImage: "mappin.circle.fill")
+                                .font(.subheadline)
+                                .foregroundStyle(BuildTrackColors.primary)
+                        }
+                    }
+                    .padding(.top, 20)
+                    
+                    // Status
+                    HStack(spacing: 8) {
+                        StatusBadge(status: project.status)
+                        Text("\(Int(project.progress * 100))% complete")
+                            .font(.caption)
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                    }
+                    
+                    // Progress bar
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(BuildTrackColors.border)
+                                .frame(height: 8)
+                            
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(BuildTrackColors.statusColor(project.status))
+                                .frame(width: geometry.size.width * CGFloat(project.progress), height: 8)
+                        }
+                    }
+                    .frame(height: 8)
+                    .padding(.horizontal)
+                    
+                    // Details
+                    VStack(spacing: 16) {
+                        DetailRow(icon: "calendar", label: "Start Date", value: project.startDate.formatted(date: .long, time: .omitted))
+                        
+                        if let endDate = project.endDate {
+                            DetailRow(icon: "calendar.badge.clock", label: "End Date", value: endDate.formatted(date: .long, time: .omitted))
+                        }
+                        
+                        DetailRow(icon: "sterlingsign.circle", label: "Budget", value: formatCurrency(project.budget))
+                        
+                        if project.spentToDate > 0 {
+                            DetailRow(icon: "creditcard", label: "Spent", value: formatCurrency(project.spentToDate))
+                        }
+                        
+                        if !project.clientName.isEmpty {
+                            DetailRow(icon: "building.2", label: "Client", value: project.clientName)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    Spacer(minLength: 40)
+                }
+            }
+            .navigationTitle("Project Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
                 }
             }
         }
-        .overlay(alignment: .topTrailing) {
-            if mappableProjects.isEmpty {
-                MapEmptyOverlay()
-            }
-        }
+    }
+    
+    private func formatCurrency(_ value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = "GBP"
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: NSNumber(value: value)) ?? "£0"
     }
 }
 
-struct ProjectAnnotationView: View {
-    let project: Project
+struct DetailRow: View {
+    let icon: String
+    let label: String
+    let value: String
     
     var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: project.status.icon)
-                .font(.caption)
-                .foregroundStyle(.white)
-                .padding(8)
-                .background(BuildTrackColors.statusColor(project.status))
-                .clipShape(Circle())
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(BuildTrackColors.primary)
+                .frame(width: 32, height: 32)
+                .background(BuildTrackColors.primary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             
-            Text(project.name)
-                .font(.system(size: 10, weight: .semibold))
-                .padding(.horizontal, 6)
-                .padding(.vertical, 3)
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(BuildTrackColors.textTertiary)
+                Text(value)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+            }
+            
+            Spacer()
         }
-    }
-}
-
-struct MapEmptyOverlay: View {
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "map")
-                .font(.title2)
-            Text("No project locations")
-                .font(.caption)
-        }
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(16)
+        .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .padding()
     }
 }
 
 #Preview {
     MapView()
-        .modelContainer(for: [Project.self])
 }
