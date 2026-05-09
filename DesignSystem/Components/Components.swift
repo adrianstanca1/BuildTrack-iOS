@@ -229,3 +229,27 @@ struct FilterChip: View {
     .padding()
     .background(Color(.systemGroupedBackground))
 }
+
+struct ResultBadge: View {
+    let result: InspectionResult
+    
+    var body: some View {
+        Text(result.label)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(
+                Capsule()
+                    .fill(resultColor)
+            )
+    }
+    
+    private var resultColor: Color {
+        switch result {
+        case .pass: BuildTrackColors.success
+        case .fail: BuildTrackColors.danger
+        case .conditional: BuildTrackColors.warning
+        }
+    }
+}

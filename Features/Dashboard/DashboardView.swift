@@ -180,8 +180,6 @@ struct DashboardView: View {
     }
 }
 
-}
-
 // MARK: - Quick Action Button
 
 struct QuickActionButton: View {
