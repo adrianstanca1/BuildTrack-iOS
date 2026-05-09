@@ -85,20 +85,20 @@ struct ProjectDetailSheet: View {
                     
                     // Details
                     VStack(spacing: 16) {
-                        DetailRow(icon: "calendar", label: "Start Date", value: project.startDate.formatted(date: .long, time: .omitted))
+                        MapDetailRow(icon: "calendar", label: "Start Date", value: project.startDate.formatted(date: .long, time: .omitted))
                         
                         if let endDate = project.endDate {
-                            DetailRow(icon: "calendar.badge.clock", label: "End Date", value: endDate.formatted(date: .long, time: .omitted))
+                            MapDetailRow(icon: "calendar.badge.clock", label: "End Date", value: endDate.formatted(date: .long, time: .omitted))
                         }
                         
-                        DetailRow(icon: "sterlingsign.circle", label: "Budget", value: formatCurrency(project.budget))
+                        MapDetailRow(icon: "sterlingsign.circle", label: "Budget", value: formatCurrency(project.budget))
                         
                         if project.spentToDate > 0 {
-                            DetailRow(icon: "creditcard", label: "Spent", value: formatCurrency(project.spentToDate))
+                            MapDetailRow(icon: "creditcard", label: "Spent", value: formatCurrency(project.spentToDate))
                         }
                         
                         if !project.clientName.isEmpty {
-                            DetailRow(icon: "building.2", label: "Client", value: project.clientName)
+                            MapDetailRow(icon: "building.2", label: "Client", value: project.clientName)
                         }
                     }
                     .padding(.horizontal)
@@ -125,7 +125,7 @@ struct ProjectDetailSheet: View {
     }
 }
 
-struct DetailRow: View {
+struct MapDetailRow: View {
     let icon: String
     let label: String
     let value: String

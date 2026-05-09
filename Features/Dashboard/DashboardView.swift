@@ -80,25 +80,25 @@ struct DashboardView: View {
             StatCard(
                 icon: "building.2.fill",
                 label: "Active Projects",
-                value: "\(activeProjects)",
+                value: activeProjects,
                 color: BuildTrackColors.primary
             )
             StatCard(
                 icon: "checklist",
                 label: "Pending Tasks",
-                value: "\(pendingTasks)",
+                value: pendingTasks,
                 color: BuildTrackColors.info
             )
             StatCard(
                 icon: "shield.fill",
                 label: "Critical Alerts",
-                value: "\(criticalIncidents)",
+                value: criticalIncidents,
                 color: BuildTrackColors.danger
             )
             StatCard(
                 icon: "chart.line.uptrend.xyaxis",
                 label: "Completion",
-                value: "\(completionRate)%",
+                value: completionRate,
                 color: BuildTrackColors.success
             )
         }
@@ -180,42 +180,6 @@ struct DashboardView: View {
     }
 }
 
-// MARK: - Stat Card
-
-struct StatCard: View {
-    let icon: String
-    let label: String
-    let value: String
-    let color: Color
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            HStack {
-                Spacer()
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(color)
-                    .frame(width: 44, height: 44)
-                    .background(color.opacity(0.12))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(value)
-                    .font(.title2.bold())
-                    .foregroundStyle(BuildTrackColors.textPrimary)
-                
-                Text(label)
-                    .font(.caption)
-                    .foregroundStyle(BuildTrackColors.textSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .trailing)
-        }
-        .padding(16)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
-    }
 }
 
 // MARK: - Quick Action Button
@@ -289,37 +253,6 @@ struct ProjectRowCard: View {
             }
         }
         .padding(.vertical, 8)
-    }
-}
-
-// MARK: - Empty State
-
-struct EmptyStateView: View {
-    let icon: String
-    let title: String
-    let message: String
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            Spacer().frame(height: 20)
-            
-            Image(systemName: icon)
-                .font(.system(size: 48))
-                .foregroundStyle(BuildTrackColors.primary.opacity(0.3))
-            
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(BuildTrackColors.textPrimary)
-            
-            Text(message)
-                .font(.subheadline)
-                .foregroundStyle(BuildTrackColors.textSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
-            
-            Spacer().frame(height: 20)
-        }
-        .frame(maxWidth: .infinity)
     }
 }
 
