@@ -39,7 +39,7 @@ extension Logger {
 
 extension Logger {
     /// Log a debug message (stripped in Release builds)
-    func debug(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+    func logDebug(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let fileName = (file as NSString).lastPathComponent
         self.debug("[\(fileName):\(line)] \(function): \(message)")
@@ -47,19 +47,19 @@ extension Logger {
     }
     
     /// Log an info message
-    func info(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+    func logInfo(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
         let fileName = (file as NSString).lastPathComponent
         self.info("[\(fileName):\(line)] \(message)")
     }
     
     /// Log a warning
-    func warning(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+    func logWarning(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
         let fileName = (file as NSString).lastPathComponent
         self.warning("[\(fileName):\(line)] \(message)")
     }
     
     /// Log an error
-    func error(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+    func logError(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
         let fileName = (file as NSString).lastPathComponent
         self.error("[\(fileName):\(line)] \(message)")
     }
