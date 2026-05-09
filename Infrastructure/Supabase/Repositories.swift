@@ -169,8 +169,8 @@ extension SupabaseTask {
             id: id,
             title: title,
             descriptionText: descriptionText ?? "",
-            priority: TaskPriority(rawValue: priorityRaw) ?? .medium,
-            status: TaskStatus(rawValue: statusRaw) ?? .pending,
+            priority: TaskPriority(fromSupabase: priorityRaw) ?? .medium,
+            status: TaskStatus(fromSupabase: statusRaw) ?? .pending,
             dueDate: dueDate.flatMap { formatter.date(from: $0) },
             assignedTo: assignedTo ?? "",
             createdAt: formatter.date(from: createdAt) ?? Date(),
@@ -249,8 +249,8 @@ struct SupabaseTaskPayload: Codable {
         self.id = task.id.uuidString
         self.title = task.title
         self.description = task.descriptionText.isEmpty ? nil : task.descriptionText
-        self.priority = task.priorityRaw
-        self.status = task.statusRaw
+        self.priority = task.priority.rawValueForSupabase
+        self.status = task.status.rawValueForSupabase
         self.dueDate = task.dueDate.map { formatter.string(from: $0) }
         self.assignedTo = task.assignedTo.isEmpty ? nil : task.assignedTo
         self.projectId = projectId?.uuidString

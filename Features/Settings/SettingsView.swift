@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import LocalAuthentication
 
 // MARK: - Settings / Profile View
 
@@ -226,12 +227,26 @@ struct SecuritySettingsView: View {
     @State private var showChangePassword = false
     @State private var enableBiometric = false
     @State private var showDeleteAccountConfirmation = false
+    @State private var biometricError: String?
+    
+    private var context = LAContext()
     
     var body: some View {
         List {
             Section {
                 Toggle("Face ID / Touch ID", isOn: $enableBiometric)
                     .tint(BuildTrackColors.primary)
+                    .onChange(of: enableBiometric) { _, isOn in
+                        if isOn {
+                            authenticateBiometric()
+                        }
+                    }
+                
+                if let error = biometricError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
                 
                 Button {
                     showChangePassword = true
@@ -256,6 +271,32 @@ struct SecuritySettingsView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("This cannot be undone. All projects, tasks, and data will be permanently deleted.")
+        }
+    }
+    
+    private func authenticateBiometric() {
+        var error: NSError?
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            biometricError = error?.localizedDescription ?? "Biometric authentication not available"
+            enableBiometric = false
+            return
+        }
+        
+        context.evaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics,
+            localizedReason: "Secure your BuildTrack account with Face ID or Touch ID"
+        ) { success, evalError in
+            DispatchQueue.main.async {
+                if success {
+                    biometricError = nil
+                    // Persist preference in UserDefaults or Keychain
+                    UserDefaults.standard.set(true, forKey: "biometricEnabled")
+                } else {
+                    biometricError = evalError?.localizedDescription
+                    enableBiometric = false
+                    UserDefaults.standard.set(false, forKey: "biometricEnabled")
+                }
+            }
         }
     }
 }

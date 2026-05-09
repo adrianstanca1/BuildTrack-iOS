@@ -231,7 +231,29 @@ final class TaskItem: Identifiable, Codable {
 enum TaskPriority: String, CaseIterable, Codable {
     case low, medium, high, critical
     
-    var label: String { rawValue.capitalized }
+    var rawValueForSupabase: String {
+        switch self {
+        case .critical: return "urgent"
+        default: return rawValue
+        }
+    }
+    
+    init?(fromSupabase value: String) {
+        switch value {
+        case "urgent": self = .critical
+        default:
+            self.init(rawValue: value)
+        }
+    }
+    
+    var label: String {
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Medium"
+        case .high: return "High"
+        case .critical: return "Critical"
+        }
+    }
     var color: String {
         switch self {
         case .low: "gray"
@@ -244,6 +266,23 @@ enum TaskPriority: String, CaseIterable, Codable {
 
 enum TaskStatus: String, CaseIterable, Codable {
     case pending, inProgress = "in_progress", completed, blocked
+    
+    var rawValueForSupabase: String {
+        switch self {
+        case .blocked: return "pending"
+        case .inProgress: return "in_progress"
+        default: return rawValue
+        }
+    }
+    
+    init?(fromSupabase value: String) {
+        switch value {
+        case "pending", "blocked": self = .pending
+        case "in_progress", "in-progress": self = .inProgress
+        case "completed": self = .completed
+        default: self.init(rawValue: value)
+        }
+    }
     
     var label: String {
         switch self {
@@ -493,7 +532,23 @@ final class Worker: Identifiable, Codable {
 
 enum WorkerRole: String, CaseIterable, Codable {
     case labourer, carpenter, electrician, plumber
-    case supervisor, foreman, engineer, `operator`
+    case supervisor, foreman, engineer, `operator`, safetyOfficer = "safety-officer"
+    
+    var rawValueForSupabase: String {
+        switch self {
+        case .operator: return "operator"
+        case .safetyOfficer: return "safety-officer"
+        default: return rawValue
+        }
+    }
+    
+    init?(fromSupabase value: String) {
+        switch value {
+        case "safety-officer": self = .safetyOfficer
+        case "operator", "labourer": self.init(rawValue: value)
+        default: self.init(rawValue: value)
+        }
+    }
     
     var label: String { rawValue.capitalized }
     var icon: String {
@@ -506,6 +561,7 @@ enum WorkerRole: String, CaseIterable, Codable {
         case .foreman: "person.2.fill"
         case .engineer: "ruler.fill"
         case .operator: "wrench.fill"
+        case .safetyOfficer: "shield.lefthalf.fill"
         }
     }
 }
@@ -611,5 +667,203 @@ struct SupabaseTask: Codable {
         case projectId = "project_id"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
+    }
+}
+
+// MARK: - Supabase Incident
+
+struct SupabaseIncident: Codable {
+    let id: UUID
+    let title: String
+    let descriptionText: String?
+    let severityRaw: String
+    let projectId: UUID?
+    let projectName: String?
+    let reportedBy: String?
+    let incidentDate: String
+    let injuries: Int?
+    let photos: [String]?
+    let createdAt: String
+    let updatedAt: String
+    let userId: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title
+        case descriptionText = "description"
+        case severityRaw = "severity"
+        case projectId = "project_id"
+        case projectName = "project_name"
+        case reportedBy = "reported_by"
+        case incidentDate = "incident_date"
+        case injuries, photos
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case userId = "user_id"
+    }
+}
+
+extension SupabaseIncident {
+    func toDomain() -> Incident {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return Incident(
+            id: id,
+            title: title,
+            descriptionText: descriptionText ?? "",
+            severity: IncidentSeverity(rawValue: severityRaw) ?? .low,
+            reportedBy: reportedBy ?? "",
+            location: projectName ?? "",
+            date: formatter.date(from: incidentDate) ?? Date(),
+            createdAt: formatter.date(from: createdAt) ?? Date()
+        )
+    }
+}
+
+// MARK: - Supabase Inspection
+
+struct SupabaseInspection: Codable {
+    let id: UUID
+    let title: String
+    let descriptionText: String?
+    let projectId: UUID?
+    let projectName: String?
+    let statusRaw: String
+    let inspectionDate: String
+    let inspector: String?
+    let findings: [String]?
+    let photos: [String]?
+    let createdAt: String
+    let updatedAt: String
+    let userId: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title
+        case descriptionText = "description"
+        case projectId = "project_id"
+        case projectName = "project_name"
+        case statusRaw = "status"
+        case inspectionDate = "inspection_date"
+        case inspector, findings, photos
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case userId = "user_id"
+    }
+}
+
+extension SupabaseInspection {
+    func toDomain() -> Inspection {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let result: InspectionResult = {
+            switch statusRaw {
+            case "passed": return .pass
+            case "failed": return .fail
+            default: return .pass
+            }
+        }()
+        return Inspection(
+            id: id,
+            title: title,
+            inspector: inspector ?? "",
+            result: result,
+            date: formatter.date(from: inspectionDate) ?? Date(),
+            notes: descriptionText ?? "",
+            createdAt: formatter.date(from: createdAt) ?? Date()
+        )
+    }
+}
+
+// MARK: - Supabase Worker
+
+struct SupabaseWorker: Codable {
+    let id: UUID
+    let name: String
+    let roleRaw: String
+    let statusRaw: String
+    let phone: String?
+    let email: String?
+    let hourlyRate: Double?
+    let weeklyHours: Int?
+    let certifications: [String]?
+    let createdAt: String
+    let updatedAt: String
+    let userId: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name
+        case roleRaw = "role"
+        case statusRaw = "status"
+        case phone, email
+        case hourlyRate = "hourly_rate"
+        case weeklyHours = "weekly_hours"
+        case certifications
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case userId = "user_id"
+    }
+}
+
+extension SupabaseWorker {
+    func toDomain() -> Worker {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return Worker(
+            id: id,
+            name: name,
+            role: WorkerRole(fromSupabase: roleRaw) ?? .labourer,
+            phone: phone ?? "",
+            email: email ?? "",
+            certifications: certifications ?? [],
+            isActive: statusRaw == "active",
+            createdAt: formatter.date(from: createdAt) ?? Date()
+        )
+    }
+}
+
+// MARK: - Supabase Notification
+
+struct SupabaseNotification: Codable {
+    let id: UUID
+    let title: String
+    let body: String?
+    let typeRaw: String
+    let relatedId: UUID?
+    let isRead: Bool
+    let createdAt: String
+    let userId: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, body
+        case typeRaw = "type"
+        case relatedId = "related_id"
+        case isRead = "read"
+        case createdAt = "created_at"
+        case userId = "user_id"
+    }
+}
+
+extension SupabaseNotification {
+    func toDomain() -> AppNotification {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let notifType: NotificationType = {
+            switch typeRaw {
+            case "task": return .task
+            case "safety": return .incident
+            case "project": return .info
+            case "team": return .success
+            case "general": return .info
+            default: return .info
+            }
+        }()
+        return AppNotification(
+            id: id,
+            title: title,
+            body: body ?? "",
+            type: notifType,
+            isRead: isRead,
+            createdAt: formatter.date(from: createdAt) ?? Date(),
+            relatedId: relatedId?.uuidString
+        )
     }
 }
