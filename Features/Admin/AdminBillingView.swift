@@ -7,7 +7,7 @@ struct AdminBillingView: View {
                 Text("Billing")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(AppColors.primary)
+                    .foregroundColor(BuildTrackColors.primary)
                 
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
