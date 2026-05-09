@@ -59,6 +59,15 @@ jobs:
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" BuildTrack/Info.plist
 
+      - name: Set provisioning profile
+        run: |
+          cat > BuildTrack.xcodeproj/project.pbxproj.patch << 'PATCH'
+          s/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Automatic;\n\t\t\t\tDEVELOPMENT_TEAM = 4G3G5MX9BH;/g
+          PATCH
+          sed -i 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Automatic;\n\t\t\t\tDEVELOPMENT_TEAM = 4G3G5MX9BH;/g' BuildTrack.xcodeproj/project.pbxproj
+          echo "Updated DEVELOPMENT_TEAM in pbxproj"
+          grep -n "DEVELOPMENT_TEAM" BuildTrack.xcodeproj/project.pbxproj | head -3
+
       - name: Build archive
         run: |
           xcodebuild archive \
@@ -71,11 +80,13 @@ jobs:
             -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8 \
             -authenticationKeyID $ASC_KEY_ID \
             -authenticationKeyIssuerID $ASC_ISSUER_ID \
+            DEVELOPMENT_TEAM=4G3G5MX9BH \
+            CODE_SIGN_STYLE=Automatic \
             COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
         run: |
-          cat > build/ExportOptions.plist << 'EOF'
+          cat > build/ExportOptions.plist << 'PLIST'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -96,7 +107,7 @@ jobs:
             <string>&lt;thin-for-all-variants&gt;</string>
           </dict>
           </plist>
-          EOF
+          PLIST
 
           xcodebuild -exportArchive \
             -archivePath "build/BuildTrack.xcarchive" \
