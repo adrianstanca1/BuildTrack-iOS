@@ -19,18 +19,10 @@ final class RealtimeService {
         
         let channel = client.realtime.channel(channelName)
         
-        // Supabase Swift V2 API: use postgresChange for database events
-        // The V2 API uses channel.onPostgresChange with a filter parameter
+        // Subscribe to realtime events using Supabase Swift V2 API
         Task {
             do {
-                await channel.onPostgresChange(
-                    filter: PostgresChangeFilter(
-                        event: "*",
-                        schema: "public",
-                        table: "*",
-                        filter: "project_id=eq.\(projectId)"
-                    )
-                ) { _ in
+                for await message in channel.postgresChange(AnyAction.self, schema: "public") {
                     self.debouncer.debounce(key: "change-\(projectId)") { onUpdate() }
                 }
                 try await channel.subscribe()
@@ -67,9 +59,4 @@ private final class Debouncer {
             RunLoop.main.add(timers[key]!, forMode: .common)
         }
     }
-}
-
-@available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
-extension Logger {
-    static let realtime = Logger(subsystem: "com.cortexbuild.BuildTrack", category: "realtime")
 }

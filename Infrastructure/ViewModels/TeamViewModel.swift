@@ -63,7 +63,11 @@ final class TeamViewModel {
     
     func workersExpiringSoon(days: Int = 30) -> [Worker] {
         let cutoff = Date().addingTimeInterval(TimeInterval(days * 86400))
-        return workers.filter { worker in
+        let descriptor = FetchDescriptor<Worker>(
+            predicate: #Predicate { $0.certifications.count > 0 }
+        )
+        guard let fetched = try? modelContext.fetch(descriptor) else { return [] }
+        return fetched.filter { worker in
             worker.certifications.contains(where: { $0.expiryDate < cutoff })
         }
     }
