@@ -1,4 +1,5 @@
 disabled_rules:
+  - attributes
   - trailing_whitespace
   - vertical_whitespace_opening_braces
   - vertical_whitespace_closing_braces
@@ -142,7 +143,6 @@ attributes:
     - "@Attribute"
     - "@Query"
     - "@Published"
-    - "@State"
     - "@StateObject"
     - "@ObservedObject"
     - "@Environment"
