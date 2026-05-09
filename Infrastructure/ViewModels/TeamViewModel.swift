@@ -8,9 +8,9 @@ final class TeamViewModel {
     var selectedRole: WorkerRole?
     var isLoading = false
     var error: String?
-    
+
     private let modelContext: ModelContext
-    
+
     var filteredWorkers: [Worker] {
         var result = workers
         if let role = selectedRole {
@@ -24,12 +24,12 @@ final class TeamViewModel {
         }
         return result.sorted(using: KeyPathComparator(\.name))
     }
-    
+
     init(context: ModelContext? = nil) {
         self.modelContext = context ?? SwiftDataStack.shared.mainContext
         loadWorkers()
     }
-    
+
     func loadWorkers() {
         isLoading = true
         do {
@@ -40,17 +40,17 @@ final class TeamViewModel {
         }
         isLoading = false
     }
-    
-    func addWorker(_ worker: Worker) {
+
+    func saveWorker(_ worker: Worker) {
         modelContext.insert(worker)
         do {
             try modelContext.save()
-            workers.append(worker)
+            loadWorkers()
         } catch {
             self.error = error.localizedDescription
         }
     }
-    
+
     func deleteWorker(_ worker: Worker) {
         modelContext.delete(worker)
         do {
@@ -60,8 +60,8 @@ final class TeamViewModel {
             self.error = error.localizedDescription
         }
     }
-    
-        func workersExpiringSoon(days: Int = 30) -> [Worker] {
+
+    func workersExpiringSoon(days: Int = 30) -> [Worker] {
         let cutoff = Date().addingTimeInterval(TimeInterval(days * 86400))
         var result = [Worker]()
         for worker in workers {
@@ -70,10 +70,6 @@ final class TeamViewModel {
                     result.append(worker)
                     break
                 }
-            }
-        }
-        return result
-    }
             }
         }
         return result
