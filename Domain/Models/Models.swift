@@ -117,6 +117,20 @@ enum ProjectStatus: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
+    var rawValueForSupabase: String {
+        switch self {
+        case .onHold: return "on-hold"
+        default: return rawValue
+        }
+    }
+    
+    init?(fromSupabase value: String) {
+        switch value {
+        case "on-hold": self = .onHold
+        default: self.init(rawValue: value)
+        }
+    }
+    
     var label: String {
         switch self {
         case .planning: "Planning"
@@ -536,7 +550,9 @@ enum WorkerRole: String, CaseIterable, Codable {
     
     var rawValueForSupabase: String {
         switch self {
-        case .operator: return "operator"
+        case .labourer: return "laborer"
+        case .supervisor: return "foreman"
+        case .operator: return "safety-officer"
         case .safetyOfficer: return "safety-officer"
         default: return rawValue
         }
@@ -544,8 +560,8 @@ enum WorkerRole: String, CaseIterable, Codable {
     
     init?(fromSupabase value: String) {
         switch value {
-        case "safety-officer": self = .safetyOfficer
-        case "operator", "labourer": self.init(rawValue: value)
+        case "laborer": self = .labourer
+        case "safety-officer": self = .operator
         default: self.init(rawValue: value)
         }
     }
@@ -637,7 +653,7 @@ struct SupabaseProject: Codable {
         case spentToDate = "spent_to_date"
         case startDate = "start_date"
         case endDate = "end_date"
-        case locationName = "location_name"
+        case locationName = "location"
         case clientName = "client_name"
         case createdAt = "created_at"
         case updatedAt = "updated_at"

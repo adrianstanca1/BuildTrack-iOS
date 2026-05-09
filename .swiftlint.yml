@@ -137,13 +137,13 @@ identifier_name:
 
 attributes:
   always_on_line_above:
-    - @Model
-    - @Relationship
-    - @Attribute
-    - @Query
-    - @Published
-    - @State
-    - @StateObject
+    - "@Model"
+    - "@Relationship"
+    - "@Attribute"
+    - "@Query"
+    - "@Published"
+    - "@State"
+    - "@State"Object
     - @ObservedObject
     - @Environment
     - @EnvironmentObject

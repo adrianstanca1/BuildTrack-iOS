@@ -558,6 +558,8 @@ struct ProjectsListView: View {
 @Observable
 final class ProjectsListViewModel {
     var loadingState: LoadingState = .idle
+    
+    nonisolated init() {}
     var selectedFilter: ProjectStatusFilter = .all
     var sortOrder: ProjectSortOrder = .date
     var searchQuery = ""

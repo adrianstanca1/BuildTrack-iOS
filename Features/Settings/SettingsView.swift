@@ -441,8 +441,9 @@ struct ExportDataView: View {
 
 // MARK: - View Model
 
-@MainActor
 final class SettingsViewModel: ObservableObject {
+    nonisolated init() {}
+    
     @AppStorage("isDarkMode") var isDarkMode = false
     @AppStorage("wifiOnlySync") var wifiOnlySync = true
     @AppStorage("offlineMode") var offlineMode = false

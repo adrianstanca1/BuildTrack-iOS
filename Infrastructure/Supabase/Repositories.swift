@@ -144,7 +144,7 @@ extension SupabaseProject {
             id: id,
             name: name,
             descriptionText: descriptionText ?? "",
-            status: ProjectStatus(rawValue: statusRaw) ?? .planning,
+            status: ProjectStatus(fromSupabase: statusRaw) ?? .planning,
             budget: budget,
             spentToDate: spentToDate ?? 0,
             progress: progress ?? 0,
@@ -201,7 +201,7 @@ struct SupabaseProjectPayload: Codable {
         case spentToDate = "spent_to_date"
         case startDate = "start_date"
         case endDate = "end_date"
-        case locationName = "location_name"
+        case locationName = "location"
         case clientName = "client_name"
     }
     
@@ -212,7 +212,7 @@ struct SupabaseProjectPayload: Codable {
         self.id = project.id.uuidString
         self.name = project.name
         self.description = project.descriptionText.isEmpty ? nil : project.descriptionText
-        self.status = project.statusRaw
+        self.status = project.status.rawValueForSupabase
         self.budget = project.budget
         self.spentToDate = project.spentToDate
         self.progress = project.progress
