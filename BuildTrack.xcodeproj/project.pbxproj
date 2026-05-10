@@ -244,6 +244,7 @@
 				39B89C6CC0B5DAF540D3E436 /* Config-Development.xcconfig */,
 			);
 			name = BuildTrack;
+			path = BuildTrack;
 			sourceTree = "<group>";
 		};
 		9349E8539AE6940CC5E42812 /* Theme */ = {
