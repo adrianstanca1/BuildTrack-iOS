@@ -626,6 +626,332 @@ enum NotificationType: String, Codable, Sendable {
     }
 }
 
+// MARK: - PunchItem
+@Model
+final class PunchItem: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var descriptionText: String
+    var statusRaw: String
+    var severityRaw: String
+    var location: String
+    var assignee: String
+    var photoUrls: [String]
+    var projectId: UUID?
+    var createdAt: Date
+    var resolvedAt: Date?
+
+    var status: PunchItemStatus {
+        get { PunchItemStatus(rawValue: statusRaw) ?? .open }
+        set { statusRaw = newValue.rawValue }
+    }
+
+    var severity: PunchItemSeverity {
+        get { PunchItemSeverity(rawValue: severityRaw) ?? .minor }
+        set { severityRaw = newValue.rawValue }
+    }
+
+    init(
+        id: UUID = UUID(),
+        title: String,
+        descriptionText: String = "",
+        status: PunchItemStatus = .open,
+        severity: PunchItemSeverity = .minor,
+        location: String = "",
+        assignee: String = "",
+        photoUrls: [String] = [],
+        projectId: UUID? = nil,
+        createdAt: Date = Date(),
+        resolvedAt: Date? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.descriptionText = descriptionText
+        self.statusRaw = status.rawValue
+        self.severityRaw = severity.rawValue
+        self.location = location
+        self.assignee = assignee
+        self.photoUrls = photoUrls
+        self.projectId = projectId
+        self.createdAt = createdAt
+        self.resolvedAt = resolvedAt
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, title, descriptionText, statusRaw, severityRaw
+        case location, assignee, photoUrls, projectId, createdAt, resolvedAt
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.descriptionText = try container.decodeIfPresent(String.self, forKey: .descriptionText) ?? ""
+        self.statusRaw = try container.decode(String.self, forKey: .statusRaw)
+        self.severityRaw = try container.decode(String.self, forKey: .severityRaw)
+        self.location = try container.decodeIfPresent(String.self, forKey: .location) ?? ""
+        self.assignee = try container.decodeIfPresent(String.self, forKey: .assignee) ?? ""
+        self.photoUrls = try container.decodeIfPresent([String].self, forKey: .photoUrls) ?? []
+        self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.resolvedAt = try container.decodeIfPresent(Date.self, forKey: .resolvedAt)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(descriptionText, forKey: .descriptionText)
+        try container.encode(statusRaw, forKey: .statusRaw)
+        try container.encode(severityRaw, forKey: .severityRaw)
+        try container.encode(location, forKey: .location)
+        try container.encode(assignee, forKey: .assignee)
+        try container.encode(photoUrls, forKey: .photoUrls)
+        try container.encodeIfPresent(projectId, forKey: .projectId)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encodeIfPresent(resolvedAt, forKey: .resolvedAt)
+    }
+}
+
+enum PunchItemStatus: String, CaseIterable, Codable {
+    case open = "open", inProgress = "in_progress", resolved = "resolved", closed = "closed"
+
+    var label: String {
+        switch self {
+        case .open: return "Open"
+        case .inProgress: return "In Progress"
+        case .resolved: return "Resolved"
+        case .closed: return "Closed"
+        }
+    }
+
+    var color: String {
+        switch self {
+        case .open: return "red"
+        case .inProgress: return "orange"
+        case .resolved: return "green"
+        case .closed: return "gray"
+        }
+    }
+}
+
+enum PunchItemSeverity: String, CaseIterable, Codable {
+    case cosmetic = "cosmetic", minor = "minor", major = "major", critical = "critical"
+
+    var label: String {
+        switch self {
+        case .cosmetic: return "Cosmetic"
+        case .minor: return "Minor"
+        case .major: return "Major"
+        case .critical: return "Critical"
+        }
+    }
+}
+
+// MARK: - RFI
+@Model
+final class RFI: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var descriptionText: String
+    var statusRaw: String
+    var priorityRaw: String
+    var assignedTo: String
+    var response: String
+    var projectId: UUID?
+    var createdAt: Date
+    var respondedAt: Date?
+
+    var status: RFIStatus {
+        get { RFIStatus(rawValue: statusRaw) ?? .draft }
+        set { statusRaw = newValue.rawValue }
+    }
+
+    var priority: RFIPriority {
+        get { RFIPriority(rawValue: priorityRaw) ?? .medium }
+        set { priorityRaw = newValue.rawValue }
+    }
+
+    init(
+        id: UUID = UUID(),
+        title: String,
+        descriptionText: String = "",
+        status: RFIStatus = .draft,
+        priority: RFIPriority = .medium,
+        assignedTo: String = "",
+        response: String = "",
+        projectId: UUID? = nil,
+        createdAt: Date = Date(),
+        respondedAt: Date? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.descriptionText = descriptionText
+        self.statusRaw = status.rawValue
+        self.priorityRaw = priority.rawValue
+        self.assignedTo = assignedTo
+        self.response = response
+        self.projectId = projectId
+        self.createdAt = createdAt
+        self.respondedAt = respondedAt
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, title, descriptionText, statusRaw, priorityRaw
+        case assignedTo, response, projectId, createdAt, respondedAt
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.descriptionText = try container.decodeIfPresent(String.self, forKey: .descriptionText) ?? ""
+        self.statusRaw = try container.decode(String.self, forKey: .statusRaw)
+        self.priorityRaw = try container.decode(String.self, forKey: .priorityRaw)
+        self.assignedTo = try container.decodeIfPresent(String.self, forKey: .assignedTo) ?? ""
+        self.response = try container.decodeIfPresent(String.self, forKey: .response) ?? ""
+        self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.respondedAt = try container.decodeIfPresent(Date.self, forKey: .respondedAt)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(descriptionText, forKey: .descriptionText)
+        try container.encode(statusRaw, forKey: .statusRaw)
+        try container.encode(priorityRaw, forKey: .priorityRaw)
+        try container.encode(assignedTo, forKey: .assignedTo)
+        try container.encode(response, forKey: .response)
+        try container.encodeIfPresent(projectId, forKey: .projectId)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encodeIfPresent(respondedAt, forKey: .respondedAt)
+    }
+}
+
+enum RFIStatus: String, CaseIterable, Codable {
+    case draft = "draft", submitted = "submitted", underReview = "under_review", approved = "approved", rejected = "rejected", closed = "closed"
+
+    var label: String {
+        switch self {
+        case .draft: return "Draft"
+        case .submitted: return "Submitted"
+        case .underReview: return "Under Review"
+        case .approved: return "Approved"
+        case .rejected: return "Rejected"
+        case .closed: return "Closed"
+        }
+    }
+
+    var color: String {
+        switch self {
+        case .draft: return "gray"
+        case .submitted: return "blue"
+        case .underReview: return "orange"
+        case .approved: return "green"
+        case .rejected: return "red"
+        case .closed: return "gray"
+        }
+    }
+}
+
+enum RFIPriority: String, CaseIterable, Codable {
+    case low = "low", medium = "medium", high = "high", urgent = "urgent"
+
+    var label: String {
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Medium"
+        case .high: return "High"
+        case .urgent: return "Urgent"
+        }
+    }
+}
+
+// MARK: - Drawing
+@Model
+final class Drawing: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var drawingNumber: String
+    var revision: String
+    var statusRaw: String
+    var fileUrl: String
+    var projectId: UUID?
+    var createdAt: Date
+    var updatedAt: Date
+
+    var status: DrawingStatus {
+        get { DrawingStatus(rawValue: statusRaw) ?? .active }
+        set { statusRaw = newValue.rawValue }
+    }
+
+    init(
+        id: UUID = UUID(),
+        title: String,
+        drawingNumber: String = "",
+        revision: String = "A",
+        status: DrawingStatus = .active,
+        fileUrl: String = "",
+        projectId: UUID? = nil,
+        createdAt: Date = Date(),
+        updatedAt: Date = Date()
+    ) {
+        self.id = id
+        self.title = title
+        self.drawingNumber = drawingNumber
+        self.revision = revision
+        self.statusRaw = status.rawValue
+        self.fileUrl = fileUrl
+        self.projectId = projectId
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, title, drawingNumber, revision, statusRaw, fileUrl, projectId, createdAt, updatedAt
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.drawingNumber = try container.decodeIfPresent(String.self, forKey: .drawingNumber) ?? ""
+        self.revision = try container.decodeIfPresent(String.self, forKey: .revision) ?? "A"
+        self.statusRaw = try container.decode(String.self, forKey: .statusRaw)
+        self.fileUrl = try container.decodeIfPresent(String.self, forKey: .fileUrl) ?? ""
+        self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(drawingNumber, forKey: .drawingNumber)
+        try container.encode(revision, forKey: .revision)
+        try container.encode(statusRaw, forKey: .statusRaw)
+        try container.encode(fileUrl, forKey: .fileUrl)
+        try container.encodeIfPresent(projectId, forKey: .projectId)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+    }
+}
+
+enum DrawingStatus: String, CaseIterable, Codable {
+    case active = "active", superseded = "superseded", archived = "archived"
+
+    var label: String {
+        switch self {
+        case .active: return "Active"
+        case .superseded: return "Superseded"
+        case .archived: return "Archived"
+        }
+    }
+}
+
 // MARK: - Supabase Models for Decoding
 
 struct SupabaseProject: Codable {
