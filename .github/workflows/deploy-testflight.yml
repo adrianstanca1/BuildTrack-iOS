@@ -32,7 +32,6 @@ jobs:
           echo "Available Xcode versions:"
           ls /Applications/ | grep Xcode | sort
           echo ""
-          # Use the latest Xcode (last in sorted list)
           LATEST=$(ls /Applications/ | grep Xcode | sort | tail -1)
           echo "Selecting: $LATEST"
           sudo xcode-select -s "/Applications/$LATEST/Contents/Developer"
@@ -98,7 +97,7 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>ro.stancainvest.buildtrack</key>
-              <string>BuildTrack App Store v3</string>
+              <string>BuildTrack App Store CI</string>
             </dict>
             <key>signingCertificate</key>
             <string>iPhone Distribution: Adrian Stanca (4G3G5MX9BH)</string>
@@ -110,6 +109,33 @@ jobs:
             -archivePath "build/BuildTrack.xcarchive" \
             -exportPath "build/BuildTrack.ipa" \
             -exportOptionsPlist build/ExportOptions.plist
+
+      - name: Inspect IPA
+        run: |
+          IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" -type f | head -1)
+          echo "=== IPA Info ==="
+          ls -la "$IPA_PATH"
+          echo ""
+          echo "=== Unzip and inspect ==="
+          mkdir -p /tmp/ipa_inspect
+          unzip -q "$IPA_PATH" -d /tmp/ipa_inspect
+          echo "Contents:"
+          find /tmp/ipa_inspect -maxdepth 3 -type f | head -30
+          echo ""
+          echo "=== Info.plist ==="
+          cat /tmp/ipa_inspect/Payload/BuildTrack.app/Info.plist | head -50
+          echo ""
+          echo "=== Assets.car ==="
+          ls -la /tmp/ipa_inspect/Payload/BuildTrack.app/Assets.car 2>/dev/null || echo "No Assets.car"
+          echo ""
+          echo "=== AppIcon files ==="
+          find /tmp/ipa_inspect/Payload/BuildTrack.app -name "*AppIcon*" -o -name "*appicon*" 2>/dev/null
+          echo ""
+          echo "=== Bundle ID ==="
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" /tmp/ipa_inspect/Payload/BuildTrack.app/Info.plist
+          echo ""
+          echo "=== CFBundleIconName ==="
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" /tmp/ipa_inspect/Payload/BuildTrack.app/Info.plist 2>/dev/null || echo "CFBundleIconName NOT FOUND"
 
       - name: Setup App Store Connect API key
         run: |
@@ -141,3 +167,4 @@ jobs:
         run: |
           security delete-keychain "$RUNNER_TEMP/buildtrack.keychain" || true
           rm -rf ~/.appstoreconnect/private_keys || true
+          rm -rf /tmp/ipa_inspect || true
