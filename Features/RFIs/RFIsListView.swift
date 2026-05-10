@@ -61,7 +61,7 @@ struct RFIsListView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    FilterChip(title: "All", isSelected: statusFilter == nil) { statusFilter = nil }
+                    FilterChip(label: "All", isSelected: statusFilter == nil) { statusFilter = nil }
                     ForEach(RFIStatus.allCases) { status in
                         FilterChip(title: status.label, isSelected: statusFilter == status) { statusFilter = status }
                     }
@@ -86,7 +86,7 @@ struct RFIsListView: View {
                 EmptyStateView(
                     icon: "doc.text.magnifyingglass",
                     title: "No RFIs Found",
-                    subtitle: searchText.isEmpty ? "Create your first RFI to get started" : "Try adjusting your search"
+                    message: searchText.isEmpty ? "Create your first RFI to get started" : "Try adjusting your search"
                 )
             } else {
                 ForEach(filteredRFIs) { rfi in
@@ -106,7 +106,7 @@ struct RFICard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                StatusBadge(text: rfi.status.label, color: statusColor(rfi.status))
+                RFIStatusBadge(status: rfi.status)
                 Spacer()
                 PriorityBadge(text: rfi.priority.label, color: priorityColor(rfi.priority))
             }

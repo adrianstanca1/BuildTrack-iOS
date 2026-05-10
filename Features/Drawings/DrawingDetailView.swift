@@ -37,7 +37,7 @@ struct DrawingDetailView: View {
     var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                StatusBadge(text: drawing.status.label, color: statusColor(drawing.status))
+                DrawingStatusBadge(status: drawing.status)
                 Spacer()
                 Text("Rev \(drawing.revision)")
                     .font(.title3.weight(.bold))

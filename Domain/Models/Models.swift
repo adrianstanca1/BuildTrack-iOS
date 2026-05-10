@@ -711,7 +711,7 @@ enum PunchItemStatus: String, CaseIterable, Codable {
     }
 }
 enum PunchItemSeverity: String, CaseIterable, Codable {
-    case cosmetic = "cosmetic", minor = "minor", major = "major", critical = "critical"
+    case cosmetic, minor, major, critical
     var label: String {
         switch self {
         case .cosmetic: return "Cosmetic"
@@ -820,7 +820,7 @@ enum RFIStatus: String, CaseIterable, Codable {
     }
 }
 enum RFIPriority: String, CaseIterable, Codable {
-    case low = "low", medium = "medium", high = "high", urgent = "urgent"
+    case low, medium, high, urgent
     var label: String {
         switch self {
         case .low: return "Low"
@@ -896,7 +896,7 @@ final class Drawing: Identifiable, Codable {
     }
 }
 enum DrawingStatus: String, CaseIterable, Codable {
-    case active = "active", superseded = "superseded", archived = "archived"
+    case active, superseded, archived
     var label: String {
         switch self {
         case .active: return "Active"

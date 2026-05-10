@@ -43,7 +43,7 @@ struct RFIDetailView: View {
     var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                StatusBadge(text: rfi.status.label, color: statusColor(rfi.status))
+                RFIStatusBadge(status: rfi.status)
                 Spacer()
                 PriorityBadge(text: rfi.priority.label, color: priorityColor(rfi.priority))
             }

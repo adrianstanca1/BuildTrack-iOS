@@ -42,7 +42,7 @@ struct RFIFormView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Priority").font(.caption).foregroundStyle(.secondary)
                         Picker("Priority", selection: $priority) {
-                            ForEach(RFIPriority.allCases) { p in
+                            ForEach(RFIPriority.allCases, id: \self) { p in
                                 Text(p.label).tag(p)
                             }
                         }

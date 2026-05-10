@@ -85,10 +85,10 @@ struct PunchItemDetailView: View {
                 CardView {
                     SectionHeader(title: "Details")
                     VStack(spacing: 12) {
-                        DetailRow(label: "Created", value: punchItem.createdAt.formatted(date: .abbreviated, time: .shortened))
+                        DetailRow(label: "Created", value: punchItem.createdAt.formatted(date: .abbreviated, time: .shortened), icon: "calendar")
                         if let resolved = punchItem.resolvedAt {
                             Divider()
-                            DetailRow(label: "Resolved", value: resolved.formatted(date: .abbreviated, time: .shortened))
+                            DetailRow(label: "Resolved", value: resolved.formatted(date: .abbreviated, time: .shortened), icon: "checkmark.circle")
                         }
                     }
                 }

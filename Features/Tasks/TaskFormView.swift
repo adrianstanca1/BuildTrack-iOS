@@ -180,7 +180,7 @@ struct TaskFormView: View {
                 WorkerPickerView(selectedWorker: $assignedTo)
             }
             .sheet(isPresented: $showProjectPicker) {
-                ProjectPickerView(selectedProject: $selectedProject)
+                ProjectPicker(selectedProject: $selectedProject)
             }
         }
     }

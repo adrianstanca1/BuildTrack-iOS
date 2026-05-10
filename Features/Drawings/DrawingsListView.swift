@@ -56,7 +56,7 @@ struct DrawingsListView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    FilterChip(title: "All", isSelected: statusFilter == nil) { statusFilter = nil }
+                    FilterChip(label: "All", isSelected: statusFilter == nil) { statusFilter = nil }
                     ForEach(DrawingStatus.allCases) { status in
                         FilterChip(title: status.label, isSelected: statusFilter == status) { statusFilter = status }
                     }
@@ -81,7 +81,7 @@ struct DrawingsListView: View {
                 EmptyStateView(
                     icon: "doc.text.magnifyingglass",
                     title: "No Drawings Found",
-                    subtitle: searchText.isEmpty ? "Add your first drawing to get started" : "Try adjusting your search"
+                    message: searchText.isEmpty ? "Add your first drawing to get started" : "Try adjusting your search"
                 )
             } else {
                 ForEach(filteredDrawings) { drawing in
@@ -102,7 +102,7 @@ struct DrawingCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                StatusBadge(text: drawing.status.label, color: statusColor(drawing.status))
+                DrawingStatusBadge(status: drawing.status)
                 Spacer()
                 Text("Rev \(drawing.revision)")
                     .font(.caption.weight(.semibold))

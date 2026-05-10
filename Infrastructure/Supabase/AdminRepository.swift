@@ -124,7 +124,7 @@ struct AdminRepository {
         fetchSubscription: {
             return SubscriptionTier.professional
         },
-        updateSubscription: { tierId in
+        updateSubscription: { _ in
             // Placeholder for Stripe/Billing integration
         }
     )
