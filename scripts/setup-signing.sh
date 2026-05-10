@@ -32,8 +32,11 @@ print(f"Key: {os.path.getsize('/tmp/distribution.key')} bytes")
 print(f"Prov: {os.path.getsize('/tmp/buildtrack.mobileprovision')} bytes")
 PYEOF
 
+# Convert DER cert to PEM (openssl pkcs12 needs PEM)
+openssl x509 -inform DER -in /tmp/distribution.cer -out /tmp/distribution.pem
+
 # Combine into P12
-openssl pkcs12 -export -in /tmp/distribution.cer -inkey /tmp/distribution.key \
+openssl pkcs12 -export -in /tmp/distribution.pem -inkey /tmp/distribution.key \
   -out /tmp/distribution.p12 -name "BuildTrack Distribution" \
   -passout pass:buildtrack123
 
