@@ -27,16 +27,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Select latest Xcode
+      - name: Select Xcode 26.3
         run: |
           echo "Available Xcode versions:"
           ls /Applications/ | grep Xcode | sort
           echo ""
-          LATEST=Xcode_26.3
-          echo "Selecting: Xcode_26.3"
+          echo "Selecting Xcode 26.3 explicitly..."
           sudo xcode-select -s "/Applications/Xcode_26.3.app/Contents/Developer"
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
+          xcrun --sdk iphoneos --show-sdk-build-version
 
       - name: Restore SPM cache
         uses: actions/cache@v4
@@ -97,7 +97,7 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>ro.stancainvest.buildtrack</key>
-              <string>BuildTrack App Store v3</string>
+              <string>BuildTrack App Store CI</string>
             </dict>
             <key>signingCertificate</key>
             <string>iPhone Distribution: Adrian Stanca (4G3G5MX9BH)</string>
@@ -124,12 +124,6 @@ jobs:
           echo ""
           echo "=== Info.plist ==="
           cat /tmp/ipa_inspect/Payload/BuildTrack.app/Info.plist | head -50
-          echo ""
-          echo "=== Assets.car ==="
-          ls -la /tmp/ipa_inspect/Payload/BuildTrack.app/Assets.car 2>/dev/null || echo "No Assets.car"
-          echo ""
-          echo "=== AppIcon files ==="
-          find /tmp/ipa_inspect/Payload/BuildTrack.app -name "*AppIcon*" -o -name "*appicon*" 2>/dev/null
           echo ""
           echo "=== Bundle ID ==="
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" /tmp/ipa_inspect/Payload/BuildTrack.app/Info.plist
