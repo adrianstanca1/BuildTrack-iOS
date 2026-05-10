@@ -46,6 +46,18 @@
 			isa = PBXBuildFile;
 			fileRef = 042EE75D0D4F64BDD3BA2065 /* Assets.xcassets */;
 		};
+		FB5A7178D2C6438DB52277CD /* PunchItemsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358AB8B0EE7C4F8397B3A2C7; };
+		27566F60BD164D1C8B14CFCC /* PunchItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF9473B53F64361B06D23FE; };
+		D576040C9B074B6498E67F5E /* PunchItemFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17A157E5A6143CEB820D0B0; };
+		0CF8C0879DBF4FD5BF21A7D3 /* RFIsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A86B887E5E4D4B9DD3456C; };
+		92EE119A9B5542BAABA0E154 /* RFIDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3814CD8B5B5C48198252EAD9; };
+		BD6C11F4975449EFB9E23129 /* RFIFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94D638FD4A940DD96E14DB7; };
+		E541007E28354B6BA5639F68 /* DrawingsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2297BBD5154FC9A4ACA240; };
+		F45769E99D274E0A87F5565F /* DrawingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C79C12DF3436B86629816; };
+		EC0C69FA419F41348FB93786 /* DrawingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3B8B8B331A4825B010EBEE; };
+		0169036897B64648A72C4C09 /* PunchItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A727BE6FAD45E88B837F69; };
+		EDFCB9A124954AD4A2A939F4 /* RFIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A082AE95DAC64B1DA9DC881A; };
+		B1B174FF01694842A4F3134A /* DrawingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124431F554804B86AF6C2A41; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +108,18 @@
 			path = Assets.xcassets;
 			sourceTree = "<group>";
 		};
+		358AB8B0EE7C4F8397B3A2C7 /* PunchItemsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemsListView.swift; path = Features/PunchItems/PunchItemsListView.swift; sourceTree = "<group\>"; };
+		7AF9473B53F64361B06D23FE /* PunchItemDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemDetailView.swift; path = Features/PunchItems/PunchItemDetailView.swift; sourceTree = "<group\>"; };
+		C17A157E5A6143CEB820D0B0 /* PunchItemFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemFormView.swift; path = Features/PunchItems/PunchItemFormView.swift; sourceTree = "<group\>"; };
+		93A86B887E5E4D4B9DD3456C /* RFIsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIsListView.swift; path = Features/RFIs/RFIsListView.swift; sourceTree = "<group\>"; };
+		3814CD8B5B5C48198252EAD9 /* RFIDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIDetailView.swift; path = Features/RFIs/RFIDetailView.swift; sourceTree = "<group\>"; };
+		E94D638FD4A940DD96E14DB7 /* RFIFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIFormView.swift; path = Features/RFIs/RFIFormView.swift; sourceTree = "<group\>"; };
+		CC2297BBD5154FC9A4ACA240 /* DrawingsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingsListView.swift; path = Features/Drawings/DrawingsListView.swift; sourceTree = "<group\>"; };
+		653C79C12DF3436B86629816 /* DrawingDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingDetailView.swift; path = Features/Drawings/DrawingDetailView.swift; sourceTree = "<group\>"; };
+		FF3B8B8B331A4825B010EBEE /* DrawingFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingFormView.swift; path = Features/Drawings/DrawingFormView.swift; sourceTree = "<group\>"; };
+		F8A727BE6FAD45E88B837F69 /* PunchItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemViewModel.swift; path = Infrastructure/ViewModels/PunchItemViewModel.swift; sourceTree = "<group\>"; };
+		A082AE95DAC64B1DA9DC881A /* RFIViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIViewModel.swift; path = Infrastructure/ViewModels/RFIViewModel.swift; sourceTree = "<group\>"; };
+		124431F554804B86AF6C2A41 /* DrawingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = Infrastructure/ViewModels/DrawingViewModel.swift; sourceTree = "<group\>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +221,9 @@
 				0EF88DF21B74CA8E232E8CFA /* Tasks */,
 				8BDBF604D517C9B1E0BC3BDE /* Team */,
 				4AFB13B0DE78A04F7950499F /* Onboarding */,
+				EA98F54D8AE84784BFE99D48 /* PunchItems */,
+				7EFDC5A798104043A0B4AD62 /* RFIs */,
+				2ABFA28970774DB68B33006D /* Drawings */,
 			);
 			name = Features;
 			sourceTree = "<group>";
@@ -370,8 +397,47 @@
 				137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */,
 				A95B1A16A1D85BA5C2B2A8DE /* TaskViewModel.swift */,
 				8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */,
+				F8A727BE6FAD45E88B837F69 /* PunchItemViewModel.swift */,
+				A082AE95DAC64B1DA9DC881A /* RFIViewModel.swift */,
+				124431F554804B86AF6C2A41 /* DrawingViewModel.swift */,
 			);
 			name = ViewModels;
+			sourceTree = "<group>";
+		};
+
+		EA98F54D8AE84784BFE99D48 /* PunchItems */ = {
+			isa = PBXGroup;
+			children = (
+				358AB8B0EE7C4F8397B3A2C7 /* PunchItemsListView.swift */
+				7AF9473B53F64361B06D23FE /* PunchItemDetailView.swift */
+				C17A157E5A6143CEB820D0B0 /* PunchItemFormView.swift */
+			);
+			name = PunchItems;
+			path = Features/PunchItems;
+			sourceTree = "<group>";
+		};
+
+		7EFDC5A798104043A0B4AD62 /* RFIs */ = {
+			isa = PBXGroup;
+			children = (
+				93A86B887E5E4D4B9DD3456C /* RFIsListView.swift */
+				3814CD8B5B5C48198252EAD9 /* RFIDetailView.swift */
+				E94D638FD4A940DD96E14DB7 /* RFIFormView.swift */
+			);
+			name = RFIs;
+			path = Features/RFIs;
+			sourceTree = "<group>";
+		};
+
+		2ABFA28970774DB68B33006D /* Drawings */ = {
+			isa = PBXGroup;
+			children = (
+				CC2297BBD5154FC9A4ACA240 /* DrawingsListView.swift */
+				653C79C12DF3436B86629816 /* DrawingDetailView.swift */
+				FF3B8B8B331A4825B010EBEE /* DrawingFormView.swift */
+			);
+			name = Drawings;
+			path = Features/Drawings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
