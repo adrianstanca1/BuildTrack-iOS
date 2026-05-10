@@ -83,7 +83,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store</string>
+            <string>app-store-connect</string>
             <key>teamID</key>
             <string>4G3G5MX9BH</string>
             <key>signingStyle</key>
