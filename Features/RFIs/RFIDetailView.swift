@@ -60,10 +60,10 @@ struct RFIDetailView: View {
 
     var detailSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            DetailRow(label: "Assigned To", value: rfi.assignedTo.isEmpty ? "Unassigned" : rfi.assignedTo, icon: "person")
-            DetailRow(label: "Created", value: rfi.createdAt.formatted(date: .abbreviated, time: .shortened), icon: "calendar")
+            DetailRow(icon: "person", label: "Assigned To", value: rfi.assignedTo.isEmpty ? "Unassigned" : rfi.assignedTo)
+            DetailRow(icon: "calendar", label: "Created", value: rfi.createdAt.formatted(date: .abbreviated, time: .shortened))
             if let respondedAt = rfi.respondedAt {
-                DetailRow(label: "Responded", value: respondedAt.formatted(date: .abbreviated, time: .shortened), icon: "checkmark.circle")
+                DetailRow(icon: "checkmark.circle", label: "Responded", value: respondedAt.formatted(date: .abbreviated, time: .shortened))
             }
         }
         .padding(16)

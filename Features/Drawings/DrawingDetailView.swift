@@ -60,11 +60,11 @@ struct DrawingDetailView: View {
     }
     var detailSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            DetailRow(label: "Status", value: drawing.status.label, icon: "doc")
-            DetailRow(label: "Drawing Number", value: drawing.drawingNumber.isEmpty ? "—" : drawing.drawingNumber, icon: "number")
-            DetailRow(label: "Revision", value: drawing.revision, icon: "arrow.counterclockwise")
-            DetailRow(label: "Created", value: drawing.createdAt.formatted(date: .abbreviated, time: .shortened), icon: "calendar")
-            DetailRow(label: "Updated", value: drawing.updatedAt.formatted(date: .abbreviated, time: .shortened), icon: "arrow.clockwise")
+            DetailRow(icon: "doc", label: "Status", value: drawing.status.label)
+            DetailRow(icon: "number", label: "Drawing Number", value: drawing.drawingNumber.isEmpty ? "—" : drawing.drawingNumber)
+            DetailRow(icon: "arrow.counterclockwise", label: "Revision", value: drawing.revision)
+            DetailRow(icon: "calendar", label: "Created", value: drawing.createdAt.formatted(date: .abbreviated, time: .shortened))
+            DetailRow(icon: "arrow.clockwise", label: "Updated", value: drawing.updatedAt.formatted(date: .abbreviated, time: .shortened))
         }
         .padding(16)
         .background(Color(.secondarySystemGroupedBackground))
