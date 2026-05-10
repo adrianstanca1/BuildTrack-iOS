@@ -113,16 +113,30 @@ struct DrawingStatusBadge: View {
 }
 
 struct PriorityBadge: View {
-    let priority: TaskPriority
+    let priority: TaskPriority?
+    let text: String?
+    let color: Color?
+    
+    init(priority: TaskPriority) {
+        self.priority = priority
+        self.text = nil
+        self.color = nil
+    }
+    
+    init(text: String, color: Color) {
+        self.priority = nil
+        self.text = text
+        self.color = color
+    }
     
     var body: some View {
-        Text(priority.label)
+        Text(text ?? priority?.label ?? "")
             .font(.caption2)
             .fontWeight(.semibold)
-            .foregroundStyle(BuildTrackColors.priorityColor(priority))
+            .foregroundStyle(color ?? BuildTrackColors.priorityColor(priority ?? .medium))
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
-            .background(BuildTrackColors.priorityColor(priority).opacity(0.12))
+            .background((color ?? BuildTrackColors.priorityColor(priority ?? .medium)).opacity(0.12))
             .clipShape(Capsule())
     }
 }
@@ -350,6 +364,14 @@ struct DetailRow: View {
     let label: String
     let value: String
     let icon: String
+    let valueColor: Color?
+    
+    init(icon: String, label: String, value: String, valueColor: Color? = nil) {
+        self.icon = icon
+        self.label = label
+        self.value = value
+        self.valueColor = valueColor
+    }
     
     var body: some View {
         HStack(spacing: 12) {
@@ -365,7 +387,7 @@ struct DetailRow: View {
                     .foregroundStyle(Color(.secondaryLabel))
                 Text(value)
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color(.label))
+                    .foregroundStyle(valueColor ?? Color(.label))
             }
             Spacer()
         }
