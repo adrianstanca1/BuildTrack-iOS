@@ -96,39 +96,7 @@ struct RFIFormView: View {
                 }
             }
             .sheet(isPresented: $showProjectPicker) {
-                ProjectPickerView(selectedProject: $selectedProject, projects: projects)
-            }
-        }
-    }
-}
-
-struct ProjectPickerView: View {
-    @Binding var selectedProject: Project?
-    let projects: [Project]
-    @Environment(\.dismiss) private var dismiss
-    var body: some View {
-        NavigationStack {
-            List(projects) { project in
-                Button {
-                    selectedProject = project
-                    dismiss()
-                } label: {
-                    HStack {
-                        Text(project.name)
-                        Spacer()
-                        if selectedProject?.id == project.id {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.accent)
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Select Project")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
+                ProjectPicker(selectedProject: $selectedProject, projects: projects)
             }
         }
     }

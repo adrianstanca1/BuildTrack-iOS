@@ -116,7 +116,7 @@ struct PunchItemFormView: View {
                 }
             }
             .sheet(isPresented: $showProjectPicker) {
-                ProjectPickerView(selectedProject: $selectedProject)
+                ProjectPicker(selectedProject: $selectedProject, projects: projects)
             }
         }
     }

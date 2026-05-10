@@ -2,7 +2,6 @@ import Foundation
 import SwiftData
 import Observation
 
-@MainActor
 @Observable
 final class RFIViewModel {
     var rfis: [RFI] = []

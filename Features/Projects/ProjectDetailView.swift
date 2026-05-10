@@ -117,25 +117,3 @@ struct ProjectDetailView: View {
     }
 }
 
-struct DetailRow: View {
-    let label: String
-    let value: String
-    var valueColor: Color = .primary
-    
-    var body: some View {
-        HStack {
-            Text(label)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Text(value)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(valueColor)
-        }
-    }
-}
-
-#Preview {
-    ProjectDetailView(project: Project(name: "Demo", status: .active, budget: 500_000))
-        .modelContainer(for: [Project.self])
-}

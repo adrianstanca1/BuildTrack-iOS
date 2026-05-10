@@ -92,7 +92,7 @@ struct DrawingFormView: View {
                 }
             }
             .sheet(isPresented: $showProjectPicker) {
-                ProjectPickerView(selectedProject: $selectedProject, projects: projects)
+                ProjectPicker(selectedProject: $selectedProject, projects: projects)
             }
         }
     }
