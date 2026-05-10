@@ -68,32 +68,16 @@ struct TaskFormView: View {
                 }
                 
                 Section("Priority & Status") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Priority").font(.caption).foregroundStyle(.secondary)
-                        Picker("Priority", selection: $priority) {
-                            ForEach(TaskPriority.allCases, id: \.self) { p in
-                                HStack {
-                                    Circle()
-                                        .fill(BuildTrackColors.priorityColor(p))
-                                        .frame(width: 10, height: 10)
-                                    Text(p.label)
-                                }
-                                .tag(p)
-                            }
+                    Picker("Priority", selection: $priority) {
+                        ForEach(TaskPriority.allCases, id: \.self) { p in
+                            Text(p.label).tag(p)
                         }
-                        .pickerStyle(.segmented)
                     }
+                    .pickerStyle(.segmented)
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Status").font(.caption).foregroundStyle(.secondary)
-                        Picker("Status", selection: $status) {
-                            ForEach(TaskStatus.allCases, id: \.self) { s in
-                                HStack {
-                                    Image(systemName: s.icon)
-                                    Text(s.label)
-                                }
-                                .tag(s)
-                            }
+                    Picker("Status", selection: $status) {
+                        ForEach(TaskStatus.allCases, id: \.self) { s in
+                            Text(s.label).tag(s)
                         }
                     }
                 }
@@ -180,7 +164,7 @@ struct TaskFormView: View {
                 WorkerPickerView(selectedWorker: $assignedTo)
             }
             .sheet(isPresented: $showProjectPicker) {
-                ProjectPicker(selectedProject: $selectedProject)
+                ProjectPicker(selectedProject: $selectedProject, projects: projects)
             }
         }
     }
