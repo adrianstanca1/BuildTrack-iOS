@@ -38,8 +38,8 @@ struct MainTabView: View {
         TabItem(icon: "rectangle.grid.1x2.fill", label: "Dashboard"),
         TabItem(icon: "building.2.fill", label: "Projects"),
         TabItem(icon: "checklist", label: "Tasks"),
-        TabItem(icon: "map.fill", label: "Map"),
-        TabItem(icon: "shield.fill", label: "Safety")
+        TabItem(icon: "wrench.and.screwdriver.fill", label: "Punch"),
+        TabItem(icon: "doc.text.fill", label: "Drawings")
     ]
     
     struct TabItem: Identifiable {
@@ -60,10 +60,10 @@ struct MainTabView: View {
                 NavigationStack { TasksListView() }
                     .tag(2)
                 
-                NavigationStack { MapView() }
+                NavigationStack { PunchItemsListView() }
                     .tag(3)
                 
-                NavigationStack { SafetyView() }
+                NavigationStack { DrawingsListView() }
                     .tag(4)
             }
             .toolbar(.hidden, for: .tabBar)

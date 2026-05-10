@@ -1209,3 +1209,203 @@ extension SupabaseNotification {
         )
     }
 }
+
+
+// MARK: - PunchItem
+@Model
+final class PunchItem: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var descriptionText: String
+    var statusRaw: String
+    var severityRaw: String
+    var location: String
+    var assignee: String
+    var photoUrls: [String]
+    var projectId: UUID?
+    var createdAt: Date
+    var resolvedAt: Date?
+    
+    var status: PunchItemStatus {
+        get { PunchItemStatus(rawValue: statusRaw) ?? .open }
+        set { statusRaw = newValue.rawValue }
+    }
+    var severity: PunchItemSeverity {
+        get { PunchItemSeverity(rawValue: severityRaw) ?? .minor }
+        set { severityRaw = newValue.rawValue }
+    }
+    
+    init(id: UUID = UUID(), title: String, descriptionText: String = "", status: PunchItemStatus = .open, severity: PunchItemSeverity = .minor, location: String = "", assignee: String = "", photoUrls: [String] = [], projectId: UUID? = nil, createdAt: Date = Date(), resolvedAt: Date? = nil) {
+        self.id = id; self.title = title; self.descriptionText = descriptionText; self.statusRaw = status.rawValue; self.severityRaw = severity.rawValue; self.location = location; self.assignee = assignee; self.photoUrls = photoUrls; self.projectId = projectId; self.createdAt = createdAt; self.resolvedAt = resolvedAt
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, descriptionText, statusRaw, severityRaw, location, assignee, photoUrls, projectId, createdAt, resolvedAt
+    }
+}
+
+enum PunchItemStatus: String, CaseIterable, Codable, Identifiable {
+    case open = "open", inProgress = "in-progress", resolved = "resolved", closed = "closed"
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .open: return "Open"
+        case .inProgress: return "In Progress"
+        case .resolved: return "Resolved"
+        case .closed: return "Closed"
+        }
+    }
+    var color: String {
+        switch self {
+        case .open: return "red"
+        case .inProgress: return "orange"
+        case .resolved: return "green"
+        case .closed: return "gray"
+        }
+    }
+}
+
+enum PunchItemSeverity: String, CaseIterable, Codable, Identifiable {
+    case cosmetic = "cosmetic", minor = "minor", major = "major", critical = "critical"
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .cosmetic: return "Cosmetic"
+        case .minor: return "Minor"
+        case .major: return "Major"
+        case .critical: return "Critical"
+        }
+    }
+    var color: String {
+        switch self {
+        case .cosmetic: return "gray"
+        case .minor: return "blue"
+        case .major: return "orange"
+        case .critical: return "red"
+        }
+    }
+}
+
+// MARK: - RFI
+@Model
+final class RFI: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var descriptionText: String
+    var statusRaw: String
+    var priorityRaw: String
+    var assignedTo: String
+    var response: String
+    var projectId: UUID?
+    var createdAt: Date
+    var respondedAt: Date?
+    
+    var status: RFIStatus {
+        get { RFIStatus(rawValue: statusRaw) ?? .draft }
+        set { statusRaw = newValue.rawValue }
+    }
+    var priority: RFIPriority {
+        get { RFIPriority(rawValue: priorityRaw) ?? .medium }
+        set { priorityRaw = newValue.rawValue }
+    }
+    
+    init(id: UUID = UUID(), title: String, descriptionText: String = "", status: RFIStatus = .draft, priority: RFIPriority = .medium, assignedTo: String = "", response: String = "", projectId: UUID? = nil, createdAt: Date = Date(), respondedAt: Date? = nil) {
+        self.id = id; self.title = title; self.descriptionText = descriptionText; self.statusRaw = status.rawValue; self.priorityRaw = priority.rawValue; self.assignedTo = assignedTo; self.response = response; self.projectId = projectId; self.createdAt = createdAt; self.respondedAt = respondedAt
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, descriptionText, statusRaw, priorityRaw, assignedTo, response, projectId, createdAt, respondedAt
+    }
+}
+
+enum RFIStatus: String, CaseIterable, Codable, Identifiable {
+    case draft = "draft", submitted = "submitted", underReview = "under-review", approved = "approved", rejected = "rejected", closed = "closed"
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .draft: return "Draft"
+        case .submitted: return "Submitted"
+        case .underReview: return "Under Review"
+        case .approved: return "Approved"
+        case .rejected: return "Rejected"
+        case .closed: return "Closed"
+        }
+    }
+    var color: String {
+        switch self {
+        case .draft: return "gray"
+        case .submitted: return "blue"
+        case .underReview: return "orange"
+        case .approved: return "green"
+        case .rejected: return "red"
+        case .closed: return "gray"
+        }
+    }
+}
+
+enum RFIPriority: String, CaseIterable, Codable, Identifiable {
+    case low = "low", medium = "medium", high = "high", urgent = "urgent"
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Medium"
+        case .high: return "High"
+        case .urgent: return "Urgent"
+        }
+    }
+    var color: String {
+        switch self {
+        case .low: return "green"
+        case .medium: return "blue"
+        case .high: return "orange"
+        case .urgent: return "red"
+        }
+    }
+}
+
+// MARK: - Drawing
+@Model
+final class Drawing: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var drawingNumber: String
+    var revision: String
+    var statusRaw: String
+    var fileUrl: String
+    var projectId: UUID?
+    var createdAt: Date
+    var updatedAt: Date
+    
+    var status: DrawingStatus {
+        get { DrawingStatus(rawValue: statusRaw) ?? .active }
+        set { statusRaw = newValue.rawValue }
+    }
+    
+    init(id: UUID = UUID(), title: String, drawingNumber: String = "", revision: String = "A", status: DrawingStatus = .active, fileUrl: String = "", projectId: UUID? = nil, createdAt: Date = Date(), updatedAt: Date = Date()) {
+        self.id = id; self.title = title; self.drawingNumber = drawingNumber; self.revision = revision; self.statusRaw = status.rawValue; self.fileUrl = fileUrl; self.projectId = projectId; self.createdAt = createdAt; self.updatedAt = updatedAt
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, drawingNumber, revision, statusRaw, fileUrl, projectId, createdAt, updatedAt
+    }
+}
+
+enum DrawingStatus: String, CaseIterable, Codable, Identifiable {
+    case active = "active", superseded = "superseded", archived = "archived"
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .active: return "Active"
+        case .superseded: return "Superseded"
+        case .archived: return "Archived"
+        }
+    }
+    var color: String {
+        switch self {
+        case .active: return "green"
+        case .superseded: return "orange"
+        case .archived: return "gray"
+        }
+    }
+}

@@ -29,35 +29,38 @@ final class RFIViewModel {
         projectId: UUID?,
         context: ModelContext
     ) {
-        let item = RFI(
+        let rfi = RFI(
             title: title,
             descriptionText: description,
             priority: priority,
             assignedTo: assignedTo,
             projectId: projectId
         )
-        context.insert(item)
+        context.insert(rfi)
         try? context.save()
-        rfis.insert(item, at: 0)
+        rfis.insert(rfi, at: 0)
     }
 
-    func updateStatus(_ item: RFI, to status: RFIStatus, context: ModelContext) {
-        item.status = status
+    func updateStatus(_ rfi: RFI, to status: RFIStatus, context: ModelContext) {
+        rfi.status = status
         if status == .approved || status == .rejected || status == .closed {
-            item.respondedAt = Date()
+            rfi.respondedAt = Date()
         }
         try? context.save()
     }
 
-    func addResponse(_ item: RFI, response: String, context: ModelContext) {
-        item.response = response
-        item.respondedAt = Date()
+    func addResponse(_ rfi: RFI, response: String, context: ModelContext) {
+        rfi.response = response
+        if rfi.status == .submitted || rfi.status == .underReview {
+            rfi.status = .approved
+        }
+        rfi.respondedAt = Date()
         try? context.save()
     }
 
-    func deleteRFI(_ item: RFI, context: ModelContext) {
-        context.delete(item)
+    func deleteRFI(_ rfi: RFI, context: ModelContext) {
+        context.delete(rfi)
         try? context.save()
-        rfis.removeAll { $0.id == item.id }
+        rfis.removeAll { $0.id == rfi.id }
     }
 }

@@ -6,9 +6,15 @@ import SwiftData
 struct DashboardView: View {
     @Query(sort: \Project.updatedAt, order: .reverse) private var projects: [Project]
     @Query(sort: \TaskItem.updatedAt, order: .reverse) private var tasks: [TaskItem]
+    @Query(sort: \PunchItem.createdAt, order: .reverse) private var punchItems: [PunchItem]
+    @Query(sort: \RFI.createdAt, order: .reverse) private var rfis: [RFI]
+    @Query(sort: \Drawing.createdAt, order: .reverse) private var drawings: [Drawing]
     @State private var showNewProject = false
     @State private var showNewTask = false
     @State private var showNewIncident = false
+    @State private var showPunchItems = false
+    @State private var showRFIs = false
+    @State private var showDrawings = false
     
     var activeProjects: Int { projects.filter { $0.status == .active }.count }
     var pendingTasks: Int { tasks.filter { $0.status != .completed }.count }
@@ -33,6 +39,8 @@ struct DashboardView: View {
                 
                 // Recent Projects
                 recentProjectsSection
+                // Quality & Documents
+                qualitySection
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -173,6 +181,42 @@ struct DashboardView: View {
                     }
                     .buttonStyle(.plain)
                 }
+            }
+        }
+        .padding(16)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
+    }
+    
+    // MARK: - Quality & Documents
+    private var qualitySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Quality & Documents")
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+                Spacer()
+            }
+            
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                QuickActionButton(
+                    icon: "wrench.and.screwdriver.fill",
+                    label: "Punch Items",
+                    color: .orange
+                ) { showPunchItems = true }
+                
+                QuickActionButton(
+                    icon: "doc.text.fill",
+                    label: "RFIs",
+                    color: .blue
+                ) { showRFIs = true }
+                
+                QuickActionButton(
+                    icon: "doc.fill",
+                    label: "Drawings",
+                    color: .purple
+                ) { showDrawings = true }
             }
         }
         .padding(16)

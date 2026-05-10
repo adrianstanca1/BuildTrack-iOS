@@ -253,3 +253,192 @@ struct ResultBadge: View {
         }
     }
 }
+
+// MARK: - Summary Card
+
+struct SummaryCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(color)
+                Spacer()
+            }
+            Text(value)
+                .font(.title2.weight(.bold))
+                .foregroundStyle(Color(.label))
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(Color(.secondaryLabel))
+        }
+        .padding(12)
+        .frame(width: 120)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
+    }
+}
+
+// MARK: - Detail Row
+
+struct DetailRow: View {
+    let label: String
+    let value: String
+    let icon: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.body)
+                .foregroundStyle(BuildTrackColors.primary)
+                .frame(width: 32, height: 32)
+                .background(BuildTrackColors.primary.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(Color(.secondaryLabel))
+                Text(value)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color(.label))
+            }
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Project Picker
+
+struct ProjectPicker: View {
+    @Binding var selectedProject: Project?
+    let projects: [Project]
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Button {
+                        selectedProject = nil
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Text("None")
+                            if selectedProject == nil {
+                                Spacer()
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(BuildTrackColors.primary)
+                            }
+                        }
+                    }
+                }
+                Section("Projects") {
+                    ForEach(projects) { project in
+                        Button {
+                            selectedProject = project
+                            dismiss()
+                        } label: {
+                            HStack {
+                                Text(project.name)
+                                if selectedProject?.id == project.id {
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(BuildTrackColors.primary)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Project")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - ModernFilterChip
+struct ModernFilterChip: View {
+    let label: String
+    let isSelected: Bool
+    var color: Color = BuildTrackColors.primary
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(isSelected ? .white : color)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? color : color.opacity(0.08))
+                )
+                .overlay(
+                    Capsule()
+                        .strokeBorder(isSelected ? Color.clear : color.opacity(0.2), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+        .animation(.spring(response: 0.2), value: isSelected)
+    }
+}
+
+// MARK: - SummaryCard
+struct SummaryCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+            Text(value)
+                .font(.title3.weight(.bold))
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(width: 120, height: 100, alignment: .leading)
+        .padding(16)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+// MARK: - DetailRow
+struct DetailRow: View {
+    let label: String
+    let value: String
+    let icon: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .foregroundStyle(.secondary)
+                .frame(width: 24)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(value)
+                    .font(.body)
+            }
+            Spacer()
+        }
+    }
+}

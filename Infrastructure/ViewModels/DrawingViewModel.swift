@@ -12,7 +12,7 @@ final class DrawingViewModel {
     func fetchDrawings(context: ModelContext) {
         isLoading = true
         errorMessage = nil
-        let descriptor = FetchDescriptor<Drawing>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
+        let descriptor = FetchDescriptor<Drawing>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
         do {
             drawings = try context.fetch(descriptor)
         } catch {
@@ -29,27 +29,33 @@ final class DrawingViewModel {
         projectId: UUID?,
         context: ModelContext
     ) {
-        let item = Drawing(
+        let drawing = Drawing(
             title: title,
             drawingNumber: drawingNumber,
             revision: revision,
             fileUrl: fileUrl,
             projectId: projectId
         )
-        context.insert(item)
+        context.insert(drawing)
         try? context.save()
-        drawings.insert(item, at: 0)
+        drawings.insert(drawing, at: 0)
     }
 
-    func updateStatus(_ item: Drawing, to status: DrawingStatus, context: ModelContext) {
-        item.status = status
-        item.updatedAt = Date()
+    func updateStatus(_ drawing: Drawing, to status: DrawingStatus, context: ModelContext) {
+        drawing.status = status
+        drawing.updatedAt = Date()
         try? context.save()
     }
 
-    func deleteDrawing(_ item: Drawing, context: ModelContext) {
-        context.delete(item)
+    func updateRevision(_ drawing: Drawing, revision: String, context: ModelContext) {
+        drawing.revision = revision
+        drawing.updatedAt = Date()
         try? context.save()
-        drawings.removeAll { $0.id == item.id }
+    }
+
+    func deleteDrawing(_ drawing: Drawing, context: ModelContext) {
+        context.delete(drawing)
+        try? context.save()
+        drawings.removeAll { $0.id == drawing.id }
     }
 }
