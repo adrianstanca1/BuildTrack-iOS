@@ -138,13 +138,3 @@ struct DrawingCard: View {
         }
     }
 }
-
-
-}
-
-
-
-
-
-
-}
