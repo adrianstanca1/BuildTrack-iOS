@@ -1,8 +1,6 @@
 import Foundation
 import Supabase
-
 // MARK: - Admin Repository
-
 struct AdminRepository {
     static let live = AdminRepository(
         fetchDashboardStats: {
@@ -141,9 +139,7 @@ struct AdminRepository {
     let fetchSubscription: () async throws -> SubscriptionTier
     let updateSubscription: (String) async throws -> Void
 }
-
 // MARK: - Supabase User Profile
-
 struct SupabaseUserProfile: Codable {
     let id: UUID
     let fullName: String?

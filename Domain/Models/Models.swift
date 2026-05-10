@@ -1,6 +1,5 @@
 import Foundation
 import SwiftData
-
 // MARK: - Project
 @Model
 final class Project: Identifiable, Codable {
@@ -111,7 +110,6 @@ final class Project: Identifiable, Codable {
         try container.encode(updatedAt, forKey: .updatedAt)
     }
 }
-
 enum ProjectStatus: String, CaseIterable, Codable, Identifiable {
     case planning, active, onHold = "on_hold", completed, cancelled
     
@@ -161,7 +159,6 @@ enum ProjectStatus: String, CaseIterable, Codable, Identifiable {
         }
     }
 }
-
 // MARK: - TaskItem
 @Model
 final class TaskItem: Identifiable, Codable {
@@ -241,7 +238,6 @@ final class TaskItem: Identifiable, Codable {
         try container.encode(updatedAt, forKey: .updatedAt)
     }
 }
-
 enum TaskPriority: String, CaseIterable, Codable {
     case low, medium, high, critical
     
@@ -277,7 +273,6 @@ enum TaskPriority: String, CaseIterable, Codable {
         }
     }
 }
-
 enum TaskStatus: String, CaseIterable, Codable {
     case pending, inProgress = "in_progress", completed, blocked
     
@@ -307,7 +302,6 @@ enum TaskStatus: String, CaseIterable, Codable {
         }
     }
 }
-
 // MARK: - Safety Models
 @Model
 final class Incident: Identifiable, Codable {
@@ -391,7 +385,6 @@ final class Incident: Identifiable, Codable {
         try container.encodeIfPresent(project, forKey: .project)
     }
 }
-
 enum IncidentSeverity: String, CaseIterable, Codable {
     case low, medium, high, critical
     
@@ -405,12 +398,10 @@ enum IncidentSeverity: String, CaseIterable, Codable {
         }
     }
 }
-
 enum IncidentStatus: String, CaseIterable, Codable {
     case open, investigating, resolved, closed
     var label: String { rawValue.capitalized }
 }
-
 @Model
 final class Inspection: Identifiable, Codable {
     @Attribute(.unique)
@@ -471,12 +462,10 @@ final class Inspection: Identifiable, Codable {
         try container.encode(createdAt, forKey: .createdAt)
     }
 }
-
 enum InspectionResult: String, CaseIterable, Codable {
     case pass, fail, conditional
     var label: String { rawValue.capitalized }
 }
-
 // MARK: - Worker
 @Model
 final class Worker: Identifiable, Codable {
@@ -543,7 +532,6 @@ final class Worker: Identifiable, Codable {
         try container.encode(createdAt, forKey: .createdAt)
     }
 }
-
 enum WorkerRole: String, CaseIterable, Codable {
     case labourer, carpenter, electrician, plumber
     case supervisor, foreman, engineer, `operator`, safetyOfficer = "safety-officer"
@@ -581,7 +569,6 @@ enum WorkerRole: String, CaseIterable, Codable {
         }
     }
 }
-
 // MARK: - Notification
 struct AppNotification: Identifiable, Codable, Sendable {
     let id: UUID
@@ -610,7 +597,6 @@ struct AppNotification: Identifiable, Codable, Sendable {
         self.relatedId = relatedId
     }
 }
-
 enum NotificationType: String, Codable, Sendable {
     case info, warning, success, error, task, incident
     
@@ -625,7 +611,6 @@ enum NotificationType: String, Codable, Sendable {
         }
     }
 }
-
 // MARK: - PunchItem
 @Model
 final class PunchItem: Identifiable, Codable {
@@ -640,17 +625,14 @@ final class PunchItem: Identifiable, Codable {
     var projectId: UUID?
     var createdAt: Date
     var resolvedAt: Date?
-
     var status: PunchItemStatus {
         get { PunchItemStatus(rawValue: statusRaw) ?? .open }
         set { statusRaw = newValue.rawValue }
     }
-
     var severity: PunchItemSeverity {
         get { PunchItemSeverity(rawValue: severityRaw) ?? .minor }
         set { severityRaw = newValue.rawValue }
     }
-
     init(
         id: UUID = UUID(),
         title: String,
@@ -676,12 +658,10 @@ final class PunchItem: Identifiable, Codable {
         self.createdAt = createdAt
         self.resolvedAt = resolvedAt
     }
-
     enum CodingKeys: String, CodingKey {
         case id, title, descriptionText, statusRaw, severityRaw
         case location, assignee, photoUrls, projectId, createdAt, resolvedAt
     }
-
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(UUID.self, forKey: .id)
@@ -696,7 +676,6 @@ final class PunchItem: Identifiable, Codable {
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.resolvedAt = try container.decodeIfPresent(Date.self, forKey: .resolvedAt)
     }
-
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -712,10 +691,8 @@ final class PunchItem: Identifiable, Codable {
         try container.encodeIfPresent(resolvedAt, forKey: .resolvedAt)
     }
 }
-
 enum PunchItemStatus: String, CaseIterable, Codable {
     case open = "open", inProgress = "in_progress", resolved = "resolved", closed = "closed"
-
     var label: String {
         switch self {
         case .open: return "Open"
@@ -724,7 +701,6 @@ enum PunchItemStatus: String, CaseIterable, Codable {
         case .closed: return "Closed"
         }
     }
-
     var color: String {
         switch self {
         case .open: return "red"
@@ -734,10 +710,8 @@ enum PunchItemStatus: String, CaseIterable, Codable {
         }
     }
 }
-
 enum PunchItemSeverity: String, CaseIterable, Codable {
     case cosmetic = "cosmetic", minor = "minor", major = "major", critical = "critical"
-
     var label: String {
         switch self {
         case .cosmetic: return "Cosmetic"
@@ -747,7 +721,6 @@ enum PunchItemSeverity: String, CaseIterable, Codable {
         }
     }
 }
-
 // MARK: - RFI
 @Model
 final class RFI: Identifiable, Codable {
@@ -761,17 +734,14 @@ final class RFI: Identifiable, Codable {
     var projectId: UUID?
     var createdAt: Date
     var respondedAt: Date?
-
     var status: RFIStatus {
         get { RFIStatus(rawValue: statusRaw) ?? .draft }
         set { statusRaw = newValue.rawValue }
     }
-
     var priority: RFIPriority {
         get { RFIPriority(rawValue: priorityRaw) ?? .medium }
         set { priorityRaw = newValue.rawValue }
     }
-
     init(
         id: UUID = UUID(),
         title: String,
@@ -795,12 +765,10 @@ final class RFI: Identifiable, Codable {
         self.createdAt = createdAt
         self.respondedAt = respondedAt
     }
-
     enum CodingKeys: String, CodingKey {
         case id, title, descriptionText, statusRaw, priorityRaw
         case assignedTo, response, projectId, createdAt, respondedAt
     }
-
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(UUID.self, forKey: .id)
@@ -814,7 +782,6 @@ final class RFI: Identifiable, Codable {
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.respondedAt = try container.decodeIfPresent(Date.self, forKey: .respondedAt)
     }
-
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -829,10 +796,8 @@ final class RFI: Identifiable, Codable {
         try container.encodeIfPresent(respondedAt, forKey: .respondedAt)
     }
 }
-
 enum RFIStatus: String, CaseIterable, Codable {
     case draft = "draft", submitted = "submitted", underReview = "under_review", approved = "approved", rejected = "rejected", closed = "closed"
-
     var label: String {
         switch self {
         case .draft: return "Draft"
@@ -843,7 +808,6 @@ enum RFIStatus: String, CaseIterable, Codable {
         case .closed: return "Closed"
         }
     }
-
     var color: String {
         switch self {
         case .draft: return "gray"
@@ -855,10 +819,8 @@ enum RFIStatus: String, CaseIterable, Codable {
         }
     }
 }
-
 enum RFIPriority: String, CaseIterable, Codable {
     case low = "low", medium = "medium", high = "high", urgent = "urgent"
-
     var label: String {
         switch self {
         case .low: return "Low"
@@ -868,7 +830,6 @@ enum RFIPriority: String, CaseIterable, Codable {
         }
     }
 }
-
 // MARK: - Drawing
 @Model
 final class Drawing: Identifiable, Codable {
@@ -881,12 +842,10 @@ final class Drawing: Identifiable, Codable {
     var projectId: UUID?
     var createdAt: Date
     var updatedAt: Date
-
     var status: DrawingStatus {
         get { DrawingStatus(rawValue: statusRaw) ?? .active }
         set { statusRaw = newValue.rawValue }
     }
-
     init(
         id: UUID = UUID(),
         title: String,
@@ -908,11 +867,9 @@ final class Drawing: Identifiable, Codable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
-
     enum CodingKeys: String, CodingKey {
         case id, title, drawingNumber, revision, statusRaw, fileUrl, projectId, createdAt, updatedAt
     }
-
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(UUID.self, forKey: .id)
@@ -925,7 +882,6 @@ final class Drawing: Identifiable, Codable {
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
     }
-
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -939,10 +895,8 @@ final class Drawing: Identifiable, Codable {
         try container.encode(updatedAt, forKey: .updatedAt)
     }
 }
-
 enum DrawingStatus: String, CaseIterable, Codable {
     case active = "active", superseded = "superseded", archived = "archived"
-
     var label: String {
         switch self {
         case .active: return "Active"
@@ -951,9 +905,7 @@ enum DrawingStatus: String, CaseIterable, Codable {
         }
     }
 }
-
 // MARK: - Supabase Models for Decoding
-
 struct SupabaseProject: Codable {
     let id: UUID
     let name: String
@@ -986,7 +938,6 @@ struct SupabaseProject: Codable {
         case userId = "user_id"
     }
 }
-
 struct SupabaseTask: Codable {
     let id: UUID
     let title: String
@@ -1011,9 +962,7 @@ struct SupabaseTask: Codable {
         case updatedAt = "updated_at"
     }
 }
-
 // MARK: - Supabase Incident
-
 struct SupabaseIncident: Codable {
     let id: UUID
     let title: String
@@ -1043,7 +992,6 @@ struct SupabaseIncident: Codable {
         case userId = "user_id"
     }
 }
-
 extension SupabaseIncident {
     func toDomain() -> Incident {
         let formatter = ISO8601DateFormatter()
@@ -1060,9 +1008,7 @@ extension SupabaseIncident {
         )
     }
 }
-
 // MARK: - Supabase Inspection
-
 struct SupabaseInspection: Codable {
     let id: UUID
     let title: String
@@ -1091,7 +1037,6 @@ struct SupabaseInspection: Codable {
         case userId = "user_id"
     }
 }
-
 extension SupabaseInspection {
     func toDomain() -> Inspection {
         let formatter = ISO8601DateFormatter()
@@ -1114,9 +1059,7 @@ extension SupabaseInspection {
         )
     }
 }
-
 // MARK: - Supabase Worker
-
 struct SupabaseWorker: Codable {
     let id: UUID
     let name: String
@@ -1144,7 +1087,6 @@ struct SupabaseWorker: Codable {
         case userId = "user_id"
     }
 }
-
 extension SupabaseWorker {
     func toDomain() -> Worker {
         let formatter = ISO8601DateFormatter()
@@ -1161,9 +1103,7 @@ extension SupabaseWorker {
         )
     }
 }
-
 // MARK: - Supabase Notification
-
 struct SupabaseNotification: Codable {
     let id: UUID
     let title: String
@@ -1183,7 +1123,6 @@ struct SupabaseNotification: Codable {
         case userId = "user_id"
     }
 }
-
 extension SupabaseNotification {
     func toDomain() -> AppNotification {
         let formatter = ISO8601DateFormatter()
@@ -1209,5 +1148,3 @@ extension SupabaseNotification {
         )
     }
 }
-
-

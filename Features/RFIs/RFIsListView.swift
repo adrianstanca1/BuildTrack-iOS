@@ -1,16 +1,13 @@
 import SwiftUI
 import SwiftData
-
 struct RFIsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \RFI.createdAt, order: .reverse) private var rfis: [RFI]
-
     @State private var viewModel = RFIViewModel()
     @State private var showAddRFI = false
     @State private var searchText = ""
     @State private var statusFilter: RFIStatus?
     @State private var priorityFilter: RFIPriority?
-
     var filteredRFIs: [RFI] {
         var result = rfis
         if let status = statusFilter { result = result.filter { $0.status == status } }
@@ -18,7 +15,6 @@ struct RFIsListView: View {
         if !searchText.isEmpty { result = result.filter { $0.title.localizedCaseInsensitiveContains(searchText) } }
         return result
     }
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -48,7 +44,6 @@ struct RFIsListView: View {
             }
         }
     }
-
     var searchAndFilterBar: some View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
@@ -64,7 +59,6 @@ struct RFIsListView: View {
             .padding(.vertical, 12)
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     FilterChip(title: "All", isSelected: statusFilter == nil) { statusFilter = nil }
@@ -76,7 +70,6 @@ struct RFIsListView: View {
             }
         }
     }
-
     var summaryCards: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
@@ -87,7 +80,6 @@ struct RFIsListView: View {
             .padding(.horizontal, 16)
         }
     }
-
     var rfiList: some View {
         LazyVStack(spacing: 12) {
             if filteredRFIs.isEmpty {
@@ -109,7 +101,6 @@ struct RFIsListView: View {
         }
     }
 }
-
 struct RFICard: View {
     let rfi: RFI
     var body: some View {
@@ -142,7 +133,6 @@ struct RFICard: View {
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-
     func statusColor(_ status: RFIStatus) -> Color {
         switch status {
         case .draft: return .gray
@@ -153,7 +143,6 @@ struct RFICard: View {
         case .closed: return .gray
         }
     }
-
     func priorityColor(_ priority: RFIPriority) -> Color {
         switch priority {
         case .low: return .green
@@ -163,4 +152,3 @@ struct RFICard: View {
         }
     }
 }
-

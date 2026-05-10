@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-
 struct TaskFormView: View {
     var task: TaskItem?
     var preselectedProject: Project?
@@ -217,9 +216,7 @@ struct TaskFormView: View {
         try? modelContext.save()
     }
 }
-
 // MARK: - Worker Picker
-
 struct WorkerPickerView: View {
     @Binding var selectedWorker: Worker?
     @Environment(\.dismiss) private var dismiss
@@ -277,6 +274,4 @@ struct WorkerPickerView: View {
         }
     }
 }
-
 // MARK: - Project Picker
-

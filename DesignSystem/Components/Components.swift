@@ -392,3 +392,5 @@ struct ModernFilterChip: View {
         }
         .buttonStyle(.plain)
         .animation(.spring(response: 0.2), value: isSelected)
+    }
+}

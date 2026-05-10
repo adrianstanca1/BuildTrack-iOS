@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-
 struct ProjectDetailView: View {
     let project: Project
     @State private var showEdit = false
@@ -116,4 +115,3 @@ struct ProjectDetailView: View {
         }
     }
 }
-

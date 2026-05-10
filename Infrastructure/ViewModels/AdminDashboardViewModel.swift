@@ -1,8 +1,6 @@
 import SwiftUI
 import OSLog
-
 // MARK: - Admin Dashboard ViewModel
-
 @MainActor
 @Observable
 final class AdminDashboardViewModel {
@@ -94,6 +92,4 @@ final class AdminDashboardViewModel {
         }
     }
 }
-
 // MARK: - Logger Extension
-
