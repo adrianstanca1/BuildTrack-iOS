@@ -43,11 +43,12 @@ struct ProjectDetailView: View {
                 CardView {
                     SectionHeader(title: "Budget")
                     VStack(spacing: 12) {
-                        DetailRow(label: "Total Budget", value: "$\(Int(project.budget).formatted())")
+                        DetailRow(icon: "creditcard", label: "Total Budget", value: "$\(Int(project.budget).formatted())")
                         Divider()
-                        DetailRow(label: "Spent to Date", value: "$\(Int(project.spentToDate).formatted())")
+                        DetailRow(icon: "arrow.down.circle", label: "Spent to Date", value: "$\(Int(project.spentToDate).formatted())")
                         Divider()
                         DetailRow(
+                            icon: "banknote",
                             label: "Remaining",
                             value: "$\(max(0, Int(project.budget - project.spentToDate)).formatted())",
                             valueColor: project.spentToDate > project.budget ? .red : .green
@@ -59,12 +60,12 @@ struct ProjectDetailView: View {
                 CardView {
                     SectionHeader(title: "Details")
                     VStack(spacing: 12) {
-                        DetailRow(label: "Location", value: project.locationName)
+                        DetailRow(icon: "mappin.and.ellipse", label: "Location", value: project.locationName)
                         Divider()
-                        DetailRow(label: "Start Date", value: project.startDate.formatted(date: .abbreviated, time: .omitted))
+                        DetailRow(icon: "calendar", label: "Start Date", value: project.startDate.formatted(date: .abbreviated, time: .omitted))
                         if let endDate = project.endDate {
                             Divider()
-                            DetailRow(label: "End Date", value: endDate.formatted(date: .abbreviated, time: .omitted))
+                            DetailRow(icon: "flag", label: "End Date", value: endDate.formatted(date: .abbreviated, time: .omitted))
                         }
                     }
                 }

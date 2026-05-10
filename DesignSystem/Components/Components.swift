@@ -53,6 +53,65 @@ struct StatusBadge: View {
     }
 }
 
+struct RFIStatusBadge: View {
+    let status: RFIStatus
+    
+    var color: Color {
+        switch status {
+        case .draft: return .gray
+        case .submitted: return .blue
+        case .underReview: return .orange
+        case .approved: return .green
+        case .rejected: return .red
+        case .closed: return .gray
+        }
+    }
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Circle()
+                .fill(color)
+                .frame(width: 8, height: 8)
+            Text(status.label)
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(color)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(color.opacity(0.12))
+        .clipShape(Capsule())
+    }
+}
+
+struct DrawingStatusBadge: View {
+    let status: DrawingStatus
+    
+    var color: Color {
+        switch status {
+        case .active: return .green
+        case .superseded: return .orange
+        case .archived: return .gray
+        }
+    }
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Circle()
+                .fill(color)
+                .frame(width: 8, height: 8)
+            Text(status.label)
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(color)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(color.opacity(0.12))
+        .clipShape(Capsule())
+    }
+}
+
 struct PriorityBadge: View {
     let priority: TaskPriority
     

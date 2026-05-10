@@ -57,8 +57,8 @@ struct DrawingsListView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     FilterChip(label: "All", isSelected: statusFilter == nil) { statusFilter = nil }
-                    ForEach(DrawingStatus.allCases) { status in
-                        FilterChip(title: status.label, isSelected: statusFilter == status) { statusFilter = status }
+                    ForEach(DrawingStatus.allCases, id: \.self) { status in
+                        FilterChip(label: status.label, isSelected: statusFilter == status) { statusFilter = status }
                     }
                 }
                 .padding(.horizontal, 16)
