@@ -36,10 +36,6 @@ struct ContentView: View {
             }
         }
         .onChange(of: scenePhase) { _, newPhase in
-            // Re-lock when the app returns to foreground after being backgrounded.
-            if newPhase == .active, AppLockController.isBiometricEnabled, !isLocked {
-                // Already active; only re-lock if explicitly transitioning from background.
-            }
             if newPhase == .background, AppLockController.isBiometricEnabled {
                 isLocked = true
             }
@@ -57,13 +53,178 @@ struct ContentView: View {
     }
 
     private func handleDeepLink(_ screen: DeepLinkRouter.Screen) {
-        // Defer until unlocked / authenticated; otherwise stash for when MainTabView mounts.
         guard authManager.isAuthenticated, !isLocked else {
             deepLink = screen
             return
         }
         selectedTab = ContentView.router.tabFor(screen)
         deepLink = screen
+    }
+}
+
+// MARK: - Main Tab View
+
+struct MainTabView: View {
+    @Binding var selectedTab: Int
+    @Binding var deepLink: DeepLinkRouter.Screen?
+    @State private var tabItems = [
+        TabItem(icon: "house.fill", label: "Home", view: AnyView(DashboardView())),
+        TabItem(icon: "building.2.fill", label: "Projects", view: AnyView(ProjectsListView())),
+        TabItem(icon: "checklist", label: "Tasks", view: AnyView(TasksListView())),
+        TabItem(icon: "square.grid.2x2", label: "More", view: AnyView(MoreMenuView())),
+    ]
+
+    struct TabItem: Identifiable {
+        let id = UUID()
+        let icon: String
+        let label: String
+        let view: AnyView
+    }
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selectedTab) {
+                NavigationStack { DashboardView() }.tag(0)
+                NavigationStack { ProjectsListView() }.tag(1)
+                NavigationStack { TasksListView() }.tag(2)
+                NavigationStack { MoreMenuView() }.tag(3)
+            }
+            .toolbar(.hidden, for: .tabBar)
+
+            CustomTabBar(items: tabItems, selectedTab: $selectedTab)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+        }
+    }
+}
+
+// MARK: - More Menu View
+
+struct MoreMenuView: View {
+    let menuItems: [MenuItem] = [
+        MenuItem(icon: "wrench.and.screwdriver", label: "Punch Items", color: .orange, destination: AnyView(PunchItemsListView())),
+        MenuItem(icon: "doc.text", label: "RFIs", color: .blue, destination: AnyView(RFIsListView())),
+        MenuItem(icon: "doc", label: "Drawings", color: .purple, destination: AnyView(DrawingsListView())),
+        MenuItem(icon: "shield", label: "Safety", color: .red, destination: AnyView(SafetyView())),
+        MenuItem(icon: "sterlingsign.circle", label: "Budget", color: .green, destination: AnyView(BudgetListView())),
+        MenuItem(icon: "cube.box", label: "Materials", color: .cyan, destination: AnyView(MaterialsListView())),
+        MenuItem(icon: "wrench", label: "Equipment", color: .indigo, destination: AnyView(EquipmentListView())),
+        MenuItem(icon: "person.3", label: "Meetings", color: .pink, destination: AnyView(MeetingsListView())),
+        MenuItem(icon: "clock", label: "Timesheets", color: .brown, destination: AnyView(TimesheetsListView())),
+        MenuItem(icon: "document.text", label: "Permits", color: .mint, destination: AnyView(PermitsListView())),
+        MenuItem(icon: "warning", label: "Defects", color: .orange, destination: AnyView(DefectsListView())),
+        MenuItem(icon: "person.2", label: "Team", color: .teal, destination: AnyView(TeamView())),
+        MenuItem(icon: "chart.bar", label: "Reports", color: .gray, destination: AnyView(ReportsView())),
+        MenuItem(icon: "gear", label: "Settings", color: .gray, destination: AnyView(SettingsView())),
+    ]
+
+    struct MenuItem: Identifiable {
+        let id = UUID()
+        let icon: String
+        let label: String
+        let color: Color
+        let destination: AnyView
+    }
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                ForEach(menuItems) { item in
+                    NavigationLink {
+                        item.destination
+                    } label: {
+                        MenuButton(icon: item.icon, label: item.label, color: item.color)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(16)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("More")
+    }
+}
+
+struct MenuButton: View {
+    let icon: String
+    let label: String
+    let color: Color
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 24, weight: .medium))
+                .foregroundStyle(color)
+                .frame(width: 56, height: 56)
+                .background(color.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+            Text(label)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Tab Bar Components
+
+struct CustomTabBar: View {
+    let items: [MainTabView.TabItem]
+    @Binding var selectedTab: Int
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                TabBarButton(
+                    icon: item.icon,
+                    label: item.label,
+                    isSelected: selectedTab == index
+                ) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        selectedTab = index
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color(.systemBackground))
+                .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: -4)
+        )
+    }
+}
+
+struct TabBarButton: View {
+    let icon: String
+    let label: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: isSelected ? 22 : 20, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? BuildTrackColors.primary : Color(.tertiaryLabel))
+                    .frame(height: 26)
+                    .background(
+                        Circle()
+                            .fill(isSelected ? BuildTrackColors.primary.opacity(0.12) : Color.clear)
+                            .frame(width: 44, height: 44)
+                    )
+
+                Text(label)
+                    .font(.system(size: 10, weight: isSelected ? .semibold : .medium))
+                    .foregroundStyle(isSelected ? BuildTrackColors.primary : Color(.tertiaryLabel))
+            }
+            .frame(height: 50)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -142,8 +303,6 @@ struct AppLockView: View {
         defer { isAuthenticating = false }
 
         guard service.isAvailable else {
-            // Biometric was enabled but no longer available (e.g. removed enrolment).
-            // Fail open rather than locking the user out of their own data.
             UserDefaults.standard.set(false, forKey: AppLockController.biometricEnabledKey)
             isLocked = false
             return
@@ -160,114 +319,6 @@ struct AppLockView: View {
         } catch {
             lastError = error.localizedDescription
         }
-    }
-}
-
-// MARK: - Modern Tab Bar
-
-struct MainTabView: View {
-    @Binding var selectedTab: Int
-    @Binding var deepLink: DeepLinkRouter.Screen?
-    @State private var tabItems = [
-        TabItem(icon: "rectangle.grid.1x2.fill", label: "Dashboard"),
-        TabItem(icon: "building.2.fill", label: "Projects"),
-        TabItem(icon: "checklist", label: "Tasks"),
-        TabItem(icon: "wrench.and.screwdriver.fill", label: "Punch"),
-        TabItem(icon: "doc.text.fill", label: "Drawings")
-    ]
-
-    struct TabItem: Identifiable {
-        let id = UUID()
-        let icon: String
-        let label: String
-    }
-
-    var body: some View {
-        ZStack(alignment: .bottom) {
-            TabView(selection: $selectedTab) {
-                NavigationStack { DashboardView() }
-                    .tag(0)
-
-                NavigationStack { ProjectsListView() }
-                    .tag(1)
-
-                NavigationStack { TasksListView() }
-                    .tag(2)
-
-                NavigationStack { PunchItemsListView() }
-                    .tag(3)
-
-                NavigationStack { DrawingsListView() }
-                    .tag(4)
-            }
-            .toolbar(.hidden, for: .tabBar)
-
-            // Custom Tab Bar
-            CustomTabBar(
-                items: tabItems,
-                selectedTab: $selectedTab
-            )
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-        }
-    }
-}
-
-struct CustomTabBar: View {
-    let items: [MainTabView.TabItem]
-    @Binding var selectedTab: Int
-
-    var body: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                TabBarButton(
-                    icon: item.icon,
-                    label: item.label,
-                    isSelected: selectedTab == index
-                ) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedTab = index
-                    }
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
-        .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: -4)
-        )
-    }
-}
-
-struct TabBarButton: View {
-    let icon: String
-    let label: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: isSelected ? 22 : 20, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? BuildTrackColors.primary : Color(.tertiaryLabel))
-                    .frame(height: 26)
-                    .background(
-                        Circle()
-                            .fill(isSelected ? BuildTrackColors.primary.opacity(0.12) : Color.clear)
-                            .frame(width: 44, height: 44)
-                    )
-
-                Text(label)
-                    .font(.system(size: 10, weight: isSelected ? .semibold : .medium))
-                    .foregroundStyle(isSelected ? BuildTrackColors.primary : Color(.tertiaryLabel))
-            }
-            .frame(height: 50)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
     }
 }
 

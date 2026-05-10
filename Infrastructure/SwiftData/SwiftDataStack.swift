@@ -17,6 +17,14 @@ final class SwiftDataStack {
         PunchItem.self,
         RFI.self,
         Drawing.self,
+        Budget.self,
+        BudgetCategory.self,
+        Material.self,
+        Equipment.self,
+        Meeting.self,
+        TimesheetEntry.self,
+        Permit.self,
+        Defect.self,
     ])
 
     private init() {
