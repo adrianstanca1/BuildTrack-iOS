@@ -102,6 +102,14 @@ jobs:
             -exportPath "build/BuildTrack.ipa" \
             -exportOptionsPlist build/ExportOptions.plist
 
+      - name: Setup App Store Connect API key
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+          chmod 600 ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+          echo "=== Key file created ==="
+          ls -la ~/.appstoreconnect/private_keys/
+
       - name: Upload to TestFlight
         run: |
           IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" | head -1)
