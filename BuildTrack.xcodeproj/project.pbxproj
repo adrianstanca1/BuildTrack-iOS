@@ -117,9 +117,9 @@
 		B182827DEF2B42EE97449377 /* DrawingsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingsListView.swift; path = DrawingsListView.swift; sourceTree = "<group>"; };
 		AFFE1CB2815B46C0AE25C8E0 /* DrawingDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingDetailView.swift; path = DrawingDetailView.swift; sourceTree = "<group>"; };
 		EF0DB14438E34A958A0520BF /* DrawingFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingFormView.swift; path = DrawingFormView.swift; sourceTree = "<group>"; };
-		234D95519147470587BD944A /* PunchItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemViewModel.swift; path = PunchItemViewModel.swift; sourceTree = "<group>"; };
-		4B806B4C85F14EF6BF09F072 /* RFIViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIViewModel.swift; path = RFIViewModel.swift; sourceTree = "<group>"; };
-		56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = DrawingViewModel.swift; sourceTree = "<group>"; };
+		234D95519147470587BD944A /* PunchItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemViewModel.swift; path = Infrastructure/ViewModels/PunchItemViewModel.swift; sourceTree = "<group>"; };
+		4B806B4C85F14EF6BF09F072 /* RFIViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIViewModel.swift; path = Infrastructure/ViewModels/RFIViewModel.swift; sourceTree = "<group>"; };
+		56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = Infrastructure/ViewModels/DrawingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
