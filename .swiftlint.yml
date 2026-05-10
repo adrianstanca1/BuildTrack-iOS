@@ -55,8 +55,10 @@ opt_in_rules:
   - toggle_bool
   - unneeded_parentheses_in_closure_argument
   - unused_enumerated
-  - unused_import
   - yoda_condition
+
+analyzer_rules:
+  - unused_import
 
 included:
   - .
@@ -133,28 +135,5 @@ identifier_name:
 
 cyclomatic_complexity:
     - 15
-
-attributes:
-    always_on_line_above:
-        - "@Model"
-        - "@Relationship"
-        - "@Attribute"
-        - "@Query"
-        - "@Published"
-        - "@StateObject"
-        - "@ObservedObject"
-        - "@Environment"
-        - "@EnvironmentObject"
-        - "@Binding"
-        - "@AppStorage"
-        - "@SceneStorage"
-        - "@UIApplicationDelegateAdaptor"
-        - "@main"
-    always_on_same_line:
-        - "@IBOutlet"
-        - "@IBAction"
-        - "@IBInspectable"
-        - "@IBDesignable"
-        - "@NSManaged"
 
 reporter: xcode
