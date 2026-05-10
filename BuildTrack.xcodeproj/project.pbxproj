@@ -127,8 +127,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				213FAC383D95DFAAD8E5A3C0 /* Foundation.framework in Frameworks */,
-			);
+				213FAC383D95DFAAD8E5A3C0 /* Foundation.framework in Frameworks */
+		);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -543,6 +543,18 @@
 				F31C363EC7DBE9898FA30DBA /* TaskViewModel.swift in Sources */,
 				CBB94ADF965E8DA6FB02745B /* TeamViewModel.swift in Sources */,
 				F7E64FBA9B0A59F312388DB9 /* OnboardingView.swift in Sources */,
+				61FB2132A01E4C7E9FD87C00 /* PunchItemsListView.swift in Sources */,
+				A68C042E43BE4E5C81F83996 /* PunchItemDetailView.swift in Sources */,
+				D96FEAB90CB34E96B1B76FDD /* PunchItemFormView.swift in Sources */,
+				0014141F4C344261AB325919 /* RFIsListView.swift in Sources */,
+				1680DF484BE24F3DAD9E626C /* RFIDetailView.swift in Sources */,
+				188520BA5576440EB5A8A707 /* RFIFormView.swift in Sources */,
+				0E424178C6144574B7ECDE0D /* DrawingsListView.swift in Sources */,
+				B39B2BECCA9F4D17A9F2600E /* DrawingDetailView.swift in Sources */,
+				7819CDC1200143FEB97810B7 /* DrawingFormView.swift in Sources */,
+				50580362F99A4F0495C4F699 /* PunchItemViewModel.swift in Sources */,
+				1ACF13D957474242AB6D59AA /* RFIViewModel.swift in Sources */,
+				FD069FE4ABB441D79264CEC8 /* DrawingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
