@@ -19,51 +19,51 @@ struct DeepLinkRouter {
         case notifications
     }
 
+    private struct Route {
+        let list: Screen
+        let detail: ((UUID) -> Screen)?
+    }
+
+    private static let routes: [String: Route] = [
+        "dashboard": Route(list: .dashboard, detail: nil),
+        "projects": Route(list: .projects, detail: nil),
+        "project": Route(list: .projects, detail: Screen.projectDetail),
+        "tasks": Route(list: .tasks, detail: nil),
+        "task": Route(list: .tasks, detail: Screen.taskDetail),
+        "punch": Route(list: .punchItems, detail: Screen.punchItemDetail),
+        "punchitems": Route(list: .punchItems, detail: Screen.punchItemDetail),
+        "punchitem": Route(list: .punchItems, detail: Screen.punchItemDetail),
+        "rfis": Route(list: .rfis, detail: nil),
+        "rfi": Route(list: .rfis, detail: Screen.rfiDetail),
+        "drawings": Route(list: .drawings, detail: nil),
+        "drawing": Route(list: .drawings, detail: Screen.drawingDetail),
+        "map": Route(list: .map, detail: nil),
+        "safety": Route(list: .safety, detail: nil),
+        "inspection": Route(list: .safety, detail: nil),
+        "inspections": Route(list: .safety, detail: nil),
+        "incident": Route(list: .safety, detail: nil),
+        "incidents": Route(list: .safety, detail: nil),
+        "team": Route(list: .team, detail: nil),
+        "notifications": Route(list: .notifications, detail: nil),
+    ]
+
     func resolve(_ url: URL) -> Screen? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-              components.scheme == "buildtrack" else {
+              components.scheme == "buildtrack",
+              let route = Self.routes[components.host ?? ""] else {
             return nil
         }
 
-        let host = components.host ?? ""
-        let pathParts = components.path
-            .split(separator: "/")
-            .map(String.init)
-        let params = components.queryItems ?? []
-
-        // Resolve `buildtrack://punch/<uuid>` (host=punch, path=<uuid>) and `buildtrack://punch?id=<uuid>`.
+        let pathParts = components.path.split(separator: "/").map(String.init)
         let firstPathId = pathParts.first.flatMap(UUID.init(uuidString:))
-        let queryId = params.first(where: { $0.name == "id" })?.value.flatMap(UUID.init(uuidString:))
-        let id = firstPathId ?? queryId
+        let queryId = (components.queryItems ?? [])
+            .first(where: { $0.name == "id" })?
+            .value.flatMap(UUID.init(uuidString:))
 
-        switch host {
-        case "dashboard": return .dashboard
-        case "projects": return .projects
-        case "project":
-            return id.map(Screen.projectDetail) ?? .projects
-        case "tasks": return .tasks
-        case "task":
-            return id.map(Screen.taskDetail) ?? .tasks
-        case "punch", "punchitems":
-            if let id { return .punchItemDetail(id) }
-            return .punchItems
-        case "punchitem":
-            return id.map(Screen.punchItemDetail) ?? .punchItems
-        case "rfis":
-            return .rfis
-        case "rfi":
-            return id.map(Screen.rfiDetail) ?? .rfis
-        case "drawings":
-            return .drawings
-        case "drawing":
-            return id.map(Screen.drawingDetail) ?? .drawings
-        case "map": return .map
-        case "safety", "inspection", "inspections", "incident", "incidents":
-            return .safety
-        case "team": return .team
-        case "notifications": return .notifications
-        default: return nil
+        if let id = firstPathId ?? queryId, let detail = route.detail {
+            return detail(id)
         }
+        return route.list
     }
 
     func resolve(_ string: String) -> Screen? {
