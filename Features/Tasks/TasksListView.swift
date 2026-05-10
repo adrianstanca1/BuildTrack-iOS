@@ -195,33 +195,6 @@ struct ModernTaskRow: View {
 
 // MARK: - Modern Filter Chip
 
-struct ModernFilterChip: View {
-    let label: String
-    let isSelected: Bool
-    var color: Color = BuildTrackColors.primary
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            Text(label)
-                .font(.caption.weight(.medium))
-                .foregroundStyle(isSelected ? .white : color)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(
-                    Capsule()
-                        .fill(isSelected ? color : color.opacity(0.08))
-                )
-                .overlay(
-                    Capsule()
-                        .strokeBorder(isSelected ? Color.clear : color.opacity(0.2), lineWidth: 1)
-                )
-        }
-        .buttonStyle(.plain)
-        .animation(.spring(response: 0.2), value: isSelected)
-    }
-}
-
 #Preview {
     TasksListView()
         .modelContainer(for: [TaskItem.self, Project.self])
