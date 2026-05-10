@@ -42,6 +42,10 @@
 		F7E64FBA9B0A59F312388DB9 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE63CD413B21D291FB044B7 /* OnboardingView.swift */; };
 		FB095DE2BF73629E8AC6F09B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1182F75D129277D83B1B5B4 /* MapView.swift */; };
 		FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89A624587CA83858231F97 /* ProjectsListView.swift */; };
+		AD40B4E4E956437FECAA1386 /* Assets.xcassets in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 042EE75D0D4F64BDD3BA2065 /* Assets.xcassets */;
+		};
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,6 +89,13 @@
 		F966E632424A2553F490AAC7 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Infrastructure/Services/Logger.swift; sourceTree = "<group>"; };
 		FCD60620944B1C70DCB3B5E6 /* Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Components.swift; path = DesignSystem/Components/Components.swift; sourceTree = "<group>"; };
 		FF89A624587CA83858231F97 /* ProjectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectsListView.swift; path = Features/Projects/ProjectsListView.swift; sourceTree = "<group>"; };
+		042EE75D0D4F64BDD3BA2065 /* Assets.xcassets */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = folder.assetcatalog;
+			name = Assets.xcassets;
+			path = Assets.xcassets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,6 +317,7 @@
 				6403F518380F96F39A57CF4B /* Infrastructure */,
 				90FC48A5C46B6772C6B58758 /* BuildTrack */,
 				625A0CD192F398A54FC6E089 /* Resources */,
+				042EE75D0D4F64BDD3BA2065 /* Assets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
