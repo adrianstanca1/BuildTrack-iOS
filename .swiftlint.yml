@@ -1,6 +1,5 @@
 disabled_rules:
   - attributes
-  - force_unwrapping
   - trailing_comma
   - statement_position
   - modifier_order
@@ -16,7 +15,6 @@ disabled_rules:
   - redundant_discardable_let
   - implicit_optional_initialization
   - function_parameter_count
-  - force_try
 
 opt_in_rules:
   - array_init

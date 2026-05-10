@@ -38,6 +38,7 @@ final class SwiftDataStack {
 
     static func previewContainer() -> ModelContainer {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        // swiftlint:disable:next force_try - preview-only, in-memory schema, can't fail at runtime
         let container = try! ModelContainer(for: SwiftDataStack.schema, configurations: config)
         let context = container.mainContext
         populateDemoData(in: context)
