@@ -225,16 +225,16 @@ struct AccountDetailView: View {
 struct SecuritySettingsView: View {
     @Bindable var authManager: AuthManager
     @State private var showChangePassword = false
-    @State private var enableBiometric = false
+    @State private var enableBiometric = UserDefaults.standard.bool(forKey: AppLockController.biometricEnabledKey)
     @State private var showDeleteAccountConfirmation = false
     @State private var biometricError: String?
-    
+
     private var context = LAContext()
-    
+
     init(authManager: AuthManager) {
         self.authManager = authManager
     }
-    
+
     var body: some View {
         List {
             Section {
@@ -243,6 +243,8 @@ struct SecuritySettingsView: View {
                     .onChange(of: enableBiometric) { _, isOn in
                         if isOn {
                             authenticateBiometric()
+                        } else {
+                            UserDefaults.standard.set(false, forKey: AppLockController.biometricEnabledKey)
                         }
                     }
                 
@@ -293,12 +295,11 @@ struct SecuritySettingsView: View {
             DispatchQueue.main.async {
                 if success {
                     biometricError = nil
-                    // Persist preference in UserDefaults or Keychain
-                    UserDefaults.standard.set(true, forKey: "biometricEnabled")
+                    UserDefaults.standard.set(true, forKey: AppLockController.biometricEnabledKey)
                 } else {
                     biometricError = evalError?.localizedDescription
                     enableBiometric = false
-                    UserDefaults.standard.set(false, forKey: "biometricEnabled")
+                    UserDefaults.standard.set(false, forKey: AppLockController.biometricEnabledKey)
                 }
             }
         }

@@ -7,97 +7,85 @@ struct DeepLinkRouter {
         case projectDetail(UUID)
         case tasks
         case taskDetail(UUID)
+        case punchItems
+        case punchItemDetail(UUID)
+        case rfis
+        case rfiDetail(UUID)
+        case drawings
+        case drawingDetail(UUID)
         case map
         case safety
         case team
         case notifications
     }
-    
+
     func resolve(_ url: URL) -> Screen? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               components.scheme == "buildtrack" else {
             return nil
         }
-        
-        let path = components.host ?? ""
+
+        let host = components.host ?? ""
+        let pathParts = components.path
+            .split(separator: "/")
+            .map(String.init)
         let params = components.queryItems ?? []
-        
-        switch path {
-        case "dashboard":
-            return .dashboard
-        case "projects":
-            return .projects
+
+        // Resolve `buildtrack://punch/<uuid>` (host=punch, path=<uuid>) and `buildtrack://punch?id=<uuid>`.
+        let firstPathId = pathParts.first.flatMap(UUID.init(uuidString:))
+        let queryId = params.first(where: { $0.name == "id" })?.value.flatMap(UUID.init(uuidString:))
+        let id = firstPathId ?? queryId
+
+        switch host {
+        case "dashboard": return .dashboard
+        case "projects": return .projects
         case "project":
-            if let idStr = params.first(where: { $0.name == "id" })?.value,
-               let id = UUID(uuidString: idStr) {
-                return .projectDetail(id)
-            }
-            return .projects
-        case "tasks":
-            return .tasks
+            return id.map(Screen.projectDetail) ?? .projects
+        case "tasks": return .tasks
         case "task":
-            if let idStr = params.first(where: { $0.name == "id" })?.value,
-               let id = UUID(uuidString: idStr) {
-                return .taskDetail(id)
-            }
-            return .tasks
-        case "map":
-            return .map
-        case "safety":
+            return id.map(Screen.taskDetail) ?? .tasks
+        case "punch", "punchitems":
+            if let id { return .punchItemDetail(id) }
+            return .punchItems
+        case "punchitem":
+            return id.map(Screen.punchItemDetail) ?? .punchItems
+        case "rfis":
+            return .rfis
+        case "rfi":
+            return id.map(Screen.rfiDetail) ?? .rfis
+        case "drawings":
+            return .drawings
+        case "drawing":
+            return id.map(Screen.drawingDetail) ?? .drawings
+        case "map": return .map
+        case "safety", "inspection", "inspections", "incident", "incidents":
             return .safety
-        case "team":
-            return .team
-        case "notifications":
-            return .notifications
-        default:
-            return nil
+        case "team": return .team
+        case "notifications": return .notifications
+        default: return nil
         }
     }
-    
+
     func resolve(_ string: String) -> Screen? {
-        // Handle both "buildtrack://task/{id}" and regular URLs
-        if string.hasPrefix("buildtrack://") {
-            if let url = URL(string: string) {
-                return resolve(url)
-            }
-            
-            // Manual parse for "buildtrack://screen/id" format
-            let path = String(string.dropFirst("buildtrack://".count))
-            let parts = path.split(separator: "/")
-            guard let screen = parts.first else { return nil }
-            
-            switch String(screen) {
-            case "project":
-                if parts.count > 1, let id = UUID(uuidString: String(parts[1])) {
-                    return .projectDetail(id)
-                }
-                return .projects
-            case "task":
-                if parts.count > 1, let id = UUID(uuidString: String(parts[1])) {
-                    return .taskDetail(id)
-                }
-                return .tasks
-            case "dashboard": return .dashboard
-            case "map": return .map
-            case "safety": return .safety
-            case "team": return .team
-            case "notifications": return .notifications
-            default: return nil
-            }
-        }
-        
-        return nil
+        guard let url = URL(string: string) else { return nil }
+        return resolve(url)
     }
-    
+
+    /// Tab index that should be foregrounded for this screen. Detail screens drop to the parent
+    /// tab; surfaces without a tab (rfis, map, safety, team, notifications) fall back to Dashboard
+    /// — they're reachable via push-navigation from there.
     func tabFor(_ screen: Screen) -> Int {
         switch screen {
-        case .dashboard: 0
-        case .projects, .projectDetail: 1
-        case .tasks, .taskDetail: 2
-        case .map: 3
-        case .safety: 4
-        case .team: 5
-        case .notifications: 6
+        case .dashboard, .rfis, .rfiDetail, .map, .safety, .team, .notifications:
+            return 0
+        case .projects, .projectDetail:
+            return 1
+        case .tasks, .taskDetail:
+            return 2
+        case .punchItems, .punchItemDetail:
+            return 3
+        case .drawings, .drawingDetail:
+            return 4
         }
     }
 }

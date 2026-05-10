@@ -4,12 +4,12 @@ import SwiftData
 @main
 struct BuildTrackApp: App {
     @State private var authManager = AuthManager()
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(authManager)
         }
-        .modelContainer(SwiftDataStack.previewContainer())
+        .modelContainer(SwiftDataStack.shared.container)
     }
 }

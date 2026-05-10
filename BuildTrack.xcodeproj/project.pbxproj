@@ -28,6 +28,8 @@
 		9AB386FE6517ED7D130FEBD0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E1D2F3F225FA4512E514E9 /* SettingsView.swift */; };
 		9ECCBDAD1D81506B76CD6E11 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BC7FF3389B6F8E416263CC /* NotificationViewModel.swift */; };
 		A8C16D6B8629DDF089EDEC0C /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7548F85CD39C8AA5CE9A5987 /* PushNotificationService.swift */; };
+		EED2A713C3F04FD48250D956 /* BiometricAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04656317E69E4832B01B2CC6 /* BiometricAuthService.swift */; };
+		789F1A6D2BAE4BD1B6B5C4E7 /* PunchPhotoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */; };
 		ACEC05F94324677AB6724C31 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CE6F132951504A7C41EED5 /* AuthManager.swift */; };
 		B1D6C6465E9B0C799D99CD01 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD60620944B1C70DCB3B5E6 /* Components.swift */; };
 		B3DAB9583C42244A7CDBAAD1 /* TasksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969CF44267F7B74B5A53F2C8 /* TasksListView.swift */; };
@@ -99,6 +101,8 @@
 		E91F1DBDF8CB98D91E35F1C0 /* BuildTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuildTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B30AC937F3CA13928A569C /* ProjectDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Features/Projects/ProjectDetailView.swift; sourceTree = "<group>"; };
 		F966E632424A2553F490AAC7 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Infrastructure/Services/Logger.swift; sourceTree = "<group>"; };
+		04656317E69E4832B01B2CC6 /* BiometricAuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BiometricAuthService.swift; path = Infrastructure/Services/BiometricAuthService.swift; sourceTree = "<group>"; };
+		0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchPhotoStore.swift; path = Infrastructure/Services/PunchPhotoStore.swift; sourceTree = "<group>"; };
 		FCD60620944B1C70DCB3B5E6 /* Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Components.swift; path = DesignSystem/Components/Components.swift; sourceTree = "<group>"; };
 		FF89A624587CA83858231F97 /* ProjectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectsListView.swift; path = Features/Projects/ProjectsListView.swift; sourceTree = "<group>"; };
 		042EE75D0D4F64BDD3BA2065 /* Assets.xcassets */ = {
@@ -326,8 +330,10 @@
 		E49D8E44C6DC32A6BB62FFE3 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				04656317E69E4832B01B2CC6 /* BiometricAuthService.swift */,
 				923056C0B1604665636519D5 /* DeepLinkRouter.swift */,
 				F966E632424A2553F490AAC7 /* Logger.swift */,
+				0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */,
 				7548F85CD39C8AA5CE9A5987 /* PushNotificationService.swift */,
 			);
 			name = Services;
@@ -532,6 +538,8 @@
 				393D9D3BF937C57794A15348 /* DeepLinkRouter.swift in Sources */,
 				8E7DC067F61148FB547B7D32 /* Logger.swift in Sources */,
 				A8C16D6B8629DDF089EDEC0C /* PushNotificationService.swift in Sources */,
+				EED2A713C3F04FD48250D956 /* BiometricAuthService.swift in Sources */,
+				789F1A6D2BAE4BD1B6B5C4E7 /* PunchPhotoStore.swift in Sources */,
 				ACEC05F94324677AB6724C31 /* AuthManager.swift in Sources */,
 				70062F64BFEF86DCC26D509E /* RealtimeService.swift in Sources */,
 				2E326F48C39642C871DDEE76 /* Repositories.swift in Sources */,

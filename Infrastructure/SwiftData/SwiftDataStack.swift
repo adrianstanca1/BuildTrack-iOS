@@ -8,18 +8,21 @@ final class SwiftDataStack {
     let container: ModelContainer
     let mainContext: ModelContext
     
+    static let schema = Schema([
+        Project.self,
+        TaskItem.self,
+        Incident.self,
+        Inspection.self,
+        Worker.self,
+        PunchItem.self,
+        RFI.self,
+        Drawing.self,
+    ])
+
     private init() {
-        let schema = Schema([
-            Project.self,
-            TaskItem.self,
-            Incident.self,
-            Inspection.self,
-            Worker.self,
-        ])
-        
         do {
             self.container = try ModelContainer(
-                for: schema,
+                for: SwiftDataStack.schema,
                 configurations: ModelConfiguration(
                     isStoredInMemoryOnly: false,
                     allowsSave: true
@@ -30,13 +33,12 @@ final class SwiftDataStack {
             fatalError("Failed to initialise SwiftData container: \(error)")
         }
     }
-    
+
     // MARK: - Preview Factory
-    
+
     static func previewContainer() -> ModelContainer {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let schema = Schema([Project.self, TaskItem.self, Incident.self, Inspection.self, Worker.self])
-        let container = try! ModelContainer(for: schema, configurations: config)
+        let container = try! ModelContainer(for: SwiftDataStack.schema, configurations: config)
         let context = container.mainContext
         populateDemoData(in: context)
         try? context.save()
