@@ -83,7 +83,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store-connect</string>
+            <string>app-store</string>
             <key>teamID</key>
             <string>4G3G5MX9BH</string>
             <key>signingStyle</key>
@@ -97,7 +97,7 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>ro.stancainvest.buildtrack</key>
-              <string>BuildTrack App Store CI</string>
+              <string>BuildTrack App Store v3</string>
             </dict>
             <key>signingCertificate</key>
             <string>iPhone Distribution: Adrian Stanca (4G3G5MX9BH)</string>
