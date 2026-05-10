@@ -79,20 +79,20 @@ security import /tmp/distribution.p12 -P "buildtrack123" -k "$KEYCHAIN_PATH" -T 
 security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
 # Install provisioning profile in ALL possible locations
-PROV_DIR="~/Library/MobileDevice/Provisioning Profiles"
-mkdir -p $PROV_DIR
+PROV_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+mkdir -p "$PROV_DIR"
 
 # Install with UUID filename (Xcode preferred)
-cp /tmp/buildtrack.mobileprovision "$PROV_DIR/${UUID}.mobileprovision"
+cp /tmp/buildtrack.mobileprovision ""$PROV_DIR"/${UUID}.mobileprovision"
 
 # Also install with name filename
-cp /tmp/buildtrack.mobileprovision "$PROV_DIR/${NAME}.mobileprovision"
+cp /tmp/buildtrack.mobileprovision ""$PROV_DIR"/${NAME}.mobileprovision"
 
 # Also install as generic name
-cp /tmp/buildtrack.mobileprovision "$PROV_DIR/buildtrack_app_store.mobileprovision"
+cp /tmp/buildtrack.mobileprovision ""$PROV_DIR"/buildtrack_app_store.mobileprovision"
 
 echo "=== Installed profiles ==="
-ls -la $PROV_DIR/
+ls -la "$PROV_DIR"/
 
 echo "=== Keychain certificates ==="
 security find-identity -v -p codesigning "$KEYCHAIN_PATH"
