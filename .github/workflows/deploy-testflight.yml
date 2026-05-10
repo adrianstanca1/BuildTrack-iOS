@@ -112,8 +112,9 @@ jobs:
 
       - name: Upload to TestFlight
         run: |
-          IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" | head -1)
+          IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" -type f | head -1)
           echo "Uploading: $IPA_PATH"
+          ls -la "$IPA_PATH" 2>/dev/null || true
           xcrun altool --upload-app \
             --type ios \
             --file "$IPA_PATH" \
