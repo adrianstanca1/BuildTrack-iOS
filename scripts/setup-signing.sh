@@ -12,7 +12,7 @@ security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d
 
 # Write cert and key from environment variables
 python3 << 'PYEOF'
-import base64, os
+import base64, os, subprocess
 
 cert_b64 = os.environ.get('IOS_DISTRIBUTION_CERT', '')
 key_b64 = os.environ.get('IOS_DISTRIBUTION_KEY', '')
@@ -27,12 +27,33 @@ with open('/tmp/distribution.key', 'wb') as f:
 with open('/tmp/buildtrack.mobileprovision', 'wb') as f:
     f.write(base64.b64decode(prov_b64))
     
+# Extract UUID from provisioning profile
+import plistlib
+try:
+    with open('/tmp/buildtrack.mobileprovision', 'rb') as f:
+        data = f.read()
+    start = data.find(b'\x3c\x3f\x78\x6d\x6c')
+    end = data.rfind(b'\x3c\x2f\x70\x6c\x69\x73\x74\x3e') + 8
+    plist_data = data[start:end]
+    pl = plistlib.loads(plist_data)
+    uuid = pl.get('UUID', '')
+    print(f"Profile UUID: {uuid}")
+    with open('/tmp/profile_uuid.txt', 'w') as f:
+        f.write(uuid)
+except Exception as e:
+    print(f"Error extracting UUID: {e}")
+    with open('/tmp/profile_uuid.txt', 'w') as f:
+        f.write('buildtrack_app_store')
+
 print(f"Cert: {os.path.getsize('/tmp/distribution.cer')} bytes")
 print(f"Key: {os.path.getsize('/tmp/distribution.key')} bytes")
 print(f"Prov: {os.path.getsize('/tmp/buildtrack.mobileprovision')} bytes")
 PYEOF
 
-# Convert DER cert to PEM (openssl pkcs12 needs PEM)
+UUID=$(cat /tmp/profile_uuid.txt)
+echo "Using profile UUID: $UUID"
+
+# Convert DER cert to PEM
 openssl x509 -inform DER -in /tmp/distribution.cer -out /tmp/distribution.pem
 
 # Combine into P12
@@ -44,12 +65,13 @@ openssl pkcs12 -export -in /tmp/distribution.pem -inkey /tmp/distribution.key \
 security import /tmp/distribution.p12 -P "buildtrack123" -k "$KEYCHAIN_PATH" -T /usr/bin/codesign -T /usr/bin/security
 security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
-# Install provisioning profile
+# Install provisioning profile with UUID filename
 mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-cp /tmp/buildtrack.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/buildtrack_app_store.mobileprovision
+cp /tmp/buildtrack.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/${UUID}.mobileprovision
 
-echo "=== Keychain contents ==="
-security find-identity -v -p codesigning "$KEYCHAIN_PATH"
-
-echo "=== Installed profiles ==="
+# Also verify it was installed
 ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+echo "Profile installed at: ~/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision"
+
+# Clean up sensitive files
+rm -f /tmp/distribution.cer /tmp/distribution.key /tmp/distribution.pem /tmp/distribution.p12 /tmp/buildtrack.mobileprovision /tmp/profile_uuid.txt
