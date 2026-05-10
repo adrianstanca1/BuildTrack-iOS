@@ -65,7 +65,7 @@ jobs:
             -archivePath "build/BuildTrack.xcarchive" \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER="BuildTrack App Store v2" \
+            PROVISIONING_PROFILE_SPECIFIER="BuildTrack App Store CI" \
             DEVELOPMENT_TEAM="4G3G5MX9BH" \
             COMPILER_INDEX_STORE_ENABLE=NO
 
@@ -92,7 +92,7 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>ro.stancainvest.buildtrack</key>
-              <string>BuildTrack App Store v2</string>
+              <string>BuildTrack App Store CI</string>
             </dict>
           </dict>
           </plist>
