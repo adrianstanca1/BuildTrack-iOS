@@ -60,11 +60,11 @@
 		<string>LaunchIcon</string>
 	</dict>
 	<key>SUPABASE_URL</key>
-	<string>$(SUPABASE_URL)</string>
+	<string>https://buildtrack.cortexbuildpro.com</string>
 	<key>SUPABASE_ANON_KEY</key>
-	<string>$(SUPABASE_ANON_KEY)</string>
+	<string>sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH</string>
 	<key>API_BASE_URL</key>
-	<string>$(API_BASE_URL)</string>
+	<string>https://buildtrack.cortexbuildpro.com/api</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
