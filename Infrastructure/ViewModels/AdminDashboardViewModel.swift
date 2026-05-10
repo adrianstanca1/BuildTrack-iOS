@@ -97,6 +97,3 @@ final class AdminDashboardViewModel {
 
 // MARK: - Logger Extension
 
-extension Logger {
-    static let admin = Logger(subsystem: "com.buildtrack", category: "Admin")
-}

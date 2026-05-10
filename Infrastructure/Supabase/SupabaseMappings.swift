@@ -112,6 +112,7 @@ extension SupabaseProject {
 extension Project {
     func toSupabaseProject() -> SupabaseProject {
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return SupabaseProject(
             id: id,
             name: name,
@@ -152,6 +153,7 @@ extension SupabaseTask {
 extension TaskItem {
     func toSupabaseTask() -> SupabaseTask {
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return SupabaseTask(
             id: id,
             title: title,
