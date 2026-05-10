@@ -1,13 +1,12 @@
 name: Deploy to TestFlight
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/deploy-testflight.yml'
-      - 'BuildTrack/**'
-      - 'BuildTrack.xcodeproj/**'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. 1.0.0)'
+        required: false
+        default: ''
     inputs:
       version:
         description: 'Version number (e.g. 1.0.0)'
