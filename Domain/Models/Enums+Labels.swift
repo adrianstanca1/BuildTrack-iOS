@@ -1,4 +1,3 @@
-
 // MARK: - Enum Labels/Colors
 extension BudgetStatus {
     var label: String { rawValue.capitalized }
