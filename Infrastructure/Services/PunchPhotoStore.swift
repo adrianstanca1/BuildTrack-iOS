@@ -1,6 +1,8 @@
 import Foundation
-import UIKit
 import OSLog
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Local file storage for PunchItem photos. Each item gets its own folder under
 /// `Documents/PunchPhotos/<itemId>/`. Photos are JPEG-encoded at quality 0.85 and
@@ -35,6 +37,23 @@ enum PunchPhotoStore {
         return folder
     }
 
+    /// Removes a photo by URL string. Only deletes when the URL points inside the
+    /// app's `Documents/PunchPhotos/` tree — remote URLs are ignored, never throw.
+    static func delete(urlString: String) {
+        guard let url = URL(string: urlString), url.isFileURL else { return }
+        let documentsPath: String? = try? FileManager.default.url(
+            for: .documentDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        ).path
+        guard let documentsPath, url.path.hasPrefix(documentsPath) else { return }
+        try? FileManager.default.removeItem(at: url)
+    }
+}
+
+#if canImport(UIKit)
+extension PunchPhotoStore {
     @discardableResult
     static func save(_ image: UIImage, for itemId: UUID) throws -> URL {
         let resized = resize(image, maxDimension: maxDimension)
@@ -51,20 +70,6 @@ enum PunchPhotoStore {
         return url
     }
 
-    /// Removes a photo by URL string. Only deletes when the URL points inside the
-    /// app's `Documents/PunchPhotos/` tree — remote URLs are ignored, never throw.
-    static func delete(urlString: String) {
-        guard let url = URL(string: urlString), url.isFileURL else { return }
-        let documentsPath: String? = try? FileManager.default.url(
-            for: .documentDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: false
-        ).path
-        guard let documentsPath, url.path.hasPrefix(documentsPath) else { return }
-        try? FileManager.default.removeItem(at: url)
-    }
-
     private static func resize(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
         let longest = max(image.size.width, image.size.height)
         guard longest > maxDimension else { return image }
@@ -76,3 +81,4 @@ enum PunchPhotoStore {
         }
     }
 }
+#endif
