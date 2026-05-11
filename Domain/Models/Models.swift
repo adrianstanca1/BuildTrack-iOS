@@ -1344,7 +1344,7 @@ final class Permit: Identifiable, Codable {
         try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum PermitStatus: String, CaseIterable, Codable { case applied, underReview = "under_review", approved, rejected, expired }
+
 // MARK: - DailyReport
 @Model
 final class DailyReport: Identifiable, Codable {
@@ -1387,7 +1387,7 @@ final class DailyReport: Identifiable, Codable {
         try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum DailyReportStatus: String, CaseIterable, Codable { case draft, submitted, approved }
+
 // MARK: - BudgetCategory (referenced in SwiftDataStack)
 @Model
 final class BudgetCategory: Identifiable, Codable {
