@@ -121,46 +121,6 @@ struct TimesheetStatusBadge: View {
     }
 }
 
-struct TimesheetFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var workerName = ""
-    @State private var hoursWorked = ""
-    @State private var task = ""
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Details") {
-                    TextField("Worker Name", text: $workerName)
-                    TextField("Hours", text: $hoursWorked)
-                        .keyboardType(.decimalPad)
-                    TextField("Task", text: $task)
-                }
-            }
-            .navigationTitle("New Timesheet")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let entry = TimesheetEntry(
-                            workerName: workerName,
-                            hoursWorked: Double(hoursWorked) ?? 0,
-                            task: task
-                        )
-                        modelContext.insert(entry)
-                        dismiss()
-                    }
-                    .disabled(workerName.isEmpty)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     TimesheetsListView()
         .modelContainer(SwiftDataStack.previewContainer())

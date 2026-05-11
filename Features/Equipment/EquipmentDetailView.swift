@@ -11,73 +11,8 @@ struct EquipmentDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Header Card
-                VStack(spacing: 16) {
-                    ZStack {
-                        Circle()
-                            .fill(statusColor.opacity(0.12))
-                            .frame(width: 80, height: 80)
-                        Image(systemName: "wrench.and.screwdriver.fill")
-                            .font(.system(size: 36))
-                            .foregroundStyle(statusColor)
-                    }
-
-                    Text(equipment.name)
-                        .font(.title2.weight(.bold))
-
-                    if !equipment.make.isEmpty || !equipment.model.isEmpty {
-                        Text("\(equipment.make) \(equipment.model)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    EquipmentStatusBadge(status: equipment.status)
-
-                    if equipment.isServiceDue {
-                        Label("Service Due", systemImage: "exclamationmark.triangle.fill")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.red)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(Color.red.opacity(0.12))
-                            .clipShape(Capsule())
-                    }
-                }
-                .padding(20)
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
-
-                // Details
-                VStack(alignment: .leading, spacing: 16) {
-                    DetailRow(label: "Type", value: equipment.equipmentType.isEmpty ? "—" : equipment.equipmentType)
-                    DetailRow(label: "Serial Number", value: equipment.serialNumber.isEmpty ? "—" : equipment.serialNumber)
-                    DetailRow(label: "Assigned To", value: equipment.assignedTo.isEmpty ? "—" : equipment.assignedTo)
-                    DetailRow(label: "Location", value: equipment.location.isEmpty ? "—" : equipment.location)
-                    DetailRow(label: "Hours Used", value: "\(equipment.hoursUsed, specifier: "%.1f")")
-                    DetailRow(label: "Cost", value: equipment.cost > 0 ? "£\(equipment.cost, specifier: "%.2f")" : "—")
-
-                    if let lastService = equipment.lastServiceDate {
-                        DetailRow(label: "Last Service", value: lastService.formatted(date: .abbreviated, time: .omitted))
-                    }
-
-                    if let nextService = equipment.nextServiceDate {
-                        DetailRow(label: "Next Service", value: nextService.formatted(date: .abbreviated, time: .omitted))
-                    }
-
-                    if !equipment.notes.isEmpty {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Notes")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(equipment.notes)
-                                .font(.body)
-                        }
-                    }
-                }
-                .padding(16)
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                headerCard
+                detailsCard
             }
             .padding(16)
         }
@@ -110,7 +45,77 @@ struct EquipmentDetailView: View {
         }
     }
 
-    var statusColor: Color {
+    private var headerCard: some View {
+        VStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(statusColor.opacity(0.12))
+                    .frame(width: 80, height: 80)
+                Image(systemName: "wrench.and.screwdriver.fill")
+                    .font(.system(size: 36))
+                    .foregroundStyle(statusColor)
+            }
+
+            Text(equipment.name)
+                .font(.title2.weight(.bold))
+
+            if !equipment.make.isEmpty || !equipment.model.isEmpty {
+                Text("\(equipment.make) \(equipment.model)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            EquipmentStatusBadge(status: equipment.status)
+
+            if equipment.isServiceDue {
+                Label("Service Due", systemImage: "exclamationmark.triangle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.red)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.red.opacity(0.12))
+                    .clipShape(Capsule())
+            }
+        }
+        .padding(20)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
+    }
+
+    private var detailsCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            DetailRow(label: "Type", value: equipment.equipmentType.isEmpty ? "—" : equipment.equipmentType)
+            DetailRow(label: "Serial Number", value: equipment.serialNumber.isEmpty ? "—" : equipment.serialNumber)
+            DetailRow(label: "Assigned To", value: equipment.assignedTo.isEmpty ? "—" : equipment.assignedTo)
+            DetailRow(label: "Location", value: equipment.location.isEmpty ? "—" : equipment.location)
+            DetailRow(label: "Hours Used", value: "\(equipment.hoursUsed, specifier: "%.1f")")
+            DetailRow(label: "Cost", value: equipment.cost > 0 ? "£\(equipment.cost, specifier: "%.2f")" : "—")
+
+            if let lastService = equipment.lastServiceDate {
+                DetailRow(label: "Last Service", value: lastService.formatted(date: .abbreviated, time: .omitted))
+            }
+
+            if let nextService = equipment.nextServiceDate {
+                DetailRow(label: "Next Service", value: nextService.formatted(date: .abbreviated, time: .omitted))
+            }
+
+            if !equipment.notes.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Notes")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(equipment.notes)
+                        .font(.body)
+                }
+            }
+        }
+        .padding(16)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private var statusColor: Color {
         switch equipment.status {
         case .available: return .green
         case .inUse: return .blue

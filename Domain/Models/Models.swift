@@ -1266,15 +1266,6 @@ final class Meeting: Identifiable, Codable {
 }
 enum MeetingType: String, CaseIterable, Codable {
     case site, progress, safety, design, other
-    var label: String {
-        switch self {
-        case .site: return "Site"
-        case .progress: return "Progress"
-        case .safety: return "Safety"
-        case .design: return "Design"
-        case .other: return "Other"
-        }
-    }
 }
 // MARK: - TimesheetEntry
 @Model

@@ -65,6 +65,7 @@ enum BuildTrackColors {
         case .draft: return textTertiary
         case .submitted: return info
         case .approved: return success
+        case .rejected: return danger
         }
     }
     

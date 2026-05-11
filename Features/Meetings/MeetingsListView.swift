@@ -95,45 +95,6 @@ struct MeetingTypeBadge: View {
     }
 }
 
-struct MeetingFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var title = ""
-    @State private var meetingType: MeetingType = .site
-    @State private var date = Date()
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Details") {
-                    TextField("Title", text: $title)
-                    Picker("Type", selection: $meetingType) {
-                        ForEach(MeetingType.allCases, id: \.self) { type in
-                            Text(type.label).tag(type)
-                        }
-                    }
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
-                }
-            }
-            .navigationTitle("New Meeting")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let meeting = Meeting(title: title, meetingType: meetingType, date: date)
-                        modelContext.insert(meeting)
-                        dismiss()
-                    }
-                    .disabled(title.isEmpty)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     MeetingsListView()
         .modelContainer(SwiftDataStack.previewContainer())

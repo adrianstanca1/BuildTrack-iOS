@@ -120,48 +120,6 @@ struct DefectStatusBadge: View {
     }
 }
 
-struct DefectFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var title = ""
-    @State private var location = ""
-    @State private var severity: DefectSeverity = .minor
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Details") {
-                    TextField("Title", text: $title)
-                    TextField("Location", text: $location)
-                }
-                Section("Severity") {
-                    Picker("Severity", selection: $severity) {
-                        ForEach(DefectSeverity.allCases, id: \.self) { s in
-                            Text(s.label).tag(s)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
-            }
-            .navigationTitle("New Defect")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let defect = Defect(title: title, location: location, severity: severity)
-                        modelContext.insert(defect)
-                        dismiss()
-                    }
-                    .disabled(title.isEmpty)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     DefectsListView()
         .modelContainer(SwiftDataStack.previewContainer())

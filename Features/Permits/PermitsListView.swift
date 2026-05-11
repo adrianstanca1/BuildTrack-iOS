@@ -100,41 +100,6 @@ struct PermitStatusBadge: View {
     }
 }
 
-struct PermitFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var permitNumber = ""
-    @State private var permitType = ""
-    @State private var authority = ""
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Details") {
-                    TextField("Number", text: $permitNumber)
-                    TextField("Type", text: $permitType)
-                    TextField("Authority", text: $authority)
-                }
-            }
-            .navigationTitle("New Permit")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let permit = Permit(permitNumber: permitNumber, permitType: permitType, authority: authority)
-                        modelContext.insert(permit)
-                        dismiss()
-                    }
-                    .disabled(permitNumber.isEmpty)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     PermitsListView()
         .modelContainer(SwiftDataStack.previewContainer())
