@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct DailyReportsListView: View {
-    @Query(sort: \DailyReport.reportDate, order: .reverse) private var reports: [DailyReport]
+    @Query(sort: \DailyReport.date, order: .reverse) private var reports: [DailyReport]
     @Environment(\.modelContext) private var modelContext
     @State private var showAddReport = false
 
