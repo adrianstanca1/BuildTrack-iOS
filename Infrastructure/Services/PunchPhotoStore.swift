@@ -1,9 +1,6 @@
 import Foundation
-import OSLog
-#if canImport(UIKit)
 import UIKit
-#endif
-
+import OSLog
 /// Local file storage for PunchItem photos. Each item gets its own folder under
 /// `Documents/PunchPhotos/<itemId>/`. Photos are JPEG-encoded at quality 0.85 and
 /// downscaled if their longest side exceeds `maxDimension` to keep on-disk size sane.
@@ -52,7 +49,7 @@ enum PunchPhotoStore {
     }
 }
 
-#if canImport(UIKit)
+
 extension PunchPhotoStore {
     @discardableResult
     static func save(_ image: UIImage, for itemId: UUID) throws -> URL {
@@ -81,4 +78,4 @@ extension PunchPhotoStore {
         }
     }
 }
-#endif
+
