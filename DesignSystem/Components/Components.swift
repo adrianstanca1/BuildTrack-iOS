@@ -324,6 +324,52 @@ struct FilterChip: View {
     .background(Color(.systemGroupedBackground))
 }
 
+struct PunchItemStatusBadge: View {
+    let status: PunchItemStatus
+    
+    var color: Color {
+        switch status {
+        case .open: return .blue
+        case .inProgress: return .orange
+        case .resolved: return .green
+        case .closed: return .gray
+        }
+    }
+    
+    var body: some View {
+        Text(status.label)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(color)
+            .clipShape(Capsule())
+    }
+}
+
+struct PunchItemSeverityBadge: View {
+    let severity: PunchItemSeverity
+    
+    var color: Color {
+        switch severity {
+        case .cosmetic: return .gray
+        case .minor: return .yellow
+        case .major: return .orange
+        case .critical: return .red
+        }
+    }
+    
+    var body: some View {
+        Text(severity.label)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(color)
+            .clipShape(Capsule())
+    }
+}
+
 struct ResultBadge: View {
     let result: InspectionResult
 
