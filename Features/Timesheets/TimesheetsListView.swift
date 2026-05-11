@@ -131,13 +131,11 @@ struct TimesheetFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
+                Section("Details") {
                     TextField("Worker Name", text: $workerName)
                     TextField("Hours", text: $hoursWorked)
                         .keyboardType(.decimalPad)
                     TextField("Task", text: $task)
-                } header: {
-                    Text("Details")
                 }
             }
             .navigationTitle("New Timesheet")
