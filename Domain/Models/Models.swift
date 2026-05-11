@@ -1445,3 +1445,10 @@ final class Equipment: Identifiable, Codable {
         try c.encode(statusRaw, forKey: .statusRaw); try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
+
+enum EquipmentStatus: String, CaseIterable {
+    case available = "available"
+    case inUse = "inUse"
+    case maintenance = "maintenance"
+    case retired = "retired"
+}
