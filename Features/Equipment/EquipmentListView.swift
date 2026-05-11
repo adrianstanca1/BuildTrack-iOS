@@ -93,7 +93,7 @@ struct EquipmentStatusBadge: View {
     var statusColor: Color {
         switch status {
         case .available: return .green
-        case .in_use: return .blue
+        case .inUse: return .blue
         case .maintenance: return .orange
         case .retired: return .gray
         }

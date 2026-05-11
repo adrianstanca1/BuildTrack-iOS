@@ -67,18 +67,24 @@ struct ContentView: View {
 struct MainTabView: View {
     @Binding var selectedTab: Int
     @Binding var deepLink: DeepLinkRouter.Screen?
-    @State private var tabItems = [
-        TabItem(icon: "house.fill", label: "Home", view: AnyView(DashboardView())),
-        TabItem(icon: "building.2.fill", label: "Projects", view: AnyView(ProjectsListView())),
-        TabItem(icon: "checklist", label: "Tasks", view: AnyView(TasksListView())),
-        TabItem(icon: "square.grid.2x2", label: "More", view: AnyView(MoreMenuView())),
-    ]
+    @State private var tabItems: [TabItem] = []
 
     struct TabItem: Identifiable {
         let id = UUID()
         let icon: String
         let label: String
         let view: AnyView
+    }
+
+    init(selectedTab: Binding<Int>, deepLink: Binding<DeepLinkRouter.Screen?>) {
+        _selectedTab = selectedTab
+        _deepLink = deepLink
+        _tabItems = State(initialValue: [
+            TabItem(icon: "house.fill", label: "Home", view: AnyView(DashboardView())),
+            TabItem(icon: "building.2.fill", label: "Projects", view: AnyView(ProjectsListView())),
+            TabItem(icon: "checklist", label: "Tasks", view: AnyView(TasksListView())),
+            TabItem(icon: "square.grid.2x2", label: "More", view: AnyView(MoreMenuView())),
+        ])
     }
 
     var body: some View {

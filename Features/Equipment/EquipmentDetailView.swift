@@ -113,7 +113,7 @@ struct EquipmentDetailView: View {
     var statusColor: Color {
         switch equipment.status {
         case .available: return .green
-        case .in_use: return .blue
+        case .inUse: return .blue
         case .maintenance: return .orange
         case .retired: return .gray
         }
@@ -122,6 +122,6 @@ struct EquipmentDetailView: View {
 
 #Preview {
     NavigationStack {
-        EquipmentDetailView(equipment: Equipment(name: "Excavator CAT 320", equipmentType: "Heavy Machinery", make: "Caterpillar", model: "320", serialNumber: "CAT320-2024-001", status: .in_use, assignedTo: "Mike Chen", location: "Site A", hoursUsed: 1245, nextServiceDate: Date().addingTimeInterval(30 * 86400)))
+        EquipmentDetailView(equipment: Equipment(name: "Excavator CAT 320", equipmentType: "Heavy Machinery", make: "Caterpillar", model: "320", serialNumber: "CAT320-2024-001", status: .inUse, assignedTo: "Mike Chen", location: "Site A", hoursUsed: 1245, nextServiceDate: Date().addingTimeInterval(30 * 86400)))
     }
 }
