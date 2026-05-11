@@ -401,6 +401,15 @@ struct SummaryCard: View {
     let value: String
     let icon: String
     let color: Color
+    let subtitle: String?
+
+    init(title: String, value: String, subtitle: String? = nil, icon: String, color: Color) {
+        self.title = title
+        self.value = value
+        self.subtitle = subtitle
+        self.icon = icon
+        self.color = color
+    }
 
     var body: some View {
         VStack(spacing: 8) {
@@ -416,6 +425,11 @@ struct SummaryCard: View {
             Text(title)
                 .font(.caption)
                 .foregroundStyle(Color(.secondaryLabel))
+            if let subtitle {
+                Text(subtitle)
+                    .font(.caption2)
+                    .foregroundStyle(Color(.tertiaryLabel))
+            }
         }
         .padding(12)
         .frame(width: 120)
@@ -547,5 +561,35 @@ struct ModernFilterChip: View {
         }
         .buttonStyle(.plain)
         .animation(.spring(response: 0.2), value: isSelected)
+    }
+}
+
+// MARK: - Search Bar
+
+struct SearchBar: View {
+    @Binding var query: String
+    var placeholder: String = "Search..."
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField(placeholder, text: $query)
+                .font(.subheadline)
+            if !query.isEmpty {
+                Button {
+                    query = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 2)
     }
 }

@@ -26,6 +26,8 @@ final class SwiftDataStack {
         Permit.self,
         Defect.self,
         DailyReport.self,
+        Invoice.self,
+        Submittal.self,
     ])
 
     private init() {

@@ -122,6 +122,8 @@ struct MoreMenuView: View {
         MenuItem(icon: "person.2", label: "Team", color: .teal, destination: AnyView(TeamView())),
         MenuItem(icon: "chart.bar", label: "Reports", color: .gray, destination: AnyView(ReportsView())),
         MenuItem(icon: "doc.text", label: "Daily Reports", color: .blue, destination: AnyView(DailyReportsListView())),
+        MenuItem(icon: "doc.on.doc", label: "Submittals", color: .indigo, destination: AnyView(SubmittalsListView())),
+        MenuItem(icon: "sterlingsign.square", label: "Invoices", color: .green, destination: AnyView(InvoicesListView())),
         MenuItem(icon: "gear", label: "Settings", color: .gray, destination: AnyView(SettingsView())),
     ]
 

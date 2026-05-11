@@ -14,6 +14,8 @@ struct DashboardView: View {
     @State private var showPunchItems = false
     @State private var showRFIs = false
     @State private var showDrawings = false
+    @State private var showSubmittals = false
+    @State private var showInvoices = false
     
     var activeProjects: Int { projects.filter { $0.status == .active }.count }
     var pendingTasks: Int { tasks.filter { $0.status != .completed }.count }
@@ -65,6 +67,12 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showNewIncident) {
             IncidentFormView()
+        }
+        .sheet(isPresented: $showSubmittals) {
+            SubmittalsListView()
+        }
+        .sheet(isPresented: $showInvoices) {
+            InvoicesListView()
         }
     }
     
@@ -216,6 +224,18 @@ struct DashboardView: View {
                     label: "Drawings",
                     color: .purple
                 ) { showDrawings = true }
+                
+                QuickActionButton(
+                    icon: "doc.on.doc.fill",
+                    label: "Submittals",
+                    color: .indigo
+                ) { showSubmittals = true }
+                
+                QuickActionButton(
+                    icon: "sterlingsign.square.fill",
+                    label: "Invoices",
+                    color: .green
+                ) { showInvoices = true }
             }
         }
         .padding(16)

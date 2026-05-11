@@ -1309,6 +1309,210 @@ enum PermitStatus: String, CaseIterable, Codable { case applied, underReview = "
 enum DailyReportStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
 enum Severity: String, CaseIterable, Codable { case minor, major, critical }
 
+// MARK: - Invoice
+@Model
+final class Invoice: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var invoiceNumber: String
+    var vendor: String
+    var amount: Double
+    var statusRaw: String
+    var dueDate: Date?
+    var projectId: UUID?
+    var createdAt: Date
+    var updatedAt: Date
+    
+    var status: InvoiceStatus {
+        get { InvoiceStatus(rawValue: statusRaw) ?? .draft }
+        set { statusRaw = newValue.rawValue }
+    }
+    
+    init(
+        id: UUID = UUID(),
+        invoiceNumber: String,
+        vendor: String = "",
+        amount: Double = 0,
+        status: InvoiceStatus = .draft,
+        dueDate: Date? = nil,
+        projectId: UUID? = nil,
+        createdAt: Date = Date(),
+        updatedAt: Date = Date()
+    ) {
+        self.id = id
+        self.invoiceNumber = invoiceNumber
+        self.vendor = vendor
+        self.amount = amount
+        self.statusRaw = status.rawValue
+        self.dueDate = dueDate
+        self.projectId = projectId
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, invoiceNumber, vendor, amount, statusRaw, dueDate, projectId, createdAt, updatedAt
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try c.decode(UUID.self, forKey: .id)
+        self.invoiceNumber = try c.decode(String.self, forKey: .invoiceNumber)
+        self.vendor = try c.decodeIfPresent(String.self, forKey: .vendor) ?? ""
+        self.amount = try c.decodeIfPresent(Double.self, forKey: .amount) ?? 0
+        self.statusRaw = try c.decode(String.self, forKey: .statusRaw)
+        self.dueDate = try c.decodeIfPresent(Date.self, forKey: .dueDate)
+        self.projectId = try c.decodeIfPresent(UUID.self, forKey: .projectId)
+        self.createdAt = try c.decode(Date.self, forKey: .createdAt)
+        self.updatedAt = try c.decode(Date.self, forKey: .updatedAt)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(invoiceNumber, forKey: .invoiceNumber)
+        try c.encode(vendor, forKey: .vendor)
+        try c.encode(amount, forKey: .amount)
+        try c.encode(statusRaw, forKey: .statusRaw)
+        try c.encodeIfPresent(dueDate, forKey: .dueDate)
+        try c.encodeIfPresent(projectId, forKey: .projectId)
+        try c.encode(createdAt, forKey: .createdAt)
+        try c.encode(updatedAt, forKey: .updatedAt)
+    }
+}
+
+enum InvoiceStatus: String, CaseIterable, Codable {
+    case draft, pending, approved, paid, overdue
+    var label: String { rawValue.capitalized }
+    var color: String {
+        switch self {
+        case .draft: return "gray"
+        case .pending: return "blue"
+        case .approved: return "green"
+        case .paid: return "green"
+        case .overdue: return "red"
+        }
+    }
+}
+
+// MARK: - Submittal
+@Model
+final class Submittal: Identifiable, Codable {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var descriptionText: String
+    var typeRaw: String
+    var statusRaw: String
+    var submittedBy: String
+    var reviewedBy: String
+    var projectId: UUID?
+    var createdAt: Date
+    var updatedAt: Date
+    
+    var type: SubmittalType {
+        get { SubmittalType(rawValue: typeRaw) ?? .other }
+        set { typeRaw = newValue.rawValue }
+    }
+    
+    var status: SubmittalStatus {
+        get { SubmittalStatus(rawValue: statusRaw) ?? .draft }
+        set { statusRaw = newValue.rawValue }
+    }
+    
+    init(
+        id: UUID = UUID(),
+        title: String,
+        descriptionText: String = "",
+        type: SubmittalType = .other,
+        status: SubmittalStatus = .draft,
+        submittedBy: String = "",
+        reviewedBy: String = "",
+        projectId: UUID? = nil,
+        createdAt: Date = Date(),
+        updatedAt: Date = Date()
+    ) {
+        self.id = id
+        self.title = title
+        self.descriptionText = descriptionText
+        self.typeRaw = type.rawValue
+        self.statusRaw = status.rawValue
+        self.submittedBy = submittedBy
+        self.reviewedBy = reviewedBy
+        self.projectId = projectId
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, descriptionText, typeRaw, statusRaw, submittedBy, reviewedBy, projectId, createdAt, updatedAt
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try c.decode(UUID.self, forKey: .id)
+        self.title = try c.decode(String.self, forKey: .title)
+        self.descriptionText = try c.decodeIfPresent(String.self, forKey: .descriptionText) ?? ""
+        self.typeRaw = try c.decode(String.self, forKey: .typeRaw)
+        self.statusRaw = try c.decode(String.self, forKey: .statusRaw)
+        self.submittedBy = try c.decodeIfPresent(String.self, forKey: .submittedBy) ?? ""
+        self.reviewedBy = try c.decodeIfPresent(String.self, forKey: .reviewedBy) ?? ""
+        self.projectId = try c.decodeIfPresent(UUID.self, forKey: .projectId)
+        self.createdAt = try c.decode(Date.self, forKey: .createdAt)
+        self.updatedAt = try c.decode(Date.self, forKey: .updatedAt)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(title, forKey: .title)
+        try c.encode(descriptionText, forKey: .descriptionText)
+        try c.encode(typeRaw, forKey: .typeRaw)
+        try c.encode(statusRaw, forKey: .statusRaw)
+        try c.encode(submittedBy, forKey: .submittedBy)
+        try c.encode(reviewedBy, forKey: .reviewedBy)
+        try c.encodeIfPresent(projectId, forKey: .projectId)
+        try c.encode(createdAt, forKey: .createdAt)
+        try c.encode(updatedAt, forKey: .updatedAt)
+    }
+}
+
+enum SubmittalStatus: String, CaseIterable, Codable {
+    case draft, submitted, underReview = "under_review", approved, rejected, closed
+    var label: String {
+        switch self {
+        case .draft: return "Draft"
+        case .submitted: return "Submitted"
+        case .underReview: return "Under Review"
+        case .approved: return "Approved"
+        case .rejected: return "Rejected"
+        case .closed: return "Closed"
+        }
+    }
+    var color: String {
+        switch self {
+        case .draft: return "gray"
+        case .submitted: return "blue"
+        case .underReview: return "orange"
+        case .approved: return "green"
+        case .rejected: return "red"
+        case .closed: return "gray"
+        }
+    }
+}
+
+enum SubmittalType: String, CaseIterable, Codable {
+    case material, shopDrawing, productData, mockup, sample, other
+    var label: String {
+        switch self {
+        case .material: return "Material"
+        case .shopDrawing: return "Shop Drawing"
+        case .productData: return "Product Data"
+        case .mockup: return "Mockup"
+        case .sample: return "Sample"
+        case .other: return "Other"
+        }
+    }
+}
+
 // MARK: - Permit
 @Model
 final class Permit: Identifiable, Codable {
