@@ -25,6 +25,7 @@ final class SwiftDataStack {
         TimesheetEntry.self,
         Permit.self,
         Defect.self,
+        DailyReport.self,
     ])
 
     private init() {
