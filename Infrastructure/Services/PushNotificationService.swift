@@ -1,6 +1,8 @@
-import UIKit
 import OSLog
 import UserNotifications
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @MainActor
 final class PushNotificationService: NSObject, ObservableObject, @unchecked Sendable {
@@ -25,7 +27,9 @@ final class PushNotificationService: NSObject, ObservableObject, @unchecked Send
             let granted = try await center.requestAuthorization(options: [.alert, .badge, .sound, .provisional])
             self.isAuthorised = granted
             if granted {
+                #if canImport(UIKit)
                 await MainActor.run { UIApplication.shared.registerForRemoteNotifications() }
+                #endif
             }
             return granted
         } catch {
