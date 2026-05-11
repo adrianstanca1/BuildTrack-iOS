@@ -51,6 +51,11 @@ struct StatusBadge: View {
         self.label = status.label
         self.color = .gray // BudgetStatus doesn't have color yet
     }
+    
+    init(status: IncidentStatus) {
+        self.label = status.rawValue.capitalized
+        self.color = .gray
+    }
 
     var body: some View {
         HStack(spacing: 4) {
