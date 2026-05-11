@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0014141F4C344261AB325919 /* RFIsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6AB1695E95420492A86C81 /* RFIsListView.swift */; };
 		066324BA21E0C31342E0A127 /* TaskFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */; };
-		0937A66AC7D9D1B30FC4B8E7 /* DailyReportFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892364B45FC3876F712E9CEB /* DailyReportFormView.swift */; };
 		0E424178C6144574B7ECDE0D /* DrawingsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B182827DEF2B42EE97449377 /* DrawingsListView.swift */; };
 		1680DF484BE24F3DAD9E626C /* RFIDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36228357B471FB7C45792 /* RFIDetailView.swift */; };
 		188520BA5576440EB5A8A707 /* RFIFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F2389B424C49E2A6A9E8FC /* RFIFormView.swift */; };
@@ -18,9 +17,7 @@
 		1C79F2DE391A76E0CDB11985 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D7E42852231909C2157A70 /* NotificationSettingsView.swift */; };
 		213FAC383D95DFAAD8E5A3C0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E48C09C17B770F8A7D04C10A /* Foundation.framework */; };
 		287943F84B208ED49EEFC299 /* TimesheetsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F475E29B1CB6CFA7E9AAD8C /* TimesheetsListView.swift */; };
-		2BF9797EA2928CFB4310F200 /* PermitFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA41D0D42DB236F6AF7C45 /* PermitFormView.swift */; };
 		2E326F48C39642C871DDEE76 /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7818EA60012E7A0AA2C6A817 /* Repositories.swift */; };
-		2F8B719B3176BF0961553406 /* TimesheetFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC89EFF4F3BEEA817BE6DA /* TimesheetFormView.swift */; };
 		2FC5FFABD67FFB29892A165D /* DefectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B503853B5B7981305E65CF61 /* DefectDetailView.swift */; };
 		37433E9152CDE8FE8D937A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3574B8F4B0722D19A5DD50 /* ContentView.swift */; };
 		393D9D3BF937C57794A15348 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923056C0B1604665636519D5 /* DeepLinkRouter.swift */; };
@@ -29,7 +26,6 @@
 		3E843BD6D35E9F5FB2408D2F /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEDBD9CEF6C9B64ACD7CDB1 /* TeamView.swift */; };
 		3F175AB5115AEE0C2498B11F /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23581831C03B81FA179AD1B0 /* Colors.swift */; };
 		404306AD77C636970F18BDB1 /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B30AC937F3CA13928A569C /* ProjectDetailView.swift */; };
-		41535FABD423F36B547059DA /* DailyReportDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DE9764B4C63A003559D84F /* DailyReportDetailView.swift */; };
 		44ACD3F90EB544F9700F2020 /* SafetyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */; };
 		4859FD7E7A8B2CDF1C64D75F /* ProjectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5145C6B27A5710157EA01A0D /* ProjectViewModel.swift */; };
 		4DDA4C1D8833498165D6C7EB /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46572E81D098EBFDA1387BCA /* AuthViewModel.swift */; };
@@ -40,13 +36,14 @@
 		5FE46148EF985C54747DAADE /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7224C276E61116FDCA43B8 /* SafetyView.swift */; };
 		61FB2132A01E4C7E9FD87C00 /* PunchItemsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */; };
 		70062F64BFEF86DCC26D509E /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A5773BF000214D16452EF0 /* RealtimeService.swift */; };
-		7481877CE45B9F60F1FEA11B /* MeetingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E2628C8048112E4C865F015 /* MeetingFormView.swift */; };
+		7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43246BE8A835FD2ACB9EF021 /* DailyReportFormView.swift */; };
 		7819CDC1200143FEB97810B7 /* DrawingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0DB14438E34A958A0520BF /* DrawingFormView.swift */; };
 		781FC2DC183896D893718FB3 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0283DBEBC53CABB3C04380AF /* AuthView.swift */; };
 		789F1A6D2BAE4BD1B6B5C4E7 /* PunchPhotoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */; };
 		8E7DC067F61148FB547B7D32 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966E632424A2553F490AAC7 /* Logger.swift */; };
 		92B157AA7CA458B2B4957794 /* BudgetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6D61B4F11108A6E9424C28 /* BudgetListView.swift */; };
 		94E3FA4666B5128804E743EA /* DailyReportsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A8FF1A270281AFDC626754 /* DailyReportsListView.swift */; };
+		9A21865F52E2826F74E2BF88 /* PermitFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6785190C1BD1EFCA8C64B982 /* PermitFormView.swift */; };
 		9AB386FE6517ED7D130FEBD0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E1D2F3F225FA4512E514E9 /* SettingsView.swift */; };
 		9ECCBDAD1D81506B76CD6E11 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BC7FF3389B6F8E416263CC /* NotificationViewModel.swift */; };
 		A41D32A1449B7C7F9C9AAAED /* BudgetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA030240324DEAE53381AFD /* BudgetDetailView.swift */; };
@@ -62,12 +59,14 @@
 		BDDC4A070A9B92DAAFC9366B /* EquipmentFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643BCB60869C2F23309DC89D /* EquipmentFormView.swift */; };
 		CBB94ADF965E8DA6FB02745B /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */; };
 		CC450758A4BF387E5332B64C /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE9D58F34D9D8B7553BD15D /* SupabaseManager.swift */; };
+		CD753BFFE871A86610990E56 /* MeetingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46927F2D85FF48F1F3CCE9C6 /* MeetingFormView.swift */; };
 		CDD68327826A7C82F2D88DB3 /* BuildTrack_iOS_ExtendedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D3BF9BC3D695EADA65E548 /* BuildTrack_iOS_ExtendedModels.swift */; };
 		D6D0DCCB8480C23B08DC3AB0 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A597C86521EC6053735366F6 /* MaterialDetailView.swift */; };
 		D77C47AAAE1B9D659F502BCD /* ProjectFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117F179E406D876E3BFECEAC /* ProjectFormView.swift */; };
 		D838C6561B9598B32F0B285D /* PermitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C076947DFA3A753EBFF5DB /* PermitDetailView.swift */; };
 		D96FEAB90CB34E96B1B76FDD /* PunchItemFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0760DFA838134C12B6A98A4E /* PunchItemFormView.swift */; };
 		DE498786CE6C3039BED662E4 /* DefectFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC5DA389F9AE69C577AB9E /* DefectFormView.swift */; };
+		DE6316CE464BE79A0C7FD277 /* TimesheetFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792598B656FDFFBF98014692 /* TimesheetFormView.swift */; };
 		E1C73DA84CF80D142B30D2B9 /* PermitsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EDA68815E55B51F19790E9 /* PermitsListView.swift */; };
 		E848504590DFE5E7BA0FE8EA /* TimesheetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D904F035A2406B5C25955205 /* TimesheetDetailView.swift */; };
 		E99D0575E245A2ADD0299A66 /* NotificationInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7B3F2E1BF99A676EF186D9 /* NotificationInboxView.swift */; };
@@ -75,6 +74,7 @@
 		EED2A713C3F04FD48250D956 /* BiometricAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04656317E69E4832B01B2CC6 /* BiometricAuthService.swift */; };
 		F0165FB1511BF2C122F92252 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5488D5D1727FE7FF6C08E3 /* Models.swift */; };
 		F05293E887F630FD2A8D6F98 /* DefectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0B35FF3C0735A965942027 /* DefectsListView.swift */; };
+		F312594BD9B4206A9B165FA7 /* DailyReportDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7517085EAA17367319EA9B65 /* DailyReportDetailView.swift */; };
 		F31C363EC7DBE9898FA30DBA /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95B1A16A1D85BA5C2B2A8DE /* TaskViewModel.swift */; };
 		F44E913F76F94E23168D0AFF /* SwiftDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5DCC0D712724BD5C23B60E /* SwiftDataStack.swift */; };
 		F617F52EB76906FFF99F37DB /* MaterialFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8155FBDCC6613499678CD68 /* MaterialFormView.swift */; };
@@ -91,7 +91,6 @@
 		04656317E69E4832B01B2CC6 /* BiometricAuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BiometricAuthService.swift; path = Infrastructure/Services/BiometricAuthService.swift; sourceTree = "<group>"; };
 		0760DFA838134C12B6A98A4E /* PunchItemFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemFormView.swift; path = PunchItemFormView.swift; sourceTree = "<group>"; };
 		0D57830E3FF49E079B502B7F /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DashboardView.swift; path = Features/Dashboard/DashboardView.swift; sourceTree = "<group>"; };
-		0DBC89EFF4F3BEEA817BE6DA /* TimesheetFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetFormView.swift; path = TimesheetFormView.swift; sourceTree = "<group>"; };
 		0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchPhotoStore.swift; path = Infrastructure/Services/PunchPhotoStore.swift; sourceTree = "<group>"; };
 		117F179E406D876E3BFECEAC /* ProjectFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectFormView.swift; path = Features/Projects/ProjectFormView.swift; sourceTree = "<group>"; };
 		137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyViewModel.swift; path = Infrastructure/ViewModels/SafetyViewModel.swift; sourceTree = "<group>"; };
@@ -100,7 +99,6 @@
 		1F5488D5D1727FE7FF6C08E3 /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Models.swift; path = Domain/Models/Models.swift; sourceTree = "<group>"; };
 		234D95519147470587BD944A /* PunchItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemViewModel.swift; path = Infrastructure/ViewModels/PunchItemViewModel.swift; sourceTree = "<group>"; };
 		23581831C03B81FA179AD1B0 /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = DesignSystem/Theme/Colors.swift; sourceTree = "<group>"; };
-		25DE9764B4C63A003559D84F /* DailyReportDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportDetailView.swift; path = DailyReportDetailView.swift; sourceTree = "<group>"; };
 		29A42CB6514E5D7C54E3603C /* Enums+Labels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Enums+Labels.swift"; path = "Domain/Models/Enums+Labels.swift"; sourceTree = "<group>"; };
 		2DA0E8E02A74C8E962B6CA3D /* MaterialsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MaterialsListView.swift; path = MaterialsListView.swift; sourceTree = "<group>"; };
 		2F12F25506C667C58BE0124E /* Config-Production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Config-Production.xcconfig"; sourceTree = "<group>"; };
@@ -108,11 +106,12 @@
 		39B89C6CC0B5DAF540D3E436 /* Config-Development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Config-Development.xcconfig"; sourceTree = "<group>"; };
 		3A7224C276E61116FDCA43B8 /* SafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyView.swift; path = Features/Safety/SafetyView.swift; sourceTree = "<group>"; };
 		3FE63CD413B21D291FB044B7 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingView.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		43246BE8A835FD2ACB9EF021 /* DailyReportFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportFormView.swift; path = Features/DailyReports/DailyReportFormView.swift; sourceTree = "<group>"; };
 		46572E81D098EBFDA1387BCA /* AuthViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthViewModel.swift; path = Infrastructure/ViewModels/AuthViewModel.swift; sourceTree = "<group>"; };
+		46927F2D85FF48F1F3CCE9C6 /* MeetingFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MeetingFormView.swift; path = Features/Meetings/MeetingFormView.swift; sourceTree = "<group>"; };
 		4A0B35FF3C0735A965942027 /* DefectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefectsListView.swift; path = DefectsListView.swift; sourceTree = "<group>"; };
 		4ACB38F2FE566027942EFABF /* BuildTrackApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BuildTrackApp.swift; path = App/BuildTrackApp.swift; sourceTree = "<group>"; };
 		4B806B4C85F14EF6BF09F072 /* RFIViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIViewModel.swift; path = Infrastructure/ViewModels/RFIViewModel.swift; sourceTree = "<group>"; };
-		4E2628C8048112E4C865F015 /* MeetingFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MeetingFormView.swift; path = MeetingFormView.swift; sourceTree = "<group>"; };
 		5145C6B27A5710157EA01A0D /* ProjectViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectViewModel.swift; path = Infrastructure/ViewModels/ProjectViewModel.swift; sourceTree = "<group>"; };
 		56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = Infrastructure/ViewModels/DrawingViewModel.swift; sourceTree = "<group>"; };
 		5975D4BA1ADE4C7594FB19A6 /* EquipmentDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentDetailView.swift; path = EquipmentDetailView.swift; sourceTree = "<group>"; };
@@ -120,14 +119,16 @@
 		625A0CD192F398A54FC6E089 /* Resources */ = {isa = PBXFileReference; includeInIndex = 1; path = Resources; sourceTree = "<group>"; };
 		638405823DAA1583792955CA /* MeetingsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MeetingsListView.swift; path = MeetingsListView.swift; sourceTree = "<group>"; };
 		643BCB60869C2F23309DC89D /* EquipmentFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentFormView.swift; path = EquipmentFormView.swift; sourceTree = "<group>"; };
+		6785190C1BD1EFCA8C64B982 /* PermitFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PermitFormView.swift; path = Features/Permits/PermitFormView.swift; sourceTree = "<group>"; };
 		6F475E29B1CB6CFA7E9AAD8C /* TimesheetsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetsListView.swift; path = TimesheetsListView.swift; sourceTree = "<group>"; };
 		72CB4143664EB360FBD5ADBF /* MeetingDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MeetingDetailView.swift; path = MeetingDetailView.swift; sourceTree = "<group>"; };
 		73D7E42852231909C2157A70 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationSettingsView.swift; path = Features/Notifications/NotificationSettingsView.swift; sourceTree = "<group>"; };
+		7517085EAA17367319EA9B65 /* DailyReportDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportDetailView.swift; path = Features/DailyReports/DailyReportDetailView.swift; sourceTree = "<group>"; };
 		7548F85CD39C8AA5CE9A5987 /* PushNotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PushNotificationService.swift; path = Infrastructure/Services/PushNotificationService.swift; sourceTree = "<group>"; };
 		7818EA60012E7A0AA2C6A817 /* Repositories.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Repositories.swift; path = Infrastructure/Supabase/Repositories.swift; sourceTree = "<group>"; };
+		792598B656FDFFBF98014692 /* TimesheetFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetFormView.swift; path = Features/Timesheets/TimesheetFormView.swift; sourceTree = "<group>"; };
 		83A8FF1A270281AFDC626754 /* DailyReportsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportsListView.swift; path = DailyReportsListView.swift; sourceTree = "<group>"; };
 		8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TeamViewModel.swift; path = Infrastructure/ViewModels/TeamViewModel.swift; sourceTree = "<group>"; };
-		892364B45FC3876F712E9CEB /* DailyReportFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportFormView.swift; path = DailyReportFormView.swift; sourceTree = "<group>"; };
 		923056C0B1604665636519D5 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DeepLinkRouter.swift; path = Infrastructure/Services/DeepLinkRouter.swift; sourceTree = "<group>"; };
 		9456CCFB44CDE397464E7F56 /* ReportsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReportsView.swift; path = Features/Reports/ReportsView.swift; sourceTree = "<group>"; };
 		969CF44267F7B74B5A53F2C8 /* TasksListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TasksListView.swift; path = Features/Tasks/TasksListView.swift; sourceTree = "<group>"; };
@@ -140,7 +141,6 @@
 		AAA030240324DEAE53381AFD /* BudgetDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BudgetDetailView.swift; path = BudgetDetailView.swift; sourceTree = "<group>"; };
 		AD6D61B4F11108A6E9424C28 /* BudgetListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BudgetListView.swift; path = BudgetListView.swift; sourceTree = "<group>"; };
 		ADE9D58F34D9D8B7553BD15D /* SupabaseManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SupabaseManager.swift; path = Infrastructure/Supabase/SupabaseManager.swift; sourceTree = "<group>"; };
-		AECA41D0D42DB236F6AF7C45 /* PermitFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PermitFormView.swift; path = PermitFormView.swift; sourceTree = "<group>"; };
 		AFFE1CB2815B46C0AE25C8E0 /* DrawingDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingDetailView.swift; path = DrawingDetailView.swift; sourceTree = "<group>"; };
 		B182827DEF2B42EE97449377 /* DrawingsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingsListView.swift; path = DrawingsListView.swift; sourceTree = "<group>"; };
 		B503853B5B7981305E65CF61 /* DefectDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefectDetailView.swift; path = DefectDetailView.swift; sourceTree = "<group>"; };
@@ -250,9 +250,9 @@
 		4CEE13C133AE3A9DFDC0329F /* DailyReports */ = {
 			isa = PBXGroup;
 			children = (
-				25DE9764B4C63A003559D84F /* DailyReportDetailView.swift */,
-				892364B45FC3876F712E9CEB /* DailyReportFormView.swift */,
 				83A8FF1A270281AFDC626754 /* DailyReportsListView.swift */,
+				43246BE8A835FD2ACB9EF021 /* DailyReportFormView.swift */,
+				7517085EAA17367319EA9B65 /* DailyReportDetailView.swift */,
 			);
 			name = DailyReports;
 			path = Features/DailyReports;
@@ -377,8 +377,8 @@
 			isa = PBXGroup;
 			children = (
 				72CB4143664EB360FBD5ADBF /* MeetingDetailView.swift */,
-				4E2628C8048112E4C865F015 /* MeetingFormView.swift */,
 				638405823DAA1583792955CA /* MeetingsListView.swift */,
+				46927F2D85FF48F1F3CCE9C6 /* MeetingFormView.swift */,
 			);
 			name = Meetings;
 			path = Features/Meetings;
@@ -426,8 +426,8 @@
 			isa = PBXGroup;
 			children = (
 				D7C076947DFA3A753EBFF5DB /* PermitDetailView.swift */,
-				AECA41D0D42DB236F6AF7C45 /* PermitFormView.swift */,
 				E2EDA68815E55B51F19790E9 /* PermitsListView.swift */,
+				6785190C1BD1EFCA8C64B982 /* PermitFormView.swift */,
 			);
 			name = Permits;
 			path = Features/Permits;
@@ -437,8 +437,8 @@
 			isa = PBXGroup;
 			children = (
 				D904F035A2406B5C25955205 /* TimesheetDetailView.swift */,
-				0DBC89EFF4F3BEEA817BE6DA /* TimesheetFormView.swift */,
 				6F475E29B1CB6CFA7E9AAD8C /* TimesheetsListView.swift */,
+				792598B656FDFFBF98014692 /* TimesheetFormView.swift */,
 			);
 			name = Timesheets;
 			path = Features/Timesheets;
@@ -714,22 +714,22 @@
 				BDDC4A070A9B92DAAFC9366B /* EquipmentFormView.swift in Sources */,
 				F9DC999A6691301FA234920D /* EquipmentListView.swift in Sources */,
 				5A6A7166BB69B5DA50CBE32B /* MeetingDetailView.swift in Sources */,
-				7481877CE45B9F60F1FEA11B /* MeetingFormView.swift in Sources */,
 				3CDFCB95B8433F0487631B07 /* MeetingsListView.swift in Sources */,
 				E848504590DFE5E7BA0FE8EA /* TimesheetDetailView.swift in Sources */,
-				2F8B719B3176BF0961553406 /* TimesheetFormView.swift in Sources */,
 				287943F84B208ED49EEFC299 /* TimesheetsListView.swift in Sources */,
 				D838C6561B9598B32F0B285D /* PermitDetailView.swift in Sources */,
-				2BF9797EA2928CFB4310F200 /* PermitFormView.swift in Sources */,
 				E1C73DA84CF80D142B30D2B9 /* PermitsListView.swift in Sources */,
 				2FC5FFABD67FFB29892A165D /* DefectDetailView.swift in Sources */,
 				DE498786CE6C3039BED662E4 /* DefectFormView.swift in Sources */,
 				F05293E887F630FD2A8D6F98 /* DefectsListView.swift in Sources */,
-				41535FABD423F36B547059DA /* DailyReportDetailView.swift in Sources */,
-				0937A66AC7D9D1B30FC4B8E7 /* DailyReportFormView.swift in Sources */,
 				94E3FA4666B5128804E743EA /* DailyReportsListView.swift in Sources */,
 				CDD68327826A7C82F2D88DB3 /* BuildTrack_iOS_ExtendedModels.swift in Sources */,
 				50755E07A8EBBE8BA49715C7 /* Enums+Labels.swift in Sources */,
+				CD753BFFE871A86610990E56 /* MeetingFormView.swift in Sources */,
+				DE6316CE464BE79A0C7FD277 /* TimesheetFormView.swift in Sources */,
+				9A21865F52E2826F74E2BF88 /* PermitFormView.swift in Sources */,
+				7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */,
+				F312594BD9B4206A9B165FA7 /* DailyReportDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
