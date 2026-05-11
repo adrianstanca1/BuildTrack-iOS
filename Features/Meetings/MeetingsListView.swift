@@ -10,7 +10,11 @@ struct MeetingsListView: View {
         NavigationStack {
             List {
                 ForEach(meetings) { meeting in
-                    MeetingRow(meeting: meeting)
+                    NavigationLink {
+                        MeetingDetailView(meeting: meeting)
+                    } label: {
+                        MeetingRow(meeting: meeting)
+                    }
                 }
                 .onDelete(perform: deleteMeeting)
             }

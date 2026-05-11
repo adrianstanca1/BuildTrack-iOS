@@ -33,7 +33,11 @@ struct TimesheetsListView: View {
                 }
 
                 ForEach(entries) { entry in
-                    TimesheetRow(entry: entry)
+                    NavigationLink {
+                        TimesheetDetailView(entry: entry)
+                    } label: {
+                        TimesheetRow(entry: entry)
+                    }
                 }
                 .onDelete(perform: deleteEntry)
             }

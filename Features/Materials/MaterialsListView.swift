@@ -10,7 +10,11 @@ struct MaterialsListView: View {
         NavigationStack {
             List {
                 ForEach(materials) { material in
-                    MaterialRow(material: material)
+                    NavigationLink {
+                        MaterialDetailView(material: material)
+                    } label: {
+                        MaterialRow(material: material)
+                    }
                 }
                 .onDelete(perform: deleteMaterial)
             }

@@ -10,7 +10,11 @@ struct PermitsListView: View {
         NavigationStack {
             List {
                 ForEach(permits) { permit in
-                    PermitRow(permit: permit)
+                    NavigationLink {
+                        PermitDetailView(permit: permit)
+                    } label: {
+                        PermitRow(permit: permit)
+                    }
                 }
                 .onDelete(perform: deletePermit)
             }

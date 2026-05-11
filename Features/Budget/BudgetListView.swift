@@ -10,7 +10,11 @@ struct BudgetListView: View {
         NavigationStack {
             List {
                 ForEach(budgets) { budget in
-                    BudgetRow(budget: budget)
+                    NavigationLink {
+                        BudgetDetailView(budget: budget)
+                    } label: {
+                        BudgetRow(budget: budget)
+                    }
                 }
                 .onDelete(perform: deleteBudget)
             }

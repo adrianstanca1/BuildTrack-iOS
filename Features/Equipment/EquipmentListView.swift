@@ -10,7 +10,11 @@ struct EquipmentListView: View {
         NavigationStack {
             List {
                 ForEach(equipment) { item in
-                    EquipmentRow(item: item)
+                    NavigationLink {
+                        EquipmentDetailView(equipment: item)
+                    } label: {
+                        EquipmentRow(item: item)
+                    }
                 }
                 .onDelete(perform: deleteEquipment)
             }

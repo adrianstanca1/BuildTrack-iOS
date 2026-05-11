@@ -253,12 +253,12 @@ final class Material: Identifiable, Codable {
 }
 
 enum MaterialStatus: String, CaseIterable, Codable {
-    case ordered, delivered, in_stock, used
+    case ordered, delivered, inStock, used
     var label: String {
         switch self {
         case .ordered: return "Ordered"
         case .delivered: return "Delivered"
-        case .in_stock: return "In Stock"
+        case .inStock: return "In Stock"
         case .used: return "Used"
         }
     }
@@ -381,11 +381,11 @@ final class Equipment: Identifiable, Codable {
 }
 
 enum EquipmentStatus: String, CaseIterable, Codable {
-    case available, in_use, maintenance, retired
+    case available, inUse, maintenance, retired
     var label: String {
         switch self {
         case .available: return "Available"
-        case .in_use: return "In Use"
+        case .inUse: return "In Use"
         case .maintenance: return "Maintenance"
         case .retired: return "Retired"
         }
@@ -696,11 +696,11 @@ final class Permit: Identifiable, Codable {
 }
 
 enum PermitStatus: String, CaseIterable, Codable {
-    case applied, under_review, approved, rejected, expired
+    case applied, underReview, approved, rejected, expired
     var label: String {
         switch self {
         case .applied: return "Applied"
-        case .under_review: return "Under Review"
+        case .underReview: return "Under Review"
         case .approved: return "Approved"
         case .rejected: return "Rejected"
         case .expired: return "Expired"
@@ -816,11 +816,11 @@ enum DefectSeverity: String, CaseIterable, Codable {
 }
 
 enum DefectStatus: String, CaseIterable, Codable {
-    case open, in_progress, resolved, closed
+    case open, inProgress, resolved, closed
     var label: String {
         switch self {
         case .open: return "Open"
-        case .in_progress: return "In Progress"
+        case .inProgress: return "In Progress"
         case .resolved: return "Resolved"
         case .closed: return "Closed"
         }

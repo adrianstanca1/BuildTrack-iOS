@@ -10,7 +10,11 @@ struct DefectsListView: View {
         NavigationStack {
             List {
                 ForEach(defects) { defect in
-                    DefectRow(defect: defect)
+                    NavigationLink {
+                        DefectDetailView(defect: defect)
+                    } label: {
+                        DefectRow(defect: defect)
+                    }
                 }
                 .onDelete(perform: deleteDefect)
             }
