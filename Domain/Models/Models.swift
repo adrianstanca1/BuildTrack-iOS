@@ -1387,57 +1387,8 @@ final class BudgetCategory: Identifiable, Codable {
         try c.encode(id, forKey: .id); try c.encode(name, forKey: .name); try c.encodeIfPresent(budgetId, forKey: .budgetId)
         try c.encode(allocated, forKey: .allocated); try c.encode(spent, forKey: .spent); try c.encode(createdAt, forKey: .createdAt)
     }
+}
 
-// MARK: - DailyReport
-@Model
-final class DailyReport: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
-    var date: Date
-    var reportDate: Date
-    var weatherRaw: String
-    var temperature: Double
-    var workersOnSite: Int
-    var statusRaw: String
-    var summary: String
-    var workCompleted: String
-    var notes: String
-    var createdAt: Date
-    var updatedAt: Date
-
-    var weather: WeatherCondition {
-        get { WeatherCondition(rawValue: weatherRaw) ?? .clear }
-        set { weatherRaw = newValue.rawValue }
-    }
-
-    var status: DailyReportStatus {
-        get { DailyReportStatus(rawValue: statusRaw) ?? .draft }
-        set { statusRaw = newValue.rawValue }
-    }
-
-    init(id: UUID = UUID(), date: Date = Date(), reportDate: Date = Date(), weather: WeatherCondition = .clear, temperature: Double = 0, workersOnSite: Int = 0, status: DailyReportStatus = .draft, summary: String = "", workCompleted: String = "", notes: String = "", createdAt: Date = Date(), updatedAt: Date = Date()) {
-        self.id = id; self.date = date; self.reportDate = reportDate; self.weatherRaw = weather.rawValue; self.temperature = temperature; self.workersOnSite = workersOnSite; self.statusRaw = status.rawValue
-        self.summary = summary; self.workCompleted = workCompleted; self.notes = notes; self.createdAt = createdAt; self.updatedAt = updatedAt
-    }
-    enum CodingKeys: String, CodingKey { case id, date, reportDate, weatherRaw, temperature, workersOnSite, statusRaw, summary, workCompleted, notes, createdAt, updatedAt }
-    required init(from decoder: Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try c.decode(UUID.self, forKey: .id); self.date = try c.decode(Date.self, forKey: .date)
-        self.reportDate = try c.decodeIfPresent(Date.self, forKey: .reportDate) ?? Date()
-        self.weatherRaw = try c.decodeIfPresent(String.self, forKey: .weatherRaw) ?? "clear"
-        self.temperature = try c.decodeIfPresent(Double.self, forKey: .temperature) ?? 0
-        self.workersOnSite = try c.decodeIfPresent(Int.self, forKey: .workersOnSite) ?? 0
-        self.statusRaw = try c.decodeIfPresent(String.self, forKey: .statusRaw) ?? "draft"
-        self.summary = try c.decodeIfPresent(String.self, forKey: .summary) ?? ""
-        self.workCompleted = try c.decodeIfPresent(String.self, forKey: .workCompleted) ?? ""
-        self.notes = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
-        self.createdAt = try c.decode(Date.self, forKey: .createdAt); self.updatedAt = try c.decode(Date.self, forKey: .updatedAt)
-    }
-    func encode(to e: Encoder) throws {
-        var c = e.container(keyedBy: CodingKeys.self)
-        try c.encode(id, forKey: .id); try c.encode(date, forKey: .date); try c.encode(reportDate, forKey: .reportDate)
-        try c.encode(weatherRaw, forKey: .weatherRaw); try c.encode(temperature, forKey: .temperature); try c.encode(workersOnSite, forKey: .workersOnSite)
-        try c.encode(statusRaw, forKey: .statusRaw); try c.encode(summary, forKey: .summary); try c.encode(workCompleted, forKey: .workCompleted)
-        try c.encode(notes, forKey: .notes); try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
 // MARK: - DailyReport
 @Model
 final class DailyReport: Identifiable, Codable {

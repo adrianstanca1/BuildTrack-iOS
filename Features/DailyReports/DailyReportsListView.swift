@@ -53,7 +53,7 @@ struct DailyReportRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(report.reportDate.formatted(date: .abbreviated, time: .omitted))
+                Text(report.date.formatted(date: .abbreviated, time: .omitted))
                     .font(.headline)
                 Spacer()
                 StatusBadge(status: report.status)
