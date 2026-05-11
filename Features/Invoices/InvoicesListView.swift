@@ -47,6 +47,7 @@ struct InvoicesListView: View {
                     title: "Outstanding",
                     value: String(format: "£%.2f", viewModel.totalOutstanding),
                     subtitle: "\(viewModel.overdueInvoices.count) overdue",
+                    icon: "sterlingsign.circle",
                     color: .red
                 )
                 .padding(.horizontal, 16)

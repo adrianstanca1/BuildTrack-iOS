@@ -44,6 +44,7 @@ struct SubmittalsListView: View {
                     title: "Pending Review",
                     value: "\(viewModel.pendingCount)",
                     subtitle: "Awaiting approval",
+                    icon: "clock",
                     color: .orange
                 )
                 .padding(.horizontal, 16)
