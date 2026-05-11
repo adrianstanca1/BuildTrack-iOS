@@ -1303,6 +1303,10 @@ final class TimesheetEntry: Identifiable, Codable {
     }
 }
 enum TimesheetStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
+enum PermitStatus: String, CaseIterable, Codable { case applied, underReview = "under_review", approved, rejected, expired }
+enum DailyReportStatus: String, CaseIterable, Codable { case draft, submitted, approved }
+enum Severity: String, CaseIterable, Codable { case minor, major, critical }
+
 // MARK: - Permit
 @Model
 final class Permit: Identifiable, Codable {

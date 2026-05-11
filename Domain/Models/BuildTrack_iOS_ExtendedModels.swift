@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 // MARK: - Defect
 @Model
@@ -120,7 +121,7 @@ enum DefectStatus: String, CaseIterable, Codable {
     }
 }
 
-// MARK: - DailyReport
+// MARK: - DailyReport (Extended)
 @Model
 final class DailyReport: Identifiable, Codable {
     @Attribute(.unique) var id: UUID
