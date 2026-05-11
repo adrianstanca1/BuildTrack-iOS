@@ -60,10 +60,10 @@ struct DailyReportRow: View {
             }
             HStack {
                 Label("\(report.workersOnSite) workers", systemImage: "person.2")
-                Text("\u00b7")
+                Text("\u{00B7}")
                 Text(report.weather.isEmpty ? "No weather" : report.weather)
-                Text("\u00b7")
-                Text("\(Int(report.temperature))\u00b0C")
+                Text("\u{00B7}")
+                Text("\(Int(report.temperature))\u{00B0}C")
             }
             .font(.caption)
             .foregroundStyle(.secondary)
