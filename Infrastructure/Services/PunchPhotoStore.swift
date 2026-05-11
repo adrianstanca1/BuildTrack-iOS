@@ -51,7 +51,6 @@ enum PunchPhotoStore {
     }
 }
 
-
 #if canImport(UIKit)
 extension PunchPhotoStore {
     @discardableResult
@@ -82,4 +81,3 @@ extension PunchPhotoStore {
     }
 }
 #endif
-
