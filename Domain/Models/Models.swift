@@ -1418,6 +1418,10 @@ final class BudgetCategory: Identifiable, Codable {
         try c.encode(id, forKey: .id); try c.encode(name, forKey: .name); try c.encodeIfPresent(budgetId, forKey: .budgetId)
         try c.encode(allocated, forKey: .allocated); try c.encode(spent, forKey: .spent); try c.encode(createdAt, forKey: .createdAt)
     }
+
+// MARK: - DailyReport
+@Model
+
 }
 // MARK: - Equipment (referenced in SwiftDataStack)
 @Model
