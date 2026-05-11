@@ -60,7 +60,6 @@
 		CBB94ADF965E8DA6FB02745B /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */; };
 		CC450758A4BF387E5332B64C /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE9D58F34D9D8B7553BD15D /* SupabaseManager.swift */; };
 		CD753BFFE871A86610990E56 /* MeetingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46927F2D85FF48F1F3CCE9C6 /* MeetingFormView.swift */; };
-		CDD68327826A7C82F2D88DB3 /* BuildTrack_iOS_ExtendedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D3BF9BC3D695EADA65E548 /* BuildTrack_iOS_ExtendedModels.swift */; };
 		D6D0DCCB8480C23B08DC3AB0 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A597C86521EC6053735366F6 /* MaterialDetailView.swift */; };
 		D77C47AAAE1B9D659F502BCD /* ProjectFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117F179E406D876E3BFECEAC /* ProjectFormView.swift */; };
 		D838C6561B9598B32F0B285D /* PermitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C076947DFA3A753EBFF5DB /* PermitDetailView.swift */; };
@@ -151,7 +150,6 @@
 		C1182F75D129277D83B1B5B4 /* MapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MapView.swift; path = Features/Map/MapView.swift; sourceTree = "<group>"; };
 		CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemsListView.swift; path = PunchItemsListView.swift; sourceTree = "<group>"; };
 		CC6AB1695E95420492A86C81 /* RFIsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIsListView.swift; path = RFIsListView.swift; sourceTree = "<group>"; };
-		D0D3BF9BC3D695EADA65E548 /* BuildTrack_iOS_ExtendedModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BuildTrack_iOS_ExtendedModels.swift; path = Domain/Models/BuildTrack_iOS_ExtendedModels.swift; sourceTree = "<group>"; };
 		D323B87440814918A4C2AC1A /* PunchItemDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemDetailView.swift; path = PunchItemDetailView.swift; sourceTree = "<group>"; };
 		D7C076947DFA3A753EBFF5DB /* PermitDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PermitDetailView.swift; path = PermitDetailView.swift; sourceTree = "<group>"; };
 		D904F035A2406B5C25955205 /* TimesheetDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetDetailView.swift; path = TimesheetDetailView.swift; sourceTree = "<group>"; };
@@ -448,7 +446,6 @@
 			isa = PBXGroup;
 			children = (
 				1F5488D5D1727FE7FF6C08E3 /* Models.swift */,
-				D0D3BF9BC3D695EADA65E548 /* BuildTrack_iOS_ExtendedModels.swift */,
 				29A42CB6514E5D7C54E3603C /* Enums+Labels.swift */,
 			);
 			name = Models;
@@ -723,7 +720,6 @@
 				DE498786CE6C3039BED662E4 /* DefectFormView.swift in Sources */,
 				F05293E887F630FD2A8D6F98 /* DefectsListView.swift in Sources */,
 				94E3FA4666B5128804E743EA /* DailyReportsListView.swift in Sources */,
-				CDD68327826A7C82F2D88DB3 /* BuildTrack_iOS_ExtendedModels.swift in Sources */,
 				50755E07A8EBBE8BA49715C7 /* Enums+Labels.swift in Sources */,
 				CD753BFFE871A86610990E56 /* MeetingFormView.swift in Sources */,
 				DE6316CE464BE79A0C7FD277 /* TimesheetFormView.swift in Sources */,
