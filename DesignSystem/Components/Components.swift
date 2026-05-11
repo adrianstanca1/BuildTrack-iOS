@@ -440,6 +440,13 @@ struct DetailRow: View {
         self.valueColor = valueColor
     }
 
+    init(label: String, value: String, valueColor: Color? = nil) {
+        self.icon = ""
+        self.label = label
+        self.value = value
+        self.valueColor = valueColor
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)

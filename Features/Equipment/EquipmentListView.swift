@@ -100,43 +100,6 @@ struct EquipmentStatusBadge: View {
     }
 }
 
-struct EquipmentFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var name = ""
-    @State private var equipmentType = ""
-    @State private var make = ""
-    @State private var model = ""
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Details") {
-                    TextField("Name", text: $name)
-                    TextField("Type", text: $equipmentType)
-                    TextField("Make", text: $make)
-                    TextField("Model", text: $model)
-                }
-            }
-            .navigationTitle("New Equipment")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let item = Equipment(name: name, equipmentType: equipmentType, make: make, model: model)
-                        modelContext.insert(item)
-                        dismiss()
-                    }
-                    .disabled(name.isEmpty)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     EquipmentListView()
         .modelContainer(SwiftDataStack.previewContainer())
