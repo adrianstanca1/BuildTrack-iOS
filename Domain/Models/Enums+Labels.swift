@@ -32,6 +32,6 @@ extension PermitStatus {
 extension DailyReportStatus {
     var label: String { rawValue.capitalized }
     var color: String {
-        switch self { case .draft: return "gray"; case .submitted: return "blue"; case .approved: return "green" }
+        switch self { case .draft: return "gray"; case .submitted: return "blue"; case .approved: return "green"; case .rejected: return "red" }
     }
 }
