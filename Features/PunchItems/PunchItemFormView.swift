@@ -1,6 +1,8 @@
 import SwiftUI
 import SwiftData
+#if canImport(UIKit)
 import PhotosUI
+#endif
 import OSLog
 
 struct PunchItemFormView: View {
