@@ -85,7 +85,7 @@ struct MaterialStatusBadge: View {
         switch status {
         case .ordered: return .orange
         case .delivered: return .blue
-        case .in_stock: return .green
+        case .inStock: return .green
         case .used: return .gray
         }
     }

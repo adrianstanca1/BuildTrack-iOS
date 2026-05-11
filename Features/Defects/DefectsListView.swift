@@ -113,7 +113,7 @@ struct DefectStatusBadge: View {
     var statusColor: Color {
         switch status {
         case .open: return .red
-        case .in_progress: return .blue
+        case .inProgress: return .blue
         case .resolved: return .green
         case .closed: return .gray
         }

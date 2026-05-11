@@ -100,7 +100,7 @@ struct PermitDetailView: View {
     var statusColor: Color {
         switch permit.status {
         case .applied: return .gray
-        case .under_review: return .orange
+        case .underReview: return .orange
         case .approved: return .green
         case .rejected: return .red
         case .expired: return .red

@@ -92,7 +92,7 @@ struct PermitStatusBadge: View {
     var statusColor: Color {
         switch status {
         case .applied: return .gray
-        case .under_review: return .orange
+        case .underReview: return .orange
         case .approved: return .green
         case .rejected: return .red
         case .expired: return .red
