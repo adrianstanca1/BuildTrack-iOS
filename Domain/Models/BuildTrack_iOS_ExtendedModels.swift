@@ -85,25 +85,6 @@ final class Budget: Identifiable, Codable {
     }
 }
 
-enum BudgetStatus: String, CaseIterable, Codable {
-    case draft, approved, revised, closed
-    var label: String {
-        switch self {
-        case .draft: return "Draft"
-        case .approved: return "Approved"
-        case .revised: return "Revised"
-        case .closed: return "Closed"
-        }
-    }
-    var color: String {
-        switch self {
-        case .draft: return "gray"
-        case .approved: return "green"
-        case .revised: return "orange"
-        case .closed: return "blue"
-        }
-    }
-}
 
 // MARK: - BudgetCategory
 @Model
@@ -252,17 +233,6 @@ final class Material: Identifiable, Codable {
     }
 }
 
-enum MaterialStatus: String, CaseIterable, Codable {
-    case ordered, delivered, inStock, used
-    var label: String {
-        switch self {
-        case .ordered: return "Ordered"
-        case .delivered: return "Delivered"
-        case .inStock: return "In Stock"
-        case .used: return "Used"
-        }
-    }
-}
 
 // MARK: - Equipment
 @Model
@@ -483,18 +453,6 @@ final class Meeting: Identifiable, Codable {
     }
 }
 
-enum MeetingType: String, CaseIterable, Codable {
-    case site, progress, safety, design, other
-    var label: String {
-        switch self {
-        case .site: return "Site"
-        case .progress: return "Progress"
-        case .safety: return "Safety"
-        case .design: return "Design"
-        case .other: return "Other"
-        }
-    }
-}
 
 // MARK: - TimesheetEntry
 @Model
@@ -592,17 +550,6 @@ final class TimesheetEntry: Identifiable, Codable {
     }
 }
 
-enum TimesheetStatus: String, CaseIterable, Codable {
-    case draft, submitted, approved, rejected
-    var label: String {
-        switch self {
-        case .draft: return "Draft"
-        case .submitted: return "Submitted"
-        case .approved: return "Approved"
-        case .rejected: return "Rejected"
-        }
-    }
-}
 
 // MARK: - Permit
 @Model
@@ -695,18 +642,6 @@ final class Permit: Identifiable, Codable {
     }
 }
 
-enum PermitStatus: String, CaseIterable, Codable {
-    case applied, underReview, approved, rejected, expired
-    var label: String {
-        switch self {
-        case .applied: return "Applied"
-        case .underReview: return "Under Review"
-        case .approved: return "Approved"
-        case .rejected: return "Rejected"
-        case .expired: return "Expired"
-        }
-    }
-}
 
 // MARK: - Defect
 @Model
@@ -935,20 +870,3 @@ final class DailyReport: Identifiable, Codable {
     }
 }
 
-enum DailyReportStatus: String, CaseIterable, Codable {
-    case draft, submitted, approved
-    var label: String {
-        switch self {
-        case .draft: return "Draft"
-        case .submitted: return "Submitted"
-        case .approved: return "Approved"
-        }
-    }
-    var color: String {
-        switch self {
-        case .draft: return "gray"
-        case .submitted: return "blue"
-        case .approved: return "green"
-        }
-    }
-}
