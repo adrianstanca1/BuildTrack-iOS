@@ -89,8 +89,8 @@ struct EquipmentDetailView: View {
             DetailRow(label: "Serial Number", value: equipment.serialNumber.isEmpty ? "—" : equipment.serialNumber)
             DetailRow(label: "Assigned To", value: equipment.assignedTo.isEmpty ? "—" : equipment.assignedTo)
             DetailRow(label: "Location", value: equipment.location.isEmpty ? "—" : equipment.location)
-            DetailRow(label: "Hours Used", value: "\(equipment.hoursUsed, specifier: "%.1f")")
-            DetailRow(label: "Cost", value: equipment.cost > 0 ? "£\(equipment.cost, specifier: "%.2f")" : "—")
+            DetailRow(label: "Hours Used", value: String(format: "%.1f", equipment.hoursUsed))
+            DetailRow(label: "Cost", value: equipment.cost > 0 ? "£" + String(format: "%.2f", equipment.cost) : "—")
 
             if let lastService = equipment.lastServiceDate {
                 DetailRow(label: "Last Service", value: lastService.formatted(date: .abbreviated, time: .omitted))
