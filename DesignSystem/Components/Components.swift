@@ -48,7 +48,7 @@ struct StatusBadge: View {
     }
     
     init(status: BudgetStatus) {
-        self.label = status.label
+        self.label = status.rawValue.capitalized
         self.color = .gray // BudgetStatus doesn't have color yet
     }
     

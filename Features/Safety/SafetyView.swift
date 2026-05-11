@@ -185,21 +185,6 @@ struct ModernInspectionCard: View {
     }
 }
 
-// MARK: - Status Badge for Incidents
-
-extension StatusBadge {
-    init(status: IncidentStatus) {
-        self.status = {
-            switch status {
-            case .open: return .active
-            case .investigating: return .onHold
-            case .resolved: return .completed
-            case .closed: return .completed
-            }
-        }()
-    }
-}
-
 // MARK: - Incident Form
 
 struct IncidentFormView: View {

@@ -1187,7 +1187,19 @@ final class Budget: Identifiable, Codable {
         try c.encode(statusRaw, forKey: .statusRaw); try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum BudgetStatus: String, CaseIterable, Codable { case draft, approved, inProgress = "in_progress", overBudget = "over_budget", completed, cancelled }
+enum BudgetStatus: String, CaseIterable, Codable {
+    case draft, approved, inProgress = "in_progress", overBudget = "over_budget", completed, cancelled
+    var label: String {
+        switch self {
+        case .draft: return "Draft"
+        case .approved: return "Approved"
+        case .inProgress: return "In Progress"
+        case .overBudget: return "Over Budget"
+        case .completed: return "Completed"
+        case .cancelled: return "Cancelled"
+        }
+    }
+}
 // MARK: - Material
 @Model
 final class Material: Identifiable, Codable {
@@ -1304,7 +1316,16 @@ final class TimesheetEntry: Identifiable, Codable {
 }
 enum TimesheetStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
 enum PermitStatus: String, CaseIterable, Codable { case applied, underReview = "under_review", approved, rejected, expired }
-enum DailyReportStatus: String, CaseIterable, Codable { case draft, submitted, approved }
+enum DailyReportStatus: String, CaseIterable, Codable {
+    case draft, submitted, approved
+    var label: String {
+        switch self {
+        case .draft: return "Draft"
+        case .submitted: return "Submitted"
+        case .approved: return "Approved"
+        }
+    }
+}
 enum Severity: String, CaseIterable, Codable { case minor, major, critical }
 
 // MARK: - Permit
@@ -1349,48 +1370,6 @@ final class Permit: Identifiable, Codable {
     }
 }
 
-// MARK: - DailyReport
-@Model
-final class DailyReport: Identifiable, Codable {
-    @Attribute(.unique) var id: UUID
-    var reportDate: Date
-    var weather: String
-    var temperature: Double
-    var workersOnSite: Int
-    var workCompleted: String
-    var statusRaw: String
-    var createdAt: Date
-    var updatedAt: Date
-    
-    var status: DailyReportStatus {
-        get { DailyReportStatus(rawValue: statusRaw) ?? .draft }
-        set { statusRaw = newValue.rawValue }
-    }
-    
-    init(id: UUID = UUID(), reportDate: Date = Date(), weather: String = "", temperature: Double = 0, workersOnSite: Int = 0, workCompleted: String = "", status: DailyReportStatus = .draft, createdAt: Date = Date(), updatedAt: Date = Date()) {
-        self.id = id; self.reportDate = reportDate; self.weather = weather; self.temperature = temperature
-        self.workersOnSite = workersOnSite; self.workCompleted = workCompleted; self.statusRaw = status.rawValue
-        self.createdAt = createdAt; self.updatedAt = updatedAt
-    }
-    enum CodingKeys: String, CodingKey { case id, reportDate, weather, temperature, workersOnSite, workCompleted, statusRaw, createdAt, updatedAt }
-    required init(from decoder: Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try c.decode(UUID.self, forKey: .id); self.reportDate = try c.decode(Date.self, forKey: .reportDate)
-        self.weather = try c.decodeIfPresent(String.self, forKey: .weather) ?? ""
-        self.temperature = try c.decodeIfPresent(Double.self, forKey: .temperature) ?? 0
-        self.workersOnSite = try c.decodeIfPresent(Int.self, forKey: .workersOnSite) ?? 0
-        self.workCompleted = try c.decodeIfPresent(String.self, forKey: .workCompleted) ?? ""
-        self.statusRaw = try c.decode(String.self, forKey: .statusRaw)
-        self.createdAt = try c.decode(Date.self, forKey: .createdAt); self.updatedAt = try c.decode(Date.self, forKey: .updatedAt)
-    }
-    func encode(to e: Encoder) throws {
-        var c = e.container(keyedBy: CodingKeys.self)
-        try c.encode(id, forKey: .id); try c.encode(reportDate, forKey: .reportDate); try c.encode(weather, forKey: .weather)
-        try c.encode(temperature, forKey: .temperature); try c.encode(workersOnSite, forKey: .workersOnSite)
-        try c.encode(workCompleted, forKey: .workCompleted); try c.encode(statusRaw, forKey: .statusRaw)
-        try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
-    }
-}
 
 // MARK: - BudgetCategory (referenced in SwiftDataStack)
 @Model
@@ -1424,25 +1403,69 @@ final class BudgetCategory: Identifiable, Codable {
 final class Equipment: Identifiable, Codable {
     @Attribute(.unique) var id: UUID
     var name: String
-    var type: String
+    var equipmentType: String
+    var make: String
+    var model: String
+    var serialNumber: String
     var statusRaw: String
+    var assignedTo: String
+    var location: String
+    var hoursUsed: Double
+    var nextServiceDate: Date?
+    var notes: String
     var createdAt: Date
     var updatedAt: Date
-    init(id: UUID = UUID(), name: String, type: String = "", status: String = "available", createdAt: Date = Date(), updatedAt: Date = Date()) {
-        self.id = id; self.name = name; self.type = type; self.statusRaw = status; self.createdAt = createdAt; self.updatedAt = updatedAt
+    
+    var status: EquipmentStatus {
+        get { EquipmentStatus(rawValue: statusRaw) ?? .available }
+        set { statusRaw = newValue.rawValue }
     }
-    enum CodingKeys: String, CodingKey { case id, name, type, statusRaw, createdAt, updatedAt }
+    
+    var isServiceDue: Bool {
+        guard let nextServiceDate else { return false }
+        return nextServiceDate <= Date()
+    }
+    
+    init(id: UUID = UUID(), name: String, equipmentType: String = "", make: String = "", model: String = "", serialNumber: String = "", status: EquipmentStatus = .available, assignedTo: String = "", location: String = "", hoursUsed: Double = 0, nextServiceDate: Date? = nil, notes: String = "", createdAt: Date = Date(), updatedAt: Date = Date()) {
+        self.id = id; self.name = name; self.equipmentType = equipmentType; self.make = make; self.model = model; self.serialNumber = serialNumber
+        self.statusRaw = status.rawValue; self.assignedTo = assignedTo; self.location = location; self.hoursUsed = hoursUsed
+        self.nextServiceDate = nextServiceDate; self.notes = notes; self.createdAt = createdAt; self.updatedAt = updatedAt
+    }
+    enum CodingKeys: String, CodingKey { case id, name, equipmentType, make, model, serialNumber, statusRaw, assignedTo, location, hoursUsed, nextServiceDate, notes, createdAt, updatedAt }
     required init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try c.decode(UUID.self, forKey: .id); self.name = try c.decode(String.self, forKey: .name)
-        self.type = try c.decodeIfPresent(String.self, forKey: .type) ?? ""
+        self.equipmentType = try c.decodeIfPresent(String.self, forKey: .equipmentType) ?? ""
+        self.make = try c.decodeIfPresent(String.self, forKey: .make) ?? ""
+        self.model = try c.decodeIfPresent(String.self, forKey: .model) ?? ""
+        self.serialNumber = try c.decodeIfPresent(String.self, forKey: .serialNumber) ?? ""
         self.statusRaw = try c.decodeIfPresent(String.self, forKey: .statusRaw) ?? "available"
+        self.assignedTo = try c.decodeIfPresent(String.self, forKey: .assignedTo) ?? ""
+        self.location = try c.decodeIfPresent(String.self, forKey: .location) ?? ""
+        self.hoursUsed = try c.decodeIfPresent(Double.self, forKey: .hoursUsed) ?? 0
+        self.nextServiceDate = try c.decodeIfPresent(Date.self, forKey: .nextServiceDate)
+        self.notes = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
         self.createdAt = try c.decode(Date.self, forKey: .createdAt); self.updatedAt = try c.decode(Date.self, forKey: .updatedAt)
     }
     func encode(to e: Encoder) throws {
         var c = e.container(keyedBy: CodingKeys.self)
-        try c.encode(id, forKey: .id); try c.encode(name, forKey: .name); try c.encode(type, forKey: .type)
-        try c.encode(statusRaw, forKey: .statusRaw); try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
+        try c.encode(id, forKey: .id); try c.encode(name, forKey: .name); try c.encode(equipmentType, forKey: .equipmentType)
+        try c.encode(make, forKey: .make); try c.encode(model, forKey: .model); try c.encode(serialNumber, forKey: .serialNumber)
+        try c.encode(statusRaw, forKey: .statusRaw); try c.encode(assignedTo, forKey: .assignedTo); try c.encode(location, forKey: .location)
+        try c.encode(hoursUsed, forKey: .hoursUsed); try c.encodeIfPresent(nextServiceDate, forKey: .nextServiceDate); try c.encode(notes, forKey: .notes)
+        try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
+    }
+}
+
+enum EquipmentStatus: String, CaseIterable, Codable {
+    case available, inUse = "in_use", maintenance, retired
+    var label: String {
+        switch self {
+        case .available: return "Available"
+        case .inUse: return "In Use"
+        case .maintenance: return "Maintenance"
+        case .retired: return "Retired"
+        }
     }
 }
 
