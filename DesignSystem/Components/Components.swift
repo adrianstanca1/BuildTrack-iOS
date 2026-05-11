@@ -5,7 +5,7 @@ struct StatCard: View {
     let label: String
     let value: Int
     let color: Color
-    
+
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
@@ -14,11 +14,11 @@ struct StatCard: View {
                 .frame(width: 44, height: 44)
                 .background(color.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
-            
+
             Text("\(value)")
                 .font(.title.bold())
                 .foregroundStyle(Color(.label))
-            
+
             Text(label)
                 .font(.caption2)
                 .foregroundStyle(Color(.secondaryLabel))
@@ -34,28 +34,44 @@ struct StatCard: View {
 }
 
 struct StatusBadge: View {
-    let status: ProjectStatus
+    let label: String
+    let color: Color
     
+    init(status: ProjectStatus) {
+        self.label = status.label
+        self.color = BuildTrackColors.statusColor(status)
+    }
+    
+    init(status: DailyReportStatus) {
+        self.label = status.label
+        self.color = BuildTrackColors.statusColor(status)
+    }
+    
+    init(status: BudgetStatus) {
+        self.label = status.label
+        self.color = .gray // BudgetStatus doesn't have color yet
+    }
+
     var body: some View {
         HStack(spacing: 4) {
             Circle()
-                .fill(BuildTrackColors.statusColor(status))
+                .fill(color)
                 .frame(width: 8, height: 8)
-            Text(status.label)
+            Text(label)
                 .font(.caption)
                 .fontWeight(.medium)
-                .foregroundStyle(BuildTrackColors.statusColor(status))
+                .foregroundStyle(color)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 4)
-        .background(BuildTrackColors.statusColor(status).opacity(0.12))
+        .background(color.opacity(0.12))
         .clipShape(Capsule())
     }
 }
 
 struct RFIStatusBadge: View {
     let status: RFIStatus
-    
+
     var color: Color {
         switch status {
         case .draft: return .gray
@@ -66,7 +82,7 @@ struct RFIStatusBadge: View {
         case .closed: return .gray
         }
     }
-    
+
     var body: some View {
         HStack(spacing: 4) {
             Circle()
@@ -86,7 +102,7 @@ struct RFIStatusBadge: View {
 
 struct DrawingStatusBadge: View {
     let status: DrawingStatus
-    
+
     var color: Color {
         switch status {
         case .active: return .green
@@ -94,7 +110,7 @@ struct DrawingStatusBadge: View {
         case .archived: return .gray
         }
     }
-    
+
     var body: some View {
         HStack(spacing: 4) {
             Circle()
@@ -116,19 +132,19 @@ struct PriorityBadge: View {
     let priority: TaskPriority?
     let text: String?
     let color: Color?
-    
+
     init(priority: TaskPriority) {
         self.priority = priority
         self.text = nil
         self.color = nil
     }
-    
+
     init(text: String, color: Color) {
         self.priority = nil
         self.text = text
         self.color = color
     }
-    
+
     var body: some View {
         Text(text ?? priority?.label ?? "")
             .font(.caption2)
@@ -143,7 +159,7 @@ struct PriorityBadge: View {
 
 struct SeverityBadge: View {
     let severity: IncidentSeverity
-    
+
     var color: Color {
         switch severity {
         case .low: .yellow
@@ -152,7 +168,7 @@ struct SeverityBadge: View {
         case .critical: .purple
         }
     }
-    
+
     var body: some View {
         Text(severity.label)
             .font(.caption2)
@@ -167,11 +183,11 @@ struct SeverityBadge: View {
 
 struct CardView<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         content
             .padding()
@@ -185,7 +201,7 @@ struct SectionHeader: View {
     let title: String
     var actionLabel: String?
     var action: (() -> Void)?
-    
+
     var body: some View {
         HStack {
             Text(title)
@@ -219,7 +235,7 @@ struct LoadingView: View {
 struct ErrorView: View {
     let message: String
     var retryAction: (() -> Void)?
-    
+
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle.fill")
@@ -243,7 +259,7 @@ struct EmptyStateView: View {
     let icon: String
     let title: String
     let message: String
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: icon)
@@ -266,7 +282,7 @@ struct FilterChip: View {
     let label: String
     let isSelected: Bool
     var action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(label)
@@ -305,7 +321,7 @@ struct FilterChip: View {
 
 struct ResultBadge: View {
     let result: InspectionResult
-    
+
     var body: some View {
         Text(result.label)
             .font(.caption.weight(.semibold))
@@ -317,7 +333,7 @@ struct ResultBadge: View {
                     .fill(resultColor)
             )
     }
-    
+
     private var resultColor: Color {
         switch result {
         case .pass: BuildTrackColors.success
@@ -334,7 +350,7 @@ struct SummaryCard: View {
     let value: String
     let icon: String
     let color: Color
-    
+
     var body: some View {
         VStack(spacing: 8) {
             HStack {
@@ -365,14 +381,14 @@ struct DetailRow: View {
     let value: String
     let icon: String
     let valueColor: Color?
-    
+
     init(icon: String, label: String, value: String, valueColor: Color? = nil) {
         self.icon = icon
         self.label = label
         self.value = value
         self.valueColor = valueColor
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
@@ -400,7 +416,7 @@ struct ProjectPicker: View {
     @Binding var selectedProject: Project?
     let projects: [Project]
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -454,7 +470,7 @@ struct ModernFilterChip: View {
     let isSelected: Bool
     var color: Color = BuildTrackColors.primary
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(label)

@@ -60,6 +60,14 @@ enum BuildTrackColors {
         }
     }
     
+    static func statusColor(_ status: DailyReportStatus) -> Color {
+        switch status {
+        case .draft: return textTertiary
+        case .submitted: return info
+        case .approved: return success
+        }
+    }
+    
     static func priorityColor(_ priority: TaskPriority) -> Color {
         switch priority {
         case .low: return textTertiary
