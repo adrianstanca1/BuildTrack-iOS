@@ -82,6 +82,14 @@
 		FB095DE2BF73629E8AC6F09B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1182F75D129277D83B1B5B4 /* MapView.swift */; };
 		FD069FE4ABB441D79264CEC8 /* DrawingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */; };
 		FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89A624587CA83858231F97 /* ProjectsListView.swift */; };
+		6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */; };
+		679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */; };
+		FE8E17C4340C7324F11E800F /* InvoiceFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */; };
+		E16A21BCD4F164DAEAABC2F7 /* SubmittalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */; };
+		7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */; };
+		31350C41B7CF1FA807444813 /* SubmittalFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */; };
+		B5CBA1B67EE1F9322540F786 /* InvoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */; };
+		57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -165,6 +173,14 @@
 		F966E632424A2553F490AAC7 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Infrastructure/Services/Logger.swift; sourceTree = "<group>"; };
 		FCD60620944B1C70DCB3B5E6 /* Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Components.swift; path = DesignSystem/Components/Components.swift; sourceTree = "<group>"; };
 		FF89A624587CA83858231F97 /* ProjectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectsListView.swift; path = Features/Projects/ProjectsListView.swift; sourceTree = "<group>"; };
+		BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoicesListView.swift; path = Features/Invoices/InvoicesListView.swift; sourceTree = "<group>"; };
+		0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceDetailView.swift; path = Features/Invoices/InvoiceDetailView.swift; sourceTree = "<group>"; };
+		1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceFormView.swift; path = Features/Invoices/InvoiceFormView.swift; sourceTree = "<group>"; };
+		E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalsListView.swift; path = Features/Submittals/SubmittalsListView.swift; sourceTree = "<group>"; };
+		2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalDetailView.swift; path = Features/Submittals/SubmittalDetailView.swift; sourceTree = "<group>"; };
+		E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalFormView.swift; path = Features/Submittals/SubmittalFormView.swift; sourceTree = "<group>"; };
+		CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceViewModel.swift; path = Infrastructure/ViewModels/InvoiceViewModel.swift; sourceTree = "<group>"; };
+		FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalViewModel.swift; path = Infrastructure/ViewModels/SubmittalViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,7 +348,9 @@
 				BEF1B6C3C0FC3831430AC650 /* Permits */,
 				20BEFE20E9D2186D5CA92353 /* Defects */,
 				4CEE13C133AE3A9DFDC0329F /* DailyReports */,
-			);
+			
+				A1F08C06B28961F2DD295216 /* Invoices */,
+				624FAF1CDE40DDA18A8E6887 /* Submittals */,);
 			name = Features;
 			sourceTree = "<group>";
 		};
@@ -578,8 +596,32 @@
 				234D95519147470587BD944A /* PunchItemViewModel.swift */,
 				4B806B4C85F14EF6BF09F072 /* RFIViewModel.swift */,
 				56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */,
-			);
+			
+				CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */,
+				FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */,);
 			name = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1F08C06B28961F2DD295216 /* Invoices */ = {
+			isa = PBXGroup;
+			children = (
+				BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */,
+				0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */,
+				1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */,
+			);
+			name = Invoices;
+			path = Features/Invoices;
+			sourceTree = "<group>";
+		};
+		624FAF1CDE40DDA18A8E6887 /* Submittals */ = {
+			isa = PBXGroup;
+			children = (
+				E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */,
+				2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */,
+				E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */,
+			);
+			name = Submittals;
+			path = Features/Submittals;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -726,7 +768,15 @@
 				9A21865F52E2826F74E2BF88 /* PermitFormView.swift in Sources */,
 				7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */,
 				F312594BD9B4206A9B165FA7 /* DailyReportDetailView.swift in Sources */,
-			);
+			
+				6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */,
+				679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */,
+				FE8E17C4340C7324F11E800F /* InvoiceFormView.swift in Sources */,
+				E16A21BCD4F164DAEAABC2F7 /* SubmittalsListView.swift in Sources */,
+				7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */,
+				31350C41B7CF1FA807444813 /* SubmittalFormView.swift in Sources */,
+				B5CBA1B67EE1F9322540F786 /* InvoiceViewModel.swift in Sources */,
+				57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
