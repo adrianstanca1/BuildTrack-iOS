@@ -105,7 +105,7 @@ struct ProjectDetailView: View {
                         let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: endDate).day ?? 0
                         Text(daysRemaining >= 0 ? "\(daysRemaining) days remaining" : "\(abs(daysRemaining)) days overdue")
                             .font(.caption)
-                            .foregroundStyle(daysRemaining >= 0 ? .secondary : .red)
+                            .foregroundStyle(daysRemaining >= 0 ? .secondary : Color.red)
                     }
                 }
 
@@ -425,7 +425,7 @@ struct ProjectTasksTab: View {
             }
         }
         .sheet(isPresented: $showAddTask) {
-            TaskFormView(project: project)
+            TaskFormView(preselectedProject: project)
         }
     }
 }
@@ -657,7 +657,7 @@ struct WorkerRowCard: View {
     private var initials: String {
         let parts = worker.name.split(separator: " ")
         let first = parts.first?.prefix(1).uppercased() ?? "?"
-        let last = parts.count > 1 ? parts.last?.prefix(1).uppercased() : ""
+        let last = parts.count > 1 ? parts.last?.prefix(1).uppercased() ?? "" : ""
         return first + last
     }
 }

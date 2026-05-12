@@ -353,7 +353,7 @@ struct WorkerDetailView: View {
     private var initials: String {
         let parts = worker.name.split(separator: " ")
         let first = parts.first?.prefix(1).uppercased() ?? "?"
-        let last = parts.count > 1 ? parts.last?.prefix(1).uppercased() : ""
+        let last = parts.count > 1 ? parts.last?.prefix(1).uppercased() ?? "" : ""
         return first + last
     }
 
@@ -367,6 +367,7 @@ struct WorkerDetailView: View {
         case .engineer: return .purple
         case .operator: return .green
         case .labourer: return .gray
+        case .safetyOfficer: return .green
         }
     }
 }

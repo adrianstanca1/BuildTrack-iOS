@@ -82,6 +82,14 @@
 		FB095DE2BF73629E8AC6F09B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1182F75D129277D83B1B5B4 /* MapView.swift */; };
 		FD069FE4ABB441D79264CEC8 /* DrawingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */; };
 		FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89A624587CA83858231F97 /* ProjectsListView.swift */; };
+		B73E399D255ED20C3D448BC3 /* InvoicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE3C20D9801AE45C36E2A2B /* InvoicesListView.swift */; };
+		79767E20FA56460FFAFFFDAC /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6CE52C3EA93275EE0CB95A4 /* InvoiceDetailView.swift */; };
+		BD8A33E214B032D9BFC33E7A /* InvoiceFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6D39B6A34C37672DCBEC0C /* InvoiceFormView.swift */; };
+		AD1D979A3F0E52670DD25EC6 /* SubmittalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B7E52E839F048A24FB6EA2 /* SubmittalsListView.swift */; };
+		B04981A54AFFA3955FFFDF4F /* SubmittalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48929BC7A6A205F669D1EB8 /* SubmittalDetailView.swift */; };
+		3447D061C3E10313E9D49FD5 /* SubmittalFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40010C42493164B7778D8DF9 /* SubmittalFormView.swift */; };
+		9F5C86ABA240F8F195372014 /* InvoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19AA37D7E99926672C702A1B /* InvoiceViewModel.swift */; };
+		EF3639426495A5AF93BFC497 /* SubmittalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3C2966D70A805E791910D2 /* SubmittalViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -165,6 +173,14 @@
 		F966E632424A2553F490AAC7 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Infrastructure/Services/Logger.swift; sourceTree = "<group>"; };
 		FCD60620944B1C70DCB3B5E6 /* Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Components.swift; path = DesignSystem/Components/Components.swift; sourceTree = "<group>"; };
 		FF89A624587CA83858231F97 /* ProjectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectsListView.swift; path = Features/Projects/ProjectsListView.swift; sourceTree = "<group>"; };
+		4AE3C20D9801AE45C36E2A2B /* InvoicesListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoicesListView.swift; path = Features/Invoices/InvoicesListView.swift; sourceTree = "<group>"; };
+		A6CE52C3EA93275EE0CB95A4 /* InvoiceDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceDetailView.swift; path = Features/Invoices/InvoiceDetailView.swift; sourceTree = "<group>"; };
+		3E6D39B6A34C37672DCBEC0C /* InvoiceFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceFormView.swift; path = Features/Invoices/InvoiceFormView.swift; sourceTree = "<group>"; };
+		46B7E52E839F048A24FB6EA2 /* SubmittalsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalsListView.swift; path = Features/Submittals/SubmittalsListView.swift; sourceTree = "<group>"; };
+		F48929BC7A6A205F669D1EB8 /* SubmittalDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalDetailView.swift; path = Features/Submittals/SubmittalDetailView.swift; sourceTree = "<group>"; };
+		40010C42493164B7778D8DF9 /* SubmittalFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalFormView.swift; path = Features/Submittals/SubmittalFormView.swift; sourceTree = "<group>"; };
+		19AA37D7E99926672C702A1B /* InvoiceViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceViewModel.swift; path = Infrastructure/ViewModels/InvoiceViewModel.swift; sourceTree = "<group>"; };
+		0A3C2966D70A805E791910D2 /* SubmittalViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalViewModel.swift; path = Infrastructure/ViewModels/SubmittalViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,6 +349,8 @@
 				20BEFE20E9D2186D5CA92353 /* Defects */,
 				4CEE13C133AE3A9DFDC0329F /* DailyReports */,
 			);
+				9127C8A47FD18E18361C77ED /* Invoices */,
+				24AFBE6B161F80612362CFB7 /* Submittals */,
 			name = Features;
 			sourceTree = "<group>";
 		};
@@ -566,7 +584,9 @@
 			name = Dashboard;
 			sourceTree = "<group>";
 		};
-		FFD37BA782C996F922650FD0 /* ViewModels */ = {
+		
+				19AA37D7E99926672C702A1B /* InvoiceViewModel.swift */,
+				0A3C2966D70A805E791910D2 /* SubmittalViewModel.swift */,FFD37BA782C996F922650FD0 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				46572E81D098EBFDA1387BCA /* AuthViewModel.swift */,
@@ -580,6 +600,28 @@
 				56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */,
 			);
 			name = ViewModels;
+			sourceTree = "<group>";
+		};
+		9127C8A47FD18E18361C77ED /* Invoices */ = {
+			isa = PBXGroup;
+			children = (
+				4AE3C20D9801AE45C36E2A2B /* InvoicesListView.swift */,
+				A6CE52C3EA93275EE0CB95A4 /* InvoiceDetailView.swift */,
+				3E6D39B6A34C37672DCBEC0C /* InvoiceFormView.swift */,
+			);
+			name = Invoices;
+			path = Features/Invoices;
+			sourceTree = "<group>";
+		};
+		24AFBE6B161F80612362CFB7 /* Submittals */ = {
+			isa = PBXGroup;
+			children = (
+				46B7E52E839F048A24FB6EA2 /* SubmittalsListView.swift */,
+				F48929BC7A6A205F669D1EB8 /* SubmittalDetailView.swift */,
+				40010C42493164B7778D8DF9 /* SubmittalFormView.swift */,
+			);
+			name = Submittals;
+			path = Features/Submittals;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -649,7 +691,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4D03FCAC926AA4CE51798FEE /* Sources */ = {
+		
+				B73E399D255ED20C3D448BC3 /* InvoicesListView.swift in Sources */,
+				79767E20FA56460FFAFFFDAC /* InvoiceDetailView.swift in Sources */,
+				BD8A33E214B032D9BFC33E7A /* InvoiceFormView.swift in Sources */,
+				AD1D979A3F0E52670DD25EC6 /* SubmittalsListView.swift in Sources */,
+				B04981A54AFFA3955FFFDF4F /* SubmittalDetailView.swift in Sources */,
+				3447D061C3E10313E9D49FD5 /* SubmittalFormView.swift in Sources */,
+				9F5C86ABA240F8F195372014 /* InvoiceViewModel.swift in Sources */,
+				EF3639426495A5AF93BFC497 /* SubmittalViewModel.swift in Sources */,4D03FCAC926AA4CE51798FEE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
