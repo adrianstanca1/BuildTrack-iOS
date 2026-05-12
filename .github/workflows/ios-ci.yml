@@ -41,7 +41,7 @@ jobs:
         run: swiftlint lint --strict --config .swiftlint.yml --quiet 2>&1 | tee swiftlint-report.txt
       - name: Upload lint report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: swiftlint-report
           path: swiftlint-report.txt
