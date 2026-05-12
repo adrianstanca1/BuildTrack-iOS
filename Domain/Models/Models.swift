@@ -1187,7 +1187,19 @@ final class Budget: Identifiable, Codable {
         try c.encode(statusRaw, forKey: .statusRaw); try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum BudgetStatus: String, CaseIterable, Codable { case draft, approved, inProgress = "in_progress", overBudget = "over_budget", completed, cancelled }
+enum BudgetStatus: String, CaseIterable, Codable {
+    case draft, approved, inProgress = "in_progress", overBudget = "over_budget", completed, cancelled
+    var label: String {
+        switch self {
+        case .draft: return "Draft"
+        case .approved: return "Approved"
+        case .inProgress: return "In Progress"
+        case .overBudget: return "Over Budget"
+        case .completed: return "Completed"
+        case .cancelled: return "Cancelled"
+        }
+    }
+}
 // MARK: - Material
 @Model
 final class Material: Identifiable, Codable {
@@ -1226,7 +1238,17 @@ final class Material: Identifiable, Codable {
         try c.encode(statusRaw, forKey: .statusRaw); try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum MaterialStatus: String, CaseIterable, Codable { case ordered, delivered, inStock = "in_stock", used }
+enum MaterialStatus: String, CaseIterable, Codable {
+    case ordered, delivered, inStock = "in_stock", used
+    var label: String {
+        switch self {
+        case .ordered: return "Ordered"
+        case .delivered: return "Delivered"
+        case .inStock: return "In Stock"
+        case .used: return "Used"
+        }
+    }
+}
 // MARK: - Meeting
 @Model
 final class Meeting: Identifiable, Codable {
@@ -1266,6 +1288,7 @@ final class Meeting: Identifiable, Codable {
 }
 enum MeetingType: String, CaseIterable, Codable {
     case site, progress, safety, design, other
+    var label: String { rawValue.capitalized }
 }
 // MARK: - TimesheetEntry
 @Model
@@ -1304,8 +1327,22 @@ final class TimesheetEntry: Identifiable, Codable {
         try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum TimesheetStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
-enum PermitStatus: String, CaseIterable, Codable { case applied, underReview = "under_review", approved, rejected, expired }
+enum TimesheetStatus: String, CaseIterable, Codable {
+    case draft, submitted, approved, rejected
+    var label: String { rawValue.capitalized }
+}
+enum PermitStatus: String, CaseIterable, Codable {
+    case applied, underReview = "under_review", approved, rejected, expired
+    var label: String {
+        switch self {
+        case .applied: return "Applied"
+        case .underReview: return "Under Review"
+        case .approved: return "Approved"
+        case .rejected: return "Rejected"
+        case .expired: return "Expired"
+        }
+    }
+}
 enum DailyReportStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
 enum Severity: String, CaseIterable, Codable { case minor, major, critical }
 
