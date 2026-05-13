@@ -9,10 +9,24 @@ security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
 security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | sed 's/.*"\(.*\)".*/\1/')
+security default-keychain -s "$KEYCHAIN_PATH"
+
+# Download Apple WWDR intermediate certificates (required for code signing chain)
+echo "=== Installing Apple WWDR intermediate certificates ==="
+curl -sSL -o /tmp/AppleWWDRCA.cer https://www.apple.com/certificateauthority/AppleWWDRCA.cer || true
+curl -sSL -o /tmp/AppleWWDRCAG3.cer https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer || true
+curl -sSL -o /tmp/AppleWWDRCAG4.cer https://www.apple.com/certificateauthority/AppleWWDRCAG4.cer || true
+
+for cert in /tmp/AppleWWDRCA.cer /tmp/AppleWWDRCAG3.cer /tmp/AppleWWDRCAG4.cer; do
+  if [ -f "$cert" ]; then
+    security import "$cert" -k "$KEYCHAIN_PATH" -T /usr/bin/codesign -T /usr/bin/security || true
+    echo "Imported $(basename $cert)"
+  fi
+done
 
 # Write cert and key from environment variables
 python3 << 'PYEOF'
-import base64, os, subprocess, plistlib
+import base64, os, subprocess, plistlib, datetime, hashlib
 
 cert_b64 = os.environ.get('IOS_DISTRIBUTION_CERT', '')
 key_b64 = os.environ.get('IOS_DISTRIBUTION_KEY', '')
@@ -39,23 +53,34 @@ uuid = pl.get('UUID', '')
 name = pl.get('Name', 'BuildTrack')
 app_id = pl.get('AppIDName', '')
 team_id = pl.get('TeamIdentifier', [''])[0]
+expiry = pl.get('ExpirationDate', None)
 
 print(f"Profile Name: {name}")
 print(f"Profile UUID: {uuid}")
 print(f"App ID: {app_id}")
 print(f"Team ID: {team_id}")
+if expiry:
+    now = datetime.datetime.now(datetime.timezone.utc)
+    print(f"Profile Expires: {expiry} ({'EXPIRED' if expiry < now else 'Valid'})")
 
 with open('/tmp/profile_uuid.txt', 'w') as f:
     f.write(uuid)
 with open('/tmp/profile_name.txt', 'w') as f:
     f.write(name)
 
-# Verify cert thumbprint
-import hashlib
+# Verify cert thumbprint and expiration
 certs = pl.get('DeveloperCertificates', [])
 print(f"Number of certs in profile: {len(certs)}")
-for i, cert in enumerate(certs):
-    print(f"Cert {i}: {len(cert)} bytes, SHA1={hashlib.sha1(cert).hexdigest()}")
+for i, cert_der in enumerate(certs):
+    sha1 = hashlib.sha1(cert_der).hexdigest()
+    print(f"Cert {i}: {len(cert_der)} bytes, SHA1={sha1}")
+
+# Also check the imported cert file
+result = subprocess.run(['openssl', 'x509', '-in', '/tmp/distribution.cer', '-inform', 'DER', '-noout', '-dates', '-subject', '-issuer', '-fingerprint'], capture_output=True, text=True)
+print("=== Imported cert details ===")
+print(result.stdout)
+if result.stderr:
+    print(result.stderr)
 
 print(f"Cert file: {os.path.getsize('/tmp/distribution.cer')} bytes")
 print(f"Key file: {os.path.getsize('/tmp/distribution.key')} bytes")
@@ -94,8 +119,11 @@ cp /tmp/buildtrack.mobileprovision "$PROV_DIR/buildtrack_app_store.mobileprovisi
 echo "=== Installed profiles ==="
 ls -la "$PROV_DIR/"
 
-echo "=== Keychain certificates ==="
+echo "=== Keychain certificates (detailed) ==="
 security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+
+echo "=== Verify cert chain ==="
+security verify-cert -c "$KEYCHAIN_PATH" -p codeSign 2>/dev/null || true
 
 echo "=== Default keychain certificates ==="
 security find-identity -v -p codesigning || true
@@ -108,4 +136,4 @@ if [ -n "${GITHUB_ENV:-}" ]; then
 fi
 
 # Clean up sensitive temp files (keep GITHUB_ENV references)
-rm -f /tmp/distribution.cer /tmp/distribution.key /tmp/distribution.pem /tmp/distribution.p12 /tmp/buildtrack.mobileprovision /tmp/profile_uuid.txt /tmp/profile_name.txt
+rm -f /tmp/distribution.cer /tmp/distribution.key /tmp/distribution.pem /tmp/distribution.p12 /tmp/buildtrack.mobileprovision /tmp/profile_uuid.txt /tmp/profile_name.txt /tmp/AppleWWDRCA.cer /tmp/AppleWWDRCAG3.cer /tmp/AppleWWDRCAG4.cer
