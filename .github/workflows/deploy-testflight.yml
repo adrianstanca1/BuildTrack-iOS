@@ -26,7 +26,7 @@ jobs:
       ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -42,7 +42,7 @@ jobs:
           xcrun --sdk iphoneos --show-sdk-build-version
 
       - name: Restore SPM cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .build
@@ -80,7 +80,21 @@ jobs:
       - name: Export signed IPA
         run: |
           mkdir -p build
-          cat > build/ExportOptions.plist << 'PLIST'
+
+          # Auto-detect signing identity from the keychain created by setup-signing.sh
+          SIGNING_IDENTITY=$(security find-identity -v -p codesigning "$RUNNER_TEMP/buildtrack.keychain" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+          if [ -z "$SIGNING_IDENTITY" ]; then
+            echo "::error::Failed to discover codesigning identity from keychain"
+            security find-identity -v -p codesigning "$RUNNER_TEMP/buildtrack.keychain" || true
+            exit 1
+          fi
+          echo "Detected signing identity: $SIGNING_IDENTITY"
+
+          # Use profile name exported by setup-signing.sh (fall back to env or default)
+          PROFILE_NAME="${PROFILE_NAME:-BuildTrack App Store v3}"
+          echo "Using profile name: $PROFILE_NAME"
+
+          cat > build/ExportOptions.plist << PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -100,10 +114,10 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>ro.stancainvest.buildtrack</key>
-              <string>BuildTrack App Store v3</string>
+              <string>${PROFILE_NAME}</string>
             </dict>
             <key>signingCertificate</key>
-            <string>iPhone Distribution: Adrian Stanca (4G3G5MX9BH)</string>
+            <string>${SIGNING_IDENTITY}</string>
           </dict>
           </plist>
           PLIST
@@ -132,7 +146,7 @@ jobs:
 
       - name: Upload artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BuildTrack-IPA
           path: build/BuildTrack.ipa/*.ipa

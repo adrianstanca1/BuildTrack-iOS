@@ -100,5 +100,12 @@ security find-identity -v -p codesigning "$KEYCHAIN_PATH"
 echo "=== Default keychain certificates ==="
 security find-identity -v -p codesigning || true
 
-# Clean up sensitive files
+# Export profile info to GITHUB_ENV for downstream steps
+if [ -n "${GITHUB_ENV:-}" ]; then
+  echo "PROFILE_UUID=$UUID" >> "$GITHUB_ENV"
+  echo "PROFILE_NAME=$NAME" >> "$GITHUB_ENV"
+  echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+fi
+
+# Clean up sensitive temp files (keep GITHUB_ENV references)
 rm -f /tmp/distribution.cer /tmp/distribution.key /tmp/distribution.pem /tmp/distribution.p12 /tmp/buildtrack.mobileprovision /tmp/profile_uuid.txt /tmp/profile_name.txt
