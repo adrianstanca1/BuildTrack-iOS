@@ -91,7 +91,7 @@ jobs:
           echo "Detected signing identity: $SIGNING_IDENTITY"
 
           # Use profile name exported by setup-signing.sh (fall back to env or default)
-          PROFILE_NAME="${PROFILE_NAME:-BuildTrack App Store v3}"
+          PROFILE_NAME="${PROFILE_NAME:-BuildTrack App Store v4}"
           echo "Using profile name: $PROFILE_NAME"
 
           cat > build/ExportOptions.plist << PLIST
