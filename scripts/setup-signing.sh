@@ -60,7 +60,9 @@ print(f"Profile UUID: {uuid}")
 print(f"App ID: {app_id}")
 print(f"Team ID: {team_id}")
 if expiry:
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = datetime.datetime.utcnow()
+    if expiry.tzinfo is not None:
+        now = datetime.datetime.now(datetime.timezone.utc)
     print(f"Profile Expires: {expiry} ({'EXPIRED' if expiry < now else 'Valid'})")
 
 with open('/tmp/profile_uuid.txt', 'w') as f:
