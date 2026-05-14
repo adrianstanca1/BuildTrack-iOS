@@ -19,10 +19,10 @@ struct AdminDashboardView: View {
                         .foregroundColor(.red)
                 } else {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                        StatCard(title: "Users", value: "\(viewModel.stats?.totalUsers ?? 0)", icon: "person.3")
-                        StatCard(title: "Projects", value: "\(viewModel.stats?.totalProjects ?? 0)", icon: "building.2")
-                        StatCard(title: "Tasks", value: "\(viewModel.stats?.totalTasks ?? 0)", icon: "checklist")
-                        StatCard(title: "Workers", value: "\(viewModel.stats?.totalWorkers ?? 0)", icon: "helmet")
+                        AdminStatCard(title: "Users", value: "\(viewModel.stats?.totalUsers ?? 0)", icon: "person.3")
+                        AdminStatCard(title: "Projects", value: "\(viewModel.stats?.totalProjects ?? 0)", icon: "building.2")
+                        AdminStatCard(title: "Tasks", value: "\(viewModel.stats?.totalTasks ?? 0)", icon: "checklist")
+                        AdminStatCard(title: "Workers", value: "\(viewModel.stats?.totalWorkers ?? 0)", icon: "helmet")
                     }
                     .padding(.horizontal)
                     
@@ -46,7 +46,7 @@ struct AdminDashboardView: View {
     }
 }
 
-struct StatCard: View {
+struct AdminStatCard: View {
     let title: String
     let value: String
     let icon: String
