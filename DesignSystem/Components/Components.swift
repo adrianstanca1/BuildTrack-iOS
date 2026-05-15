@@ -37,6 +37,16 @@ struct StatusBadge: View {
     let label: String
     let color: Color
     
+    init(text: String, color: Color) {
+        self.label = text
+        self.color = color
+    }
+    
+    init(label: String, color: Color) {
+        self.label = label
+        self.color = color
+    }
+    
     init(status: ProjectStatus) {
         self.label = status.label
         self.color = BuildTrackColors.statusColor(status)

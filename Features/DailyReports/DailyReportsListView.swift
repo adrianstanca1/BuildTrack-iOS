@@ -56,7 +56,7 @@ struct DailyReportRow: View {
                 Text(report.date.formatted(date: .abbreviated, time: .omitted))
                     .font(.headline)
                 Spacer()
-                StatusBadge(status: report.status)
+                StatusBadge(label: report.status.label, color: .gray)
             }
             HStack {
                 Label("\(report.workersOnSite) workers", systemImage: "person.2")

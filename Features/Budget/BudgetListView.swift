@@ -56,7 +56,7 @@ struct BudgetRow: View {
                 Text(budget.name)
                     .font(.headline)
                 Spacer()
-                StatusBadge(status: budget.status)
+                StatusBadge(label: budget.status.rawValue.capitalized, color: .gray)
             }
 
             ProgressView(value: budget.progress)

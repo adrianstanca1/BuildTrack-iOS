@@ -21,6 +21,7 @@ struct TaskFormView: View {
     @State private var dueTime: Date
     @State private var showWorkerPicker = false
     @State private var showProjectPicker = false
+    @State private var taskVM = TaskViewModel()
     
     init(task: TaskItem? = nil, preselectedProject: Project? = nil) {
         self.task = task
@@ -153,8 +154,10 @@ struct TaskFormView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        save()
-                        dismiss()
+                        Task {
+                            await saveAndSync()
+                            await MainActor.run { dismiss() }
+                        }
                     }
                     .disabled(!isValid)
                     .fontWeight(.semibold)
@@ -169,7 +172,7 @@ struct TaskFormView: View {
         }
     }
     
-    func save() {
+    func saveAndSync() async {
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
         let trimmedDesc = descriptionText.trimmingCharacters(in: .whitespaces)
         
@@ -183,8 +186,35 @@ struct TaskFormView: View {
             task.dueDate = effectiveDueDate
             task.project = selectedProject ?? preselectedProject
             task.updatedAt = Date()
+            try? modelContext.save()
+            await taskVM.updateTask(task, title: trimmedTitle, description: trimmedDesc, priority: priority, status: status, dueDate: effectiveDueDate, assignedTo: assignedTo?.name ?? "")
         } else {
             // Create new
+            let _ = await taskVM.createTask(
+                title: trimmedTitle,
+                description: trimmedDesc,
+                priority: priority,
+                dueDate: effectiveDueDate,
+                assignedTo: assignedTo?.name ?? "",
+                projectId: selectedProject?.id ?? preselectedProject?.id
+            )
+        }
+    }
+    
+    func save() {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
+        let trimmedDesc = descriptionText.trimmingCharacters(in: .whitespaces)
+        
+        if let task {
+            task.title = trimmedTitle
+            task.descriptionText = trimmedDesc
+            task.priority = priority
+            task.status = status
+            task.assignedTo = assignedTo?.name ?? ""
+            task.dueDate = effectiveDueDate
+            task.project = selectedProject ?? preselectedProject
+            task.updatedAt = Date()
+        } else {
             let newTask = TaskItem(
                 title: trimmedTitle,
                 descriptionText: trimmedDesc,
@@ -196,7 +226,6 @@ struct TaskFormView: View {
             newTask.project = selectedProject ?? preselectedProject
             modelContext.insert(newTask)
         }
-        
         try? modelContext.save()
     }
 }

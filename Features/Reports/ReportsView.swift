@@ -41,6 +41,10 @@ struct ReportsView: View {
                 periodSelector
                     .padding(.horizontal)
                 
+                // Generate Report button
+                generateReportSection
+                    .padding(.horizontal)
+                
                 // Summary cards
                 summaryCards
                     .padding(.horizontal)
@@ -97,6 +101,41 @@ struct ReportsView: View {
                 }
             }
         }
+    }
+    
+    // MARK: - Generate Report
+    
+    private var generateReportSection: some View {
+        NavigationLink {
+            DocumentGeneratorView()
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "doc.badge.plus")
+                    .font(.system(size: 24))
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(BuildTrackColors.primary)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Generate Report")
+                        .font(.headline)
+                        .foregroundStyle(Color(.label))
+                    Text("Create PDF reports from templates")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(12)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
     }
     
     // MARK: - Summary Cards

@@ -625,6 +625,7 @@ final class PunchItem: Identifiable, Codable {
     var projectId: UUID?
     var createdAt: Date
     var resolvedAt: Date?
+    var updatedAt: Date
     var status: PunchItemStatus {
         get { PunchItemStatus(rawValue: statusRaw) ?? .open }
         set { statusRaw = newValue.rawValue }
@@ -657,10 +658,11 @@ final class PunchItem: Identifiable, Codable {
         self.projectId = projectId
         self.createdAt = createdAt
         self.resolvedAt = resolvedAt
+        self.updatedAt = createdAt
     }
     enum CodingKeys: String, CodingKey {
         case id, title, descriptionText, statusRaw, severityRaw
-        case location, assignee, photoUrls, projectId, createdAt, resolvedAt
+        case location, assignee, photoUrls, projectId, createdAt, resolvedAt, updatedAt
     }
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -673,7 +675,9 @@ final class PunchItem: Identifiable, Codable {
         self.assignee = try container.decodeIfPresent(String.self, forKey: .assignee) ?? ""
         self.photoUrls = try container.decodeIfPresent([String].self, forKey: .photoUrls) ?? []
         self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
-        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        let createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.createdAt = createdAt
+        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
         self.resolvedAt = try container.decodeIfPresent(Date.self, forKey: .resolvedAt)
     }
     func encode(to encoder: Encoder) throws {
@@ -689,6 +693,7 @@ final class PunchItem: Identifiable, Codable {
         try container.encodeIfPresent(projectId, forKey: .projectId)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encodeIfPresent(resolvedAt, forKey: .resolvedAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
     }
 }
 enum PunchItemStatus: String, CaseIterable, Codable {
@@ -734,6 +739,7 @@ final class RFI: Identifiable, Codable {
     var projectId: UUID?
     var createdAt: Date
     var respondedAt: Date?
+    var updatedAt: Date
     var status: RFIStatus {
         get { RFIStatus(rawValue: statusRaw) ?? .draft }
         set { statusRaw = newValue.rawValue }
@@ -752,7 +758,8 @@ final class RFI: Identifiable, Codable {
         response: String = "",
         projectId: UUID? = nil,
         createdAt: Date = Date(),
-        respondedAt: Date? = nil
+        respondedAt: Date? = nil,
+        updatedAt: Date = Date()
     ) {
         self.id = id
         self.title = title
@@ -764,10 +771,11 @@ final class RFI: Identifiable, Codable {
         self.projectId = projectId
         self.createdAt = createdAt
         self.respondedAt = respondedAt
+        self.updatedAt = updatedAt
     }
     enum CodingKeys: String, CodingKey {
         case id, title, descriptionText, statusRaw, priorityRaw
-        case assignedTo, response, projectId, createdAt, respondedAt
+        case assignedTo, response, projectId, createdAt, respondedAt, updatedAt
     }
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -779,7 +787,9 @@ final class RFI: Identifiable, Codable {
         self.assignedTo = try container.decodeIfPresent(String.self, forKey: .assignedTo) ?? ""
         self.response = try container.decodeIfPresent(String.self, forKey: .response) ?? ""
         self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
-        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        let createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.createdAt = createdAt
+        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
         self.respondedAt = try container.decodeIfPresent(Date.self, forKey: .respondedAt)
     }
     func encode(to encoder: Encoder) throws {
@@ -879,8 +889,10 @@ final class Drawing: Identifiable, Codable {
         self.statusRaw = try container.decode(String.self, forKey: .statusRaw)
         self.fileUrl = try container.decodeIfPresent(String.self, forKey: .fileUrl) ?? ""
         self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
-        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
-        self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        let createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.createdAt = createdAt
+        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
+
     }
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -1149,6 +1161,209 @@ extension SupabaseNotification {
     }
 }
 
+// MARK: - Supabase Timesheet
+struct SupabaseTimesheet: Codable {
+    let id: UUID
+    let workerName: String
+    let hoursWorked: Double
+    let task: String
+    let statusRaw: String
+    let date: String
+    let createdAt: String
+    let updatedAt: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case workerName = "worker_name"
+        case hoursWorked = "hours_worked"
+        case task
+        case statusRaw = "status"
+        case date
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+}
+
+extension SupabaseTimesheet {
+    func toDomain() -> TimesheetEntry {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return TimesheetEntry(
+            id: id,
+            workerName: workerName,
+            hoursWorked: hoursWorked,
+            task: task,
+            status: TimesheetStatus(rawValue: statusRaw) ?? .draft,
+            date: formatter.date(from: date) ?? Date(),
+            createdAt: formatter.date(from: createdAt) ?? Date(),
+            updatedAt: formatter.date(from: updatedAt) ?? Date()
+        )
+    }
+}
+
+// MARK: - Supabase PunchItem
+struct SupabasePunchItem: Codable {
+    let id: UUID
+    let title: String
+    let descriptionText: String?
+    let statusRaw: String
+    let severityRaw: String
+    let location: String
+    let assignee: String
+    let photoUrls: [String]?
+    let projectId: UUID?
+    let createdAt: String
+    let resolvedAt: String?
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, title
+        case descriptionText = "description"
+        case statusRaw = "status"
+        case severityRaw = "severity"
+        case location, assignee
+        case photoUrls = "photo_urls"
+        case projectId = "project_id"
+        case createdAt = "created_at"
+        case resolvedAt = "resolved_at"
+        case updatedAt = "updated_at"
+    }
+}
+
+extension SupabasePunchItem {
+    func toDomain() -> PunchItem {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return PunchItem(
+            id: id,
+            title: title,
+            descriptionText: descriptionText ?? "",
+            status: PunchItemStatus(rawValue: statusRaw) ?? .open,
+            severity: PunchItemSeverity(rawValue: severityRaw) ?? .minor,
+            location: location,
+            assignee: assignee,
+            photoUrls: photoUrls ?? [],
+            projectId: projectId,
+            createdAt: formatter.date(from: createdAt) ?? Date(),
+            resolvedAt: resolvedAt.flatMap { formatter.date(from: $0) }
+        )
+    }
+}
+
+extension PunchItem {
+    func toSupabasePunchItem() -> SupabasePunchItem {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return SupabasePunchItem(
+            id: id,
+            title: title,
+            descriptionText: descriptionText.isEmpty ? nil : descriptionText,
+            statusRaw: statusRaw,
+            severityRaw: severityRaw,
+            location: location,
+            assignee: assignee,
+            photoUrls: photoUrls.isEmpty ? nil : photoUrls,
+            projectId: projectId,
+            createdAt: formatter.string(from: createdAt),
+            resolvedAt: resolvedAt.map { formatter.string(from: $0) },
+            updatedAt: formatter.string(from: updatedAt)
+        )
+    }
+}
+
+// MARK: - Supabase Equipment
+struct SupabaseEquipment: Codable {
+    let id: UUID
+    let name: String
+    let equipmentType: String?
+    let make: String?
+    let model: String?
+    let serialNumber: String?
+    let statusRaw: String
+    let assignedTo: String?
+    let location: String?
+    let hoursUsed: Double?
+    let nextServiceDate: String?
+    let notes: String?
+    let cost: Double?
+    let lastServiceDate: String?
+    let createdAt: String
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, statusRaw = "status", make, model, notes, cost
+        case equipmentType = "equipment_type"
+        case serialNumber = "serial_number"
+        case assignedTo = "assigned_to"
+        case location
+        case hoursUsed = "hours_used"
+        case nextServiceDate = "next_service_date"
+        case lastServiceDate = "last_service_date"
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+}
+
+extension SupabaseEquipment {
+    func toDomain() -> Equipment {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return Equipment(
+            id: id,
+            name: name,
+            equipmentType: equipmentType ?? "",
+            make: make ?? "",
+            model: model ?? "",
+            serialNumber: serialNumber ?? "",
+            status: EquipmentStatus(rawValue: statusRaw) ?? .available,
+            assignedTo: assignedTo ?? "",
+            location: location ?? "",
+            hoursUsed: hoursUsed ?? 0,
+            nextServiceDate: nextServiceDate.flatMap { formatter.date(from: $0) },
+            notes: notes ?? "",
+            cost: cost ?? 0,
+            lastServiceDate: lastServiceDate.flatMap { formatter.date(from: $0) },
+            createdAt: formatter.date(from: createdAt) ?? Date(),
+            updatedAt: formatter.date(from: updatedAt) ?? Date()
+        )
+    }
+}
+
+// MARK: - Supabase Material
+struct SupabaseMaterial: Codable {
+    let id: UUID
+    let name: String
+    let category: String?
+    let quantity: Double?
+    let unit: String?
+    let statusRaw: String
+    let createdAt: String
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, category, quantity, unit, statusRaw = "status"
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+}
+
+extension SupabaseMaterial {
+    func toDomain() -> Material {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return Material(
+            id: id,
+            name: name,
+            category: category ?? "",
+            quantity: quantity ?? 0,
+            unit: unit ?? "",
+            status: MaterialStatus(rawValue: statusRaw) ?? .ordered,
+            createdAt: formatter.date(from: createdAt) ?? Date(),
+            updatedAt: formatter.date(from: updatedAt) ?? Date()
+        )
+    }
+}
+
 // MARK: - Budget
 @Model
 final class Budget: Identifiable, Codable {
@@ -1304,7 +1519,10 @@ final class TimesheetEntry: Identifiable, Codable {
         try c.encode(createdAt, forKey: .createdAt); try c.encode(updatedAt, forKey: .updatedAt)
     }
 }
-enum TimesheetStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
+enum TimesheetStatus: String, CaseIterable, Codable {
+    case draft, submitted, approved, rejected
+    var supabaseValue: String { rawValue }
+}
 enum PermitStatus: String, CaseIterable, Codable { case applied, underReview = "under_review", approved, rejected, expired }
 enum DailyReportStatus: String, CaseIterable, Codable { case draft, submitted, approved, rejected }
 enum Severity: String, CaseIterable, Codable { case minor, major, critical }
@@ -1790,8 +2008,10 @@ final class Defect: Identifiable, Codable {
         self.dueDate = try container.decodeIfPresent(Date.self, forKey: .dueDate)
         self.createdBy = try container.decodeIfPresent(String.self, forKey: .createdBy) ?? ""
         self.projectId = try container.decodeIfPresent(UUID.self, forKey: .projectId)
-        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
-        self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        let createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.createdAt = createdAt
+        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
+
     }
 
     func encode(to encoder: Encoder) throws {

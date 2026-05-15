@@ -9,16 +9,23 @@
 /* Begin PBXBuildFile section */
 		0014141F4C344261AB325919 /* RFIsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6AB1695E95420492A86C81 /* RFIsListView.swift */; };
 		066324BA21E0C31342E0A127 /* TaskFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */; };
+		07B77CFEB850D673B7844770 /* TimesheetRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA32EE7D4E5AD61CC4E7BFA /* TimesheetRepository.swift */; };
 		0E424178C6144574B7ECDE0D /* DrawingsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B182827DEF2B42EE97449377 /* DrawingsListView.swift */; };
 		1680DF484BE24F3DAD9E626C /* RFIDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36228357B471FB7C45792 /* RFIDetailView.swift */; };
 		188520BA5576440EB5A8A707 /* RFIFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F2389B424C49E2A6A9E8FC /* RFIFormView.swift */; };
 		1ACF13D957474242AB6D59AA /* RFIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B806B4C85F14EF6BF09F072 /* RFIViewModel.swift */; };
 		1C296C12F7AF3D643E6BB7E3 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D57830E3FF49E079B502B7F /* DashboardView.swift */; };
 		1C79F2DE391A76E0CDB11985 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D7E42852231909C2157A70 /* NotificationSettingsView.swift */; };
+		1DB91DA77767EBF1FB5C48CB /* ReportGeneratorFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B66C5F2914C12208B700C0 /* ReportGeneratorFormView.swift */; };
+		1ED3B9A146F8577773C4C6BD /* PDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43BEF47497623BEB246D516 /* PDFGenerator.swift */; };
 		213FAC383D95DFAAD8E5A3C0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E48C09C17B770F8A7D04C10A /* Foundation.framework */; };
+		2484A7EFF193F1E852EF12BA /* EquipmentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0116262F401BA606F5A76278 /* EquipmentRepository.swift */; };
 		287943F84B208ED49EEFC299 /* TimesheetsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F475E29B1CB6CFA7E9AAD8C /* TimesheetsListView.swift */; };
 		2E326F48C39642C871DDEE76 /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7818EA60012E7A0AA2C6A817 /* Repositories.swift */; };
 		2FC5FFABD67FFB29892A165D /* DefectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B503853B5B7981305E65CF61 /* DefectDetailView.swift */; };
+		31350C41B7CF1FA807444813 /* SubmittalFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */; };
+		31A0E07DEB0A32783CBFE9AD /* DocumentGeneratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074394D7D50BE5ABB71103A4 /* DocumentGeneratorView.swift */; };
+		34CD23B9CF70C5031353A726 /* PDFPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D9B17C022B71A50A1B1B14 /* PDFPreviewView.swift */; };
 		37433E9152CDE8FE8D937A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3574B8F4B0722D19A5DD50 /* ContentView.swift */; };
 		393D9D3BF937C57794A15348 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923056C0B1604665636519D5 /* DeepLinkRouter.swift */; };
 		39E7459F3FEFAD00053F6641 /* BuildTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACB38F2FE566027942EFABF /* BuildTrackApp.swift */; };
@@ -28,26 +35,33 @@
 		404306AD77C636970F18BDB1 /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B30AC937F3CA13928A569C /* ProjectDetailView.swift */; };
 		44ACD3F90EB544F9700F2020 /* SafetyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */; };
 		4859FD7E7A8B2CDF1C64D75F /* ProjectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5145C6B27A5710157EA01A0D /* ProjectViewModel.swift */; };
+		4961BF0C1A65C2C1E5EC2250 /* EquipmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A55BF5CB76BA2C2303583D7 /* EquipmentViewModel.swift */; };
 		4DDA4C1D8833498165D6C7EB /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46572E81D098EBFDA1387BCA /* AuthViewModel.swift */; };
 		50580362F99A4F0495C4F699 /* PunchItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234D95519147470587BD944A /* PunchItemViewModel.swift */; };
 		50755E07A8EBBE8BA49715C7 /* Enums+Labels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A42CB6514E5D7C54E3603C /* Enums+Labels.swift */; };
 		5661A810AF6BF5059D14277A /* MaterialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA0E8E02A74C8E962B6CA3D /* MaterialsListView.swift */; };
+		57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */; };
 		5A6A7166BB69B5DA50CBE32B /* MeetingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CB4143664EB360FBD5ADBF /* MeetingDetailView.swift */; };
 		5FE46148EF985C54747DAADE /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7224C276E61116FDCA43B8 /* SafetyView.swift */; };
 		61FB2132A01E4C7E9FD87C00 /* PunchItemsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */; };
+		6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */; };
+		679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */; };
 		70062F64BFEF86DCC26D509E /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A5773BF000214D16452EF0 /* RealtimeService.swift */; };
 		7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43246BE8A835FD2ACB9EF021 /* DailyReportFormView.swift */; };
 		7819CDC1200143FEB97810B7 /* DrawingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0DB14438E34A958A0520BF /* DrawingFormView.swift */; };
 		781FC2DC183896D893718FB3 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0283DBEBC53CABB3C04380AF /* AuthView.swift */; };
 		789F1A6D2BAE4BD1B6B5C4E7 /* PunchPhotoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */; };
+		7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */; };
 		8E7DC067F61148FB547B7D32 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966E632424A2553F490AAC7 /* Logger.swift */; };
 		92B157AA7CA458B2B4957794 /* BudgetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6D61B4F11108A6E9424C28 /* BudgetListView.swift */; };
 		94E3FA4666B5128804E743EA /* DailyReportsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A8FF1A270281AFDC626754 /* DailyReportsListView.swift */; };
 		9A21865F52E2826F74E2BF88 /* PermitFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6785190C1BD1EFCA8C64B982 /* PermitFormView.swift */; };
 		9AB386FE6517ED7D130FEBD0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E1D2F3F225FA4512E514E9 /* SettingsView.swift */; };
+		9EB575A73E3257B8EBE92B88 /* MaterialRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9031E73BB5BA63F222557D13 /* MaterialRepository.swift */; };
 		9ECCBDAD1D81506B76CD6E11 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BC7FF3389B6F8E416263CC /* NotificationViewModel.swift */; };
 		A41D32A1449B7C7F9C9AAAED /* BudgetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA030240324DEAE53381AFD /* BudgetDetailView.swift */; };
 		A68C042E43BE4E5C81F83996 /* PunchItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D323B87440814918A4C2AC1A /* PunchItemDetailView.swift */; };
+		A8AC88902B8D27FAB567C38B /* MaterialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA25921A323FA4E7E1AFB3A7 /* MaterialViewModel.swift */; };
 		A8C16D6B8629DDF089EDEC0C /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7548F85CD39C8AA5CE9A5987 /* PushNotificationService.swift */; };
 		A92CA53812E0BBB5A625B23B /* BudgetFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC446FBBB8FBEB97EAB27777 /* BudgetFormView.swift */; };
 		ACEC05F94324677AB6724C31 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CE6F132951504A7C41EED5 /* AuthManager.swift */; };
@@ -55,10 +69,13 @@
 		B1D6C6465E9B0C799D99CD01 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD60620944B1C70DCB3B5E6 /* Components.swift */; };
 		B39B2BECCA9F4D17A9F2600E /* DrawingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFE1CB2815B46C0AE25C8E0 /* DrawingDetailView.swift */; };
 		B3DAB9583C42244A7CDBAAD1 /* TasksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969CF44267F7B74B5A53F2C8 /* TasksListView.swift */; };
+		B5CBA1B67EE1F9322540F786 /* InvoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */; };
 		B690A25F6AC4C4DCFF230A19 /* EquipmentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975D4BA1ADE4C7594FB19A6 /* EquipmentDetailView.swift */; };
 		BDDC4A070A9B92DAAFC9366B /* EquipmentFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643BCB60869C2F23309DC89D /* EquipmentFormView.swift */; };
+		C2F6AE9AB2036852B12383B6 /* TimesheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1301D44B8D50E14F2AE279A4 /* TimesheetViewModel.swift */; };
 		CBB94ADF965E8DA6FB02745B /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */; };
 		CC450758A4BF387E5332B64C /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE9D58F34D9D8B7553BD15D /* SupabaseManager.swift */; };
+		CD6A98601BEDD5C64863898A /* PunchItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A12375CE26806E1F8EFE4 /* PunchItemRepository.swift */; };
 		CD753BFFE871A86610990E56 /* MeetingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46927F2D85FF48F1F3CCE9C6 /* MeetingFormView.swift */; };
 		D6D0DCCB8480C23B08DC3AB0 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A597C86521EC6053735366F6 /* MaterialDetailView.swift */; };
 		D77C47AAAE1B9D659F502BCD /* ProjectFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117F179E406D876E3BFECEAC /* ProjectFormView.swift */; };
@@ -66,6 +83,7 @@
 		D96FEAB90CB34E96B1B76FDD /* PunchItemFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0760DFA838134C12B6A98A4E /* PunchItemFormView.swift */; };
 		DE498786CE6C3039BED662E4 /* DefectFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC5DA389F9AE69C577AB9E /* DefectFormView.swift */; };
 		DE6316CE464BE79A0C7FD277 /* TimesheetFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792598B656FDFFBF98014692 /* TimesheetFormView.swift */; };
+		E16A21BCD4F164DAEAABC2F7 /* SubmittalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */; };
 		E1C73DA84CF80D142B30D2B9 /* PermitsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EDA68815E55B51F19790E9 /* PermitsListView.swift */; };
 		E848504590DFE5E7BA0FE8EA /* TimesheetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D904F035A2406B5C25955205 /* TimesheetDetailView.swift */; };
 		E99D0575E245A2ADD0299A66 /* NotificationInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7B3F2E1BF99A676EF186D9 /* NotificationInboxView.swift */; };
@@ -76,38 +94,39 @@
 		F312594BD9B4206A9B165FA7 /* DailyReportDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7517085EAA17367319EA9B65 /* DailyReportDetailView.swift */; };
 		F31C363EC7DBE9898FA30DBA /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95B1A16A1D85BA5C2B2A8DE /* TaskViewModel.swift */; };
 		F44E913F76F94E23168D0AFF /* SwiftDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5DCC0D712724BD5C23B60E /* SwiftDataStack.swift */; };
+		F52A7A398EDAD28C32460D99 /* DocumentTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283338984F494E66F207D4EB /* DocumentTemplate.swift */; };
 		F617F52EB76906FFF99F37DB /* MaterialFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8155FBDCC6613499678CD68 /* MaterialFormView.swift */; };
 		F7E64FBA9B0A59F312388DB9 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE63CD413B21D291FB044B7 /* OnboardingView.swift */; };
 		F9DC999A6691301FA234920D /* EquipmentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384C7D75B6A7146DADE0A928 /* EquipmentListView.swift */; };
 		FB095DE2BF73629E8AC6F09B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1182F75D129277D83B1B5B4 /* MapView.swift */; };
 		FD069FE4ABB441D79264CEC8 /* DrawingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */; };
-		FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89A624587CA83858231F97 /* ProjectsListView.swift */; };
-		6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */; };
-		679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */; };
 		FE8E17C4340C7324F11E800F /* InvoiceFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */; };
-		E16A21BCD4F164DAEAABC2F7 /* SubmittalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */; };
-		7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */; };
-		31350C41B7CF1FA807444813 /* SubmittalFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */; };
-		B5CBA1B67EE1F9322540F786 /* InvoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */; };
-		57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */; };
+		FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89A624587CA83858231F97 /* ProjectsListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0116262F401BA606F5A76278 /* EquipmentRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentRepository.swift; path = Infrastructure/Supabase/EquipmentRepository.swift; sourceTree = "<group>"; };
 		0283DBEBC53CABB3C04380AF /* AuthView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthView.swift; path = Features/Auth/AuthView.swift; sourceTree = "<group>"; };
 		042EE75D0D4F64BDD3BA2065 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
 		04656317E69E4832B01B2CC6 /* BiometricAuthService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BiometricAuthService.swift; path = Infrastructure/Services/BiometricAuthService.swift; sourceTree = "<group>"; };
+		074394D7D50BE5ABB71103A4 /* DocumentGeneratorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentGeneratorView.swift; path = Features/DocumentGenerator/DocumentGeneratorView.swift; sourceTree = "<group>"; };
 		0760DFA838134C12B6A98A4E /* PunchItemFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemFormView.swift; path = PunchItemFormView.swift; sourceTree = "<group>"; };
 		0D57830E3FF49E079B502B7F /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DashboardView.swift; path = Features/Dashboard/DashboardView.swift; sourceTree = "<group>"; };
 		0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchPhotoStore.swift; path = Infrastructure/Services/PunchPhotoStore.swift; sourceTree = "<group>"; };
+		0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceDetailView.swift; path = InvoiceDetailView.swift; sourceTree = "<group>"; };
 		117F179E406D876E3BFECEAC /* ProjectFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectFormView.swift; path = Features/Projects/ProjectFormView.swift; sourceTree = "<group>"; };
+		1301D44B8D50E14F2AE279A4 /* TimesheetViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetViewModel.swift; path = Infrastructure/ViewModels/TimesheetViewModel.swift; sourceTree = "<group>"; };
 		137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyViewModel.swift; path = Infrastructure/ViewModels/SafetyViewModel.swift; sourceTree = "<group>"; };
 		17F2389B424C49E2A6A9E8FC /* RFIFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIFormView.swift; path = RFIFormView.swift; sourceTree = "<group>"; };
 		18A5773BF000214D16452EF0 /* RealtimeService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RealtimeService.swift; path = Infrastructure/Supabase/RealtimeService.swift; sourceTree = "<group>"; };
 		1F5488D5D1727FE7FF6C08E3 /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Models.swift; path = Domain/Models/Models.swift; sourceTree = "<group>"; };
+		1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceFormView.swift; path = InvoiceFormView.swift; sourceTree = "<group>"; };
 		234D95519147470587BD944A /* PunchItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemViewModel.swift; path = Infrastructure/ViewModels/PunchItemViewModel.swift; sourceTree = "<group>"; };
 		23581831C03B81FA179AD1B0 /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = DesignSystem/Theme/Colors.swift; sourceTree = "<group>"; };
+		283338984F494E66F207D4EB /* DocumentTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentTemplate.swift; path = Features/DocumentGenerator/DocumentTemplate.swift; sourceTree = "<group>"; };
 		29A42CB6514E5D7C54E3603C /* Enums+Labels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Enums+Labels.swift"; path = "Domain/Models/Enums+Labels.swift"; sourceTree = "<group>"; };
 		2DA0E8E02A74C8E962B6CA3D /* MaterialsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MaterialsListView.swift; path = MaterialsListView.swift; sourceTree = "<group>"; };
+		2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalDetailView.swift; path = SubmittalDetailView.swift; sourceTree = "<group>"; };
 		2F12F25506C667C58BE0124E /* Config-Production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Config-Production.xcconfig"; sourceTree = "<group>"; };
 		384C7D75B6A7146DADE0A928 /* EquipmentListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentListView.swift; path = EquipmentListView.swift; sourceTree = "<group>"; };
 		39B89C6CC0B5DAF540D3E436 /* Config-Development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Config-Development.xcconfig"; sourceTree = "<group>"; };
@@ -122,6 +141,8 @@
 		5145C6B27A5710157EA01A0D /* ProjectViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectViewModel.swift; path = Infrastructure/ViewModels/ProjectViewModel.swift; sourceTree = "<group>"; };
 		56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = Infrastructure/ViewModels/DrawingViewModel.swift; sourceTree = "<group>"; };
 		5975D4BA1ADE4C7594FB19A6 /* EquipmentDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentDetailView.swift; path = EquipmentDetailView.swift; sourceTree = "<group>"; };
+		5A55BF5CB76BA2C2303583D7 /* EquipmentViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentViewModel.swift; path = Infrastructure/ViewModels/EquipmentViewModel.swift; sourceTree = "<group>"; };
+		5EA32EE7D4E5AD61CC4E7BFA /* TimesheetRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetRepository.swift; path = Infrastructure/Supabase/TimesheetRepository.swift; sourceTree = "<group>"; };
 		5EBC5DA389F9AE69C577AB9E /* DefectFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefectFormView.swift; path = DefectFormView.swift; sourceTree = "<group>"; };
 		625A0CD192F398A54FC6E089 /* Resources */ = {isa = PBXFileReference; includeInIndex = 1; path = Resources; sourceTree = "<group>"; };
 		638405823DAA1583792955CA /* MeetingsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MeetingsListView.swift; path = MeetingsListView.swift; sourceTree = "<group>"; };
@@ -136,6 +157,8 @@
 		792598B656FDFFBF98014692 /* TimesheetFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetFormView.swift; path = TimesheetFormView.swift; sourceTree = "<group>"; };
 		83A8FF1A270281AFDC626754 /* DailyReportsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportsListView.swift; path = DailyReportsListView.swift; sourceTree = "<group>"; };
 		8726EEE55EF40A0F498D3AE9 /* TeamViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TeamViewModel.swift; path = Infrastructure/ViewModels/TeamViewModel.swift; sourceTree = "<group>"; };
+		89D9B17C022B71A50A1B1B14 /* PDFPreviewView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PDFPreviewView.swift; path = Features/DocumentGenerator/PDFPreviewView.swift; sourceTree = "<group>"; };
+		9031E73BB5BA63F222557D13 /* MaterialRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MaterialRepository.swift; path = Infrastructure/Supabase/MaterialRepository.swift; sourceTree = "<group>"; };
 		923056C0B1604665636519D5 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DeepLinkRouter.swift; path = Infrastructure/Services/DeepLinkRouter.swift; sourceTree = "<group>"; };
 		9456CCFB44CDE397464E7F56 /* ReportsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReportsView.swift; path = Features/Reports/ReportsView.swift; sourceTree = "<group>"; };
 		969CF44267F7B74B5A53F2C8 /* TasksListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TasksListView.swift; path = Features/Tasks/TasksListView.swift; sourceTree = "<group>"; };
@@ -154,8 +177,10 @@
 		B9CE6F132951504A7C41EED5 /* AuthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthManager.swift; path = Infrastructure/Supabase/AuthManager.swift; sourceTree = "<group>"; };
 		BCEDBD9CEF6C9B64ACD7CDB1 /* TeamView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TeamView.swift; path = Features/Team/TeamView.swift; sourceTree = "<group>"; };
 		BD3574B8F4B0722D19A5DD50 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = App/ContentView.swift; sourceTree = "<group>"; };
+		BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoicesListView.swift; path = InvoicesListView.swift; sourceTree = "<group>"; };
 		BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskFormView.swift; path = Features/Tasks/TaskFormView.swift; sourceTree = "<group>"; };
 		C1182F75D129277D83B1B5B4 /* MapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MapView.swift; path = Features/Map/MapView.swift; sourceTree = "<group>"; };
+		CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceViewModel.swift; path = Infrastructure/ViewModels/InvoiceViewModel.swift; sourceTree = "<group>"; };
 		CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemsListView.swift; path = PunchItemsListView.swift; sourceTree = "<group>"; };
 		CC6AB1695E95420492A86C81 /* RFIsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIsListView.swift; path = RFIsListView.swift; sourceTree = "<group>"; };
 		D323B87440814918A4C2AC1A /* PunchItemDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemDetailView.swift; path = PunchItemDetailView.swift; sourceTree = "<group>"; };
@@ -163,24 +188,23 @@
 		D904F035A2406B5C25955205 /* TimesheetDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetDetailView.swift; path = TimesheetDetailView.swift; sourceTree = "<group>"; };
 		D91C917D67FC3AFCEF42BBF3 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC446FBBB8FBEB97EAB27777 /* BudgetFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BudgetFormView.swift; path = BudgetFormView.swift; sourceTree = "<group>"; };
+		E05A12375CE26806E1F8EFE4 /* PunchItemRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemRepository.swift; path = Infrastructure/Supabase/PunchItemRepository.swift; sourceTree = "<group>"; };
 		E2EDA68815E55B51F19790E9 /* PermitsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PermitsListView.swift; path = PermitsListView.swift; sourceTree = "<group>"; };
 		E48C09C17B770F8A7D04C10A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalsListView.swift; path = SubmittalsListView.swift; sourceTree = "<group>"; };
 		E6E1D2F3F225FA4512E514E9 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = Features/Settings/SettingsView.swift; sourceTree = "<group>"; };
+		E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalFormView.swift; path = SubmittalFormView.swift; sourceTree = "<group>"; };
 		E91F1DBDF8CB98D91E35F1C0 /* BuildTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuildTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF0DB14438E34A958A0520BF /* DrawingFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DrawingFormView.swift; path = DrawingFormView.swift; sourceTree = "<group>"; };
+		F43BEF47497623BEB246D516 /* PDFGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PDFGenerator.swift; path = Features/DocumentGenerator/PDFGenerator.swift; sourceTree = "<group>"; };
 		F4B30AC937F3CA13928A569C /* ProjectDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Features/Projects/ProjectDetailView.swift; sourceTree = "<group>"; };
+		F6B66C5F2914C12208B700C0 /* ReportGeneratorFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReportGeneratorFormView.swift; path = Features/DocumentGenerator/ReportGeneratorFormView.swift; sourceTree = "<group>"; };
 		F8155FBDCC6613499678CD68 /* MaterialFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MaterialFormView.swift; path = MaterialFormView.swift; sourceTree = "<group>"; };
 		F966E632424A2553F490AAC7 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Infrastructure/Services/Logger.swift; sourceTree = "<group>"; };
+		FA25921A323FA4E7E1AFB3A7 /* MaterialViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MaterialViewModel.swift; path = Infrastructure/ViewModels/MaterialViewModel.swift; sourceTree = "<group>"; };
 		FCD60620944B1C70DCB3B5E6 /* Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Components.swift; path = DesignSystem/Components/Components.swift; sourceTree = "<group>"; };
-		FF89A624587CA83858231F97 /* ProjectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectsListView.swift; path = Features/Projects/ProjectsListView.swift; sourceTree = "<group>"; };
-		BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoicesListView.swift; path = InvoicesListView.swift; sourceTree = "<group>"; };
-		0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceDetailView.swift; path = InvoiceDetailView.swift; sourceTree = "<group>"; };
-		1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceFormView.swift; path = InvoiceFormView.swift; sourceTree = "<group>"; };
-		E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalsListView.swift; path = SubmittalsListView.swift; sourceTree = "<group>"; };
-		2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalDetailView.swift; path = SubmittalDetailView.swift; sourceTree = "<group>"; };
-		E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalFormView.swift; path = SubmittalFormView.swift; sourceTree = "<group>"; };
-		CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceViewModel.swift; path = Infrastructure/ViewModels/InvoiceViewModel.swift; sourceTree = "<group>"; };
 		FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubmittalViewModel.swift; path = Infrastructure/ViewModels/SubmittalViewModel.swift; sourceTree = "<group>"; };
+		FF89A624587CA83858231F97 /* ProjectsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectsListView.swift; path = Features/Projects/ProjectsListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +315,17 @@
 			name = Safety;
 			sourceTree = "<group>";
 		};
+		624FAF1CDE40DDA18A8E6887 /* Submittals */ = {
+			isa = PBXGroup;
+			children = (
+				E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */,
+				2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */,
+				E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */,
+			);
+			name = Submittals;
+			path = Features/Submittals;
+			sourceTree = "<group>";
+		};
 		636CF7A886D899279E28B28E /* Projects */ = {
 			isa = PBXGroup;
 			children = (
@@ -348,9 +383,10 @@
 				BEF1B6C3C0FC3831430AC650 /* Permits */,
 				20BEFE20E9D2186D5CA92353 /* Defects */,
 				4CEE13C133AE3A9DFDC0329F /* DailyReports */,
-			
 				A1F08C06B28961F2DD295216 /* Invoices */,
-				624FAF1CDE40DDA18A8E6887 /* Submittals */,);
+				624FAF1CDE40DDA18A8E6887 /* Submittals */,
+				EC221B5DC3461FF7ED940BF0 /* DocumentGenerator */,
+			);
 			name = Features;
 			sourceTree = "<group>";
 		};
@@ -379,6 +415,17 @@
 				23581831C03B81FA179AD1B0 /* Colors.swift */,
 			);
 			name = Theme;
+			sourceTree = "<group>";
+		};
+		A1F08C06B28961F2DD295216 /* Invoices */ = {
+			isa = PBXGroup;
+			children = (
+				BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */,
+				0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */,
+				1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */,
+			);
+			name = Invoices;
+			path = Features/Invoices;
 			sourceTree = "<group>";
 		};
 		A5A0FA3B048E4A7604A01B6F /* Frameworks */ = {
@@ -493,6 +540,10 @@
 				18A5773BF000214D16452EF0 /* RealtimeService.swift */,
 				7818EA60012E7A0AA2C6A817 /* Repositories.swift */,
 				ADE9D58F34D9D8B7553BD15D /* SupabaseManager.swift */,
+				E05A12375CE26806E1F8EFE4 /* PunchItemRepository.swift */,
+				5EA32EE7D4E5AD61CC4E7BFA /* TimesheetRepository.swift */,
+				0116262F401BA606F5A76278 /* EquipmentRepository.swift */,
+				9031E73BB5BA63F222557D13 /* MaterialRepository.swift */,
 			);
 			name = Supabase;
 			sourceTree = "<group>";
@@ -539,6 +590,18 @@
 				E48C09C17B770F8A7D04C10A /* Foundation.framework */,
 			);
 			name = iOS;
+			sourceTree = "<group>";
+		};
+		EC221B5DC3461FF7ED940BF0 /* DocumentGenerator */ = {
+			isa = PBXGroup;
+			children = (
+				074394D7D50BE5ABB71103A4 /* DocumentGeneratorView.swift */,
+				F43BEF47497623BEB246D516 /* PDFGenerator.swift */,
+				283338984F494E66F207D4EB /* DocumentTemplate.swift */,
+				89D9B17C022B71A50A1B1B14 /* PDFPreviewView.swift */,
+				F6B66C5F2914C12208B700C0 /* ReportGeneratorFormView.swift */,
+			);
+			name = DocumentGenerator;
 			sourceTree = "<group>";
 		};
 		EF55C732CF2105A6F3739FB2 /* Products */ = {
@@ -596,32 +659,13 @@
 				234D95519147470587BD944A /* PunchItemViewModel.swift */,
 				4B806B4C85F14EF6BF09F072 /* RFIViewModel.swift */,
 				56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */,
-			
 				CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */,
-				FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */,);
+				FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */,
+				1301D44B8D50E14F2AE279A4 /* TimesheetViewModel.swift */,
+				5A55BF5CB76BA2C2303583D7 /* EquipmentViewModel.swift */,
+				FA25921A323FA4E7E1AFB3A7 /* MaterialViewModel.swift */,
+			);
 			name = ViewModels;
-			sourceTree = "<group>";
-		};
-		A1F08C06B28961F2DD295216 /* Invoices */ = {
-			isa = PBXGroup;
-			children = (
-				BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */,
-				0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */,
-				1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */,
-			);
-			name = Invoices;
-			path = Features/Invoices;
-			sourceTree = "<group>";
-		};
-		624FAF1CDE40DDA18A8E6887 /* Submittals */ = {
-			isa = PBXGroup;
-			children = (
-				E5AE3FE7CEFB1758AC986442 /* SubmittalsListView.swift */,
-				2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */,
-				E8938C32DB2F442F1F78FED6 /* SubmittalFormView.swift */,
-			);
-			name = Submittals;
-			path = Features/Submittals;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -768,7 +812,6 @@
 				9A21865F52E2826F74E2BF88 /* PermitFormView.swift in Sources */,
 				7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */,
 				F312594BD9B4206A9B165FA7 /* DailyReportDetailView.swift in Sources */,
-			
 				6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */,
 				679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */,
 				FE8E17C4340C7324F11E800F /* InvoiceFormView.swift in Sources */,
@@ -776,7 +819,20 @@
 				7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */,
 				31350C41B7CF1FA807444813 /* SubmittalFormView.swift in Sources */,
 				B5CBA1B67EE1F9322540F786 /* InvoiceViewModel.swift in Sources */,
-				57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */,);
+				57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */,
+				31A0E07DEB0A32783CBFE9AD /* DocumentGeneratorView.swift in Sources */,
+				1ED3B9A146F8577773C4C6BD /* PDFGenerator.swift in Sources */,
+				F52A7A398EDAD28C32460D99 /* DocumentTemplate.swift in Sources */,
+				34CD23B9CF70C5031353A726 /* PDFPreviewView.swift in Sources */,
+				1DB91DA77767EBF1FB5C48CB /* ReportGeneratorFormView.swift in Sources */,
+				CD6A98601BEDD5C64863898A /* PunchItemRepository.swift in Sources */,
+				07B77CFEB850D673B7844770 /* TimesheetRepository.swift in Sources */,
+				2484A7EFF193F1E852EF12BA /* EquipmentRepository.swift in Sources */,
+				9EB575A73E3257B8EBE92B88 /* MaterialRepository.swift in Sources */,
+				C2F6AE9AB2036852B12383B6 /* TimesheetViewModel.swift in Sources */,
+				4961BF0C1A65C2C1E5EC2250 /* EquipmentViewModel.swift in Sources */,
+				A8AC88902B8D27FAB567C38B /* MaterialViewModel.swift in Sources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */

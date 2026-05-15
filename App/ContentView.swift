@@ -120,6 +120,7 @@ struct MoreMenuView: View {
         MenuItem(icon: "document.text", label: "Permits", color: .mint, destination: AnyView(PermitsListView())),
         MenuItem(icon: "warning", label: "Defects", color: .orange, destination: AnyView(DefectsListView())),
         MenuItem(icon: "person.2", label: "Team", color: .teal, destination: AnyView(TeamView())),
+        MenuItem(icon: "doc.badge.plus", label: "Documents", color: .blue, destination: AnyView(DocumentGeneratorView())),
         MenuItem(icon: "chart.bar", label: "Reports", color: .gray, destination: AnyView(ReportsView())),
         MenuItem(icon: "doc.text", label: "Daily Reports", color: .blue, destination: AnyView(DailyReportsListView())),
         MenuItem(icon: "doc.on.doc", label: "Submittals", color: .indigo, destination: AnyView(SubmittalsListView())),

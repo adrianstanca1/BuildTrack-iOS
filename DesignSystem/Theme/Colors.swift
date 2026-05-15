@@ -86,6 +86,15 @@ enum BuildTrackColors {
         case .critical: return danger
         }
     }
+    
+    static func statusColor(_ status: EquipmentStatus) -> Color {
+        switch status {
+        case .available: return success
+        case .inUse: return primary
+        case .maintenance: return warning
+        case .retired: return danger
+        }
+    }
 }
 
 // MARK: - Shape Styles

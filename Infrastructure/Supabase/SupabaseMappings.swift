@@ -77,6 +77,27 @@ extension WorkerRole {
     }
 }
 
+extension TimesheetStatus {
+    init?(supabaseValue: String) {
+        switch supabaseValue {
+        case "draft": self = .draft
+        case "submitted": self = .submitted
+        case "approved": self = .approved
+        case "rejected": self = .rejected
+        default: return nil
+        }
+    }
+    
+    var supabaseValue: String {
+        switch self {
+        case .draft: return "draft"
+        case .submitted: return "submitted"
+        case .approved: return "approved"
+        case .rejected: return "rejected"
+        }
+    }
+}
+
 // MARK: - Supabase Mappable Protocol
 
 protocol SupabaseMappable {

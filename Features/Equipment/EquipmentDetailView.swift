@@ -65,7 +65,7 @@ struct EquipmentDetailView: View {
                     .foregroundStyle(.secondary)
             }
 
-            EquipmentStatusBadge(status: equipment.status)
+            StatusBadge(label: equipment.status.label, color: BuildTrackColors.statusColor(equipment.status))
 
             if equipment.isServiceDue {
                 Label("Service Due", systemImage: "exclamationmark.triangle.fill")

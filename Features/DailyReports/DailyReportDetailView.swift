@@ -10,7 +10,7 @@ struct DailyReportDetailView: View {
                 Text(report.date.formatted(date: .long, time: .omitted))
                     .font(.headline)
                 HStack {
-                    StatusBadge(status: report.status)
+                    StatusBadge(label: report.status.label, color: .gray)
                     Spacer()
                     Text("\(report.workersOnSite) workers")
                         .font(.caption)
