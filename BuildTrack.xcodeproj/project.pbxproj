@@ -45,7 +45,6 @@
 		5FE46148EF985C54747DAADE /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7224C276E61116FDCA43B8 /* SafetyView.swift */; };
 		61FB2132A01E4C7E9FD87C00 /* PunchItemsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */; };
 		6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */; };
-		679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */; };
 		70062F64BFEF86DCC26D509E /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A5773BF000214D16452EF0 /* RealtimeService.swift */; };
 		7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43246BE8A835FD2ACB9EF021 /* DailyReportFormView.swift */; };
 		7819CDC1200143FEB97810B7 /* DrawingFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0DB14438E34A958A0520BF /* DrawingFormView.swift */; };
@@ -101,7 +100,6 @@
 		F9DC999A6691301FA234920D /* EquipmentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384C7D75B6A7146DADE0A928 /* EquipmentListView.swift */; };
 		FB095DE2BF73629E8AC6F09B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1182F75D129277D83B1B5B4 /* MapView.swift */; };
 		FD069FE4ABB441D79264CEC8 /* DrawingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0421A75DD4F2B9B13E039 /* DrawingViewModel.swift */; };
-		FE8E17C4340C7324F11E800F /* InvoiceFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */; };
 		FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89A624587CA83858231F97 /* ProjectsListView.swift */; };
 /* End PBXBuildFile section */
 
@@ -114,14 +112,12 @@
 		0760DFA838134C12B6A98A4E /* PunchItemFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemFormView.swift; path = PunchItemFormView.swift; sourceTree = "<group>"; };
 		0D57830E3FF49E079B502B7F /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DashboardView.swift; path = Features/Dashboard/DashboardView.swift; sourceTree = "<group>"; };
 		0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchPhotoStore.swift; path = Infrastructure/Services/PunchPhotoStore.swift; sourceTree = "<group>"; };
-		0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceDetailView.swift; path = InvoiceDetailView.swift; sourceTree = "<group>"; };
 		117F179E406D876E3BFECEAC /* ProjectFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProjectFormView.swift; path = Features/Projects/ProjectFormView.swift; sourceTree = "<group>"; };
 		1301D44B8D50E14F2AE279A4 /* TimesheetViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetViewModel.swift; path = Infrastructure/ViewModels/TimesheetViewModel.swift; sourceTree = "<group>"; };
 		137494BF89F5DB4A84B43403 /* SafetyViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyViewModel.swift; path = Infrastructure/ViewModels/SafetyViewModel.swift; sourceTree = "<group>"; };
 		17F2389B424C49E2A6A9E8FC /* RFIFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIFormView.swift; path = RFIFormView.swift; sourceTree = "<group>"; };
 		18A5773BF000214D16452EF0 /* RealtimeService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RealtimeService.swift; path = Infrastructure/Supabase/RealtimeService.swift; sourceTree = "<group>"; };
 		1F5488D5D1727FE7FF6C08E3 /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Models.swift; path = Domain/Models/Models.swift; sourceTree = "<group>"; };
-		1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceFormView.swift; path = InvoiceFormView.swift; sourceTree = "<group>"; };
 		234D95519147470587BD944A /* PunchItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemViewModel.swift; path = Infrastructure/ViewModels/PunchItemViewModel.swift; sourceTree = "<group>"; };
 		23581831C03B81FA179AD1B0 /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = DesignSystem/Theme/Colors.swift; sourceTree = "<group>"; };
 		283338984F494E66F207D4EB /* DocumentTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentTemplate.swift; path = Features/DocumentGenerator/DocumentTemplate.swift; sourceTree = "<group>"; };
@@ -424,8 +420,6 @@
 			isa = PBXGroup;
 			children = (
 				BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */,
-				0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */,
-				1F8995658CE8646C7BE21006 /* InvoiceFormView.swift */,
 			);
 			name = Invoices;
 			path = Features/Invoices;
@@ -816,8 +810,6 @@
 				7296F17F6D4FDC3DDEF38C8C /* DailyReportFormView.swift in Sources */,
 				F312594BD9B4206A9B165FA7 /* DailyReportDetailView.swift in Sources */,
 				6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */,
-				679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */,
-				FE8E17C4340C7324F11E800F /* InvoiceFormView.swift in Sources */,
 				E16A21BCD4F164DAEAABC2F7 /* SubmittalsListView.swift in Sources */,
 				7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */,
 				31350C41B7CF1FA807444813 /* SubmittalFormView.swift in Sources */,
