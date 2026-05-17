@@ -406,3 +406,144 @@ struct FilterChipPro: View {
     TasksListView()
         .modelContainer(for: [TaskItem.self, Project.self])
 }
+
+// MARK: - Embedded Task Detail View
+
+@MainActor
+struct TaskDetailView: View {
+    let task: TaskItem
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @State private var showEditSheet = false
+    @State private var showDeleteConfirm = false
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.lg) {
+                // Header
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+                    HStack(spacing: DesignTokens.Spacing.sm) {
+                        ProBadge(text: task.priority.label, color: task.priority == .high ? .red : task.priority == .medium ? .orange : .gray)
+                        ProBadge(text: task.status.label, color: task.status == .completed ? .green : .blue)
+                        Spacer()
+                    }
+                    
+                    Text(task.title)
+                        .font(DesignTokens.Typography.title2)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                    
+                    if let projectName = task.project?.name {
+                        Text(projectName)
+                            .font(DesignTokens.Typography.callout)
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                    }
+                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+
+                // Details Card
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Details")
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(BuildTrackColors.textSecondary)
+                        .padding(.horizontal, DesignTokens.Spacing.md)
+                        .padding(.top, DesignTokens.Spacing.md)
+                    
+                    DetailRowPro(label: "Priority", value: task.priority.label, icon: "flag")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Status", value: task.status.label, icon: "checkmark.circle")
+                    Divider().padding(.leading, 44)
+                    if let dueDate = task.dueDate {
+                        DetailRowPro(label: "Due Date", value: dueDate.formatted(date: .abbreviated, time: .shortened), icon: "calendar")
+                    }
+                    if let assignedTo = task.assignedTo, !assignedTo.isEmpty {
+                        Divider().padding(.leading, 44)
+                        DetailRowPro(label: "Assigned To", value: assignedTo, icon: "person")
+                    }
+                }
+                .professionalCard(padding: DesignTokens.Spacing.sm)
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+
+                // Description
+                if !task.notes.isEmpty {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                        Text("Notes")
+                            .font(DesignTokens.Typography.callout.weight(.semibold))
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                        
+                        Text(task.notes)
+                            .font(DesignTokens.Typography.body)
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(DesignTokens.Spacing.md)
+                    .professionalCard()
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                }
+
+                // Actions
+                HStack(spacing: DesignTokens.Spacing.md) {
+                    Button {
+                        showEditSheet = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "pencil")
+                            Text("Edit")
+                        }
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .background(BuildTrackColors.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    }
+                    
+                    Button {
+                        showDeleteConfirm = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Delete")
+                        }
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .background(BuildTrackColors.danger)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    }
+                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                .padding(.top, DesignTokens.Spacing.md)
+            }
+            .padding(.vertical, DesignTokens.Spacing.md)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Task Details")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done") { dismiss() }
+            }
+        }
+        .sheet(isPresented: $showEditSheet) {
+            NavigationStack {
+                TaskFormView(task: task)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") { showEditSheet = false }
+                        }
+                    }
+            }
+        }
+        .alert("Delete Task?", isPresented: $showDeleteConfirm) {
+            Button("Delete", role: .destructive) {
+                modelContext.delete(task)
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This task will be permanently deleted.")
+        }
+    }
+}

@@ -461,3 +461,140 @@ struct InspectionFormView: View {
     SafetyView()
         .modelContainer(for: [Incident.self, Inspection.self])
 }
+
+// MARK: - Embedded Safety Detail View
+
+@MainActor
+struct SafetyDetailView: View {
+    let incident: Incident
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @State private var showEditSheet = false
+    @State private var showDeleteConfirm = false
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.lg) {
+                // Header
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+                    HStack(spacing: DesignTokens.Spacing.sm) {
+                        ProBadge(text: incident.severity.label, color: incident.severity == .high ? .red : incident.severity == .medium ? .orange : .gray)
+                        ProBadge(text: incident.incidentStatus.label, color: incident.incidentStatus == .resolved ? .green : .blue)
+                        Spacer()
+                    }
+                    
+                    Text(incident.title)
+                        .font(DesignTokens.Typography.title2)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+
+                // Details Card
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Details")
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(BuildTrackColors.textSecondary)
+                        .padding(.horizontal, DesignTokens.Spacing.md)
+                        .padding(.top, DesignTokens.Spacing.md)
+                    
+                    DetailRowPro(label: "Severity", value: incident.severity.label, icon: "exclamationmark.triangle")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Status", value: incident.incidentStatus.label, icon: "checkmark.circle")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Date", value: incident.date.formatted(date: .abbreviated, time: .shortened), icon: "calendar")
+                    if !incident.location.isEmpty {
+                        Divider().padding(.leading, 44)
+                        DetailRowPro(label: "Location", value: incident.location, icon: "mappin")
+                    }
+                    if !incident.reportedBy.isEmpty {
+                        Divider().padding(.leading, 44)
+                        DetailRowPro(label: "Reported By", value: incident.reportedBy, icon: "person")
+                    }
+                }
+                .professionalCard(padding: DesignTokens.Spacing.sm)
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+
+                // Description
+                if !incident.descriptionText.isEmpty {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                        Text("Description")
+                            .font(DesignTokens.Typography.callout.weight(.semibold))
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                        
+                        Text(incident.descriptionText)
+                            .font(DesignTokens.Typography.body)
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(DesignTokens.Spacing.md)
+                    .professionalCard()
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                }
+
+                // Actions
+                HStack(spacing: DesignTokens.Spacing.md) {
+                    Button {
+                        showEditSheet = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "pencil")
+                            Text("Edit")
+                        }
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .background(BuildTrackColors.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    }
+                    
+                    Button {
+                        showDeleteConfirm = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Delete")
+                        }
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .background(BuildTrackColors.danger)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    }
+                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                .padding(.top, DesignTokens.Spacing.md)
+            }
+            .padding(.vertical, DesignTokens.Spacing.md)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Incident Details")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done") { dismiss() }
+            }
+        }
+        .sheet(isPresented: $showEditSheet) {
+            NavigationStack {
+                IncidentFormView(incident: incident)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") { showEditSheet = false }
+                        }
+                    }
+            }
+        }
+        .alert("Delete Incident?", isPresented: $showDeleteConfirm) {
+            Button("Delete", role: .destructive) {
+                modelContext.delete(incident)
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This incident will be permanently deleted.")
+        }
+    }
+}
