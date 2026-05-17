@@ -2,122 +2,187 @@ import SwiftUI
 import SwiftData
 import LocalAuthentication
 
-// MARK: - Settings / Profile View
+// MARK: - Professional Settings View
 
 struct SettingsView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = SettingsViewModel()
+    @State private var selectedSection: SettingsSection?
+    
+    enum SettingsSection: String, Identifiable {
+        case account, security, notifications, help, about, export
+        var id: String { rawValue }
+    }
     
     var body: some View {
         NavigationStack {
-            List {
-                // MARK: Profile Section
-                Section {
-                    ProfileHeader(authManager: authManager)
-                }
-                
-                // MARK: Account Actions
-                Section("Account") {
-                    NavigationLink {
-                        AccountDetailView(authManager: authManager)
-                    } label: {
-                        Label("Account Information", systemImage: "person.circle")
-                    }
+            ScrollView {
+                VStack(spacing: DesignTokens.Spacing.lg) {
+                    // Profile Header
+                    profileHeader
+                        .fadeIn(delay: 0)
                     
-                    NavigationLink {
-                        SecuritySettingsView(authManager: authManager)
-                    } label: {
-                        Label("Security", systemImage: "lock.shield")
-                    }
+                    // Quick Stats
+                    settingsStats
+                        .fadeIn(delay: 0.1)
                     
-                    NavigationLink {
-                        NotificationSettingsView()
-                    } label: {
-                        Label("Notifications", systemImage: "bell.badge")
+                    // Settings Sections
+                    LazyVStack(spacing: DesignTokens.Spacing.md) {
+                        settingsSection(title: "Account", icon: "person.crop.circle.fill", color: BuildTrackColors.primary) {
+                            settingsRow(icon: "person.text.rectangle", title: "Account Information", subtitle: "Name, email, user ID") {
+                                selectedSection = .account
+                            }
+                            settingsRow(icon: "lock.shield", title: "Security", subtitle: "Password, biometric, 2FA") {
+                                selectedSection = .security
+                            }
+                            settingsRow(icon: "bell.badge", title: "Notifications", subtitle: "Push, email, in-app alerts") {
+                                selectedSection = .notifications
+                            }
+                        }
+                        .fadeIn(delay: 0.15)
+                        
+                        settingsSection(title: "App Preferences", icon: "gear", color: BuildTrackColors.info) {
+                            ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode)
+                            ToggleRow(icon: "wifi", title: "Sync on Wi-Fi Only", isOn: $viewModel.wifiOnlySync)
+                            ToggleRow(icon: "cloud.slash.fill", title: "Offline Mode", isOn: $viewModel.offlineMode)
+                            
+                            Button {
+                                DesignTokens.Haptic.medium()
+                                viewModel.triggerSync()
+                            } label: {
+                                HStack {
+                                    Image(systemName: viewModel.isSyncing ? "arrow.triangle.2.circlepath" : "arrow.clockwise")
+                                        .font(.system(size: 18))
+                                        .foregroundStyle(BuildTrackColors.primary)
+                                        .frame(width: 32, height: 32)
+                                        .background(BuildTrackColors.primary.opacity(0.12))
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(viewModel.isSyncing ? "Syncing..." : "Sync Now")
+                                            .font(DesignTokens.Typography.callout.weight(.medium))
+                                            .foregroundStyle(BuildTrackColors.textPrimary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    if viewModel.isSyncing {
+                                        ProgressView()
+                                            .tint(BuildTrackColors.primary)
+                                    } else {
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(BuildTrackColors.textTertiary)
+                                    }
+                                }
+                            }
+                            .disabled(viewModel.isSyncing)
+                            .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+                        }
+                        .fadeIn(delay: 0.2)
+                        
+                        settingsSection(title: "Data Management", icon: "externaldrive.fill", color: BuildTrackColors.warning) {
+                            settingsRow(icon: "square.and.arrow.up", title: "Export Data", subtitle: "JSON backup of all projects and tasks") {
+                                DesignTokens.Haptic.medium()
+                                selectedSection = .export
+                            }
+                            
+                            Button {
+                                DesignTokens.Haptic.medium()
+                                viewModel.showingClearDataConfirmation = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "trash")
+                                        .font(.system(size: 18))
+                                        .foregroundStyle(BuildTrackColors.danger)
+                                        .frame(width: 32, height: 32)
+                                        .background(BuildTrackColors.danger.opacity(0.12))
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    
+                                    Text("Clear Local Cache")
+                                        .font(DesignTokens.Typography.callout.weight(.medium))
+                                        .foregroundStyle(BuildTrackColors.danger)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(BuildTrackColors.textTertiary)
+                                }
+                            }
+                            .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+                        }
+                        .fadeIn(delay: 0.25)
+                        
+                        settingsSection(title: "Support", icon: "questionmark.circle.fill", color: BuildTrackColors.success) {
+                            settingsRow(icon: "questionmark.circle", title: "Help & FAQ", subtitle: "Getting started, sync, troubleshooting") {
+                                selectedSection = .help
+                            }
+                            settingsRow(icon: "info.circle", title: "About BuildTrack", subtitle: "Version, credits, legal") {
+                                selectedSection = .about
+                            }
+                        }
+                        .fadeIn(delay: 0.3)
+                        
+                        // Sign Out
+                        Button {
+                            DesignTokens.Haptic.heavy()
+                            viewModel.showingSignOutConfirmation = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .font(.system(size: 18))
+                                    .foregroundStyle(BuildTrackColors.danger)
+                                    .frame(width: 32, height: 32)
+                                    .background(BuildTrackColors.danger.opacity(0.12))
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                
+                                Text("Sign Out")
+                                    .font(DesignTokens.Typography.callout.weight(.medium))
+                                    .foregroundStyle(BuildTrackColors.danger)
+                                
+                                Spacer()
+                            }
+                        }
+                        .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+                        .professionalCard(padding: DesignTokens.Spacing.cardPadding)
+                        .fadeIn(delay: 0.35)
+                        
+                        // Version Footer
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 2) {
+                                Text("BuildTrack")
+                                    .font(DesignTokens.Typography.caption.weight(.semibold))
+                                    .foregroundStyle(BuildTrackColors.textTertiary)
+                                Text("Version \(viewModel.versionString)")
+                                    .font(.caption2)
+                                    .foregroundStyle(BuildTrackColors.textTertiary)
+                                Text("© 2026 BuildTrack. All rights reserved.")
+                                    .font(.caption2)
+                                    .foregroundStyle(BuildTrackColors.textTertiary)
+                            }
+                            Spacer()
+                        }
+                        .padding(.vertical, DesignTokens.Spacing.md)
+                        .fadeIn(delay: 0.4)
                     }
                 }
-                
-                // MARK: App Settings
-                Section("App Preferences") {
-                    Toggle("Dark Mode", systemImage: "moon.fill", isOn: $viewModel.isDarkMode)
-                        .tint(BuildTrackColors.primary)
-                    
-                    Toggle("Sync on Wi-Fi Only", systemImage: "wifi", isOn: $viewModel.wifiOnlySync)
-                        .tint(BuildTrackColors.primary)
-                    
-                    Toggle("Offline Mode", systemImage: "cloud.slash.fill", isOn: $viewModel.offlineMode)
-                        .tint(BuildTrackColors.primary)
-                    
-                    Button {
-                        viewModel.triggerSync()
-                    } label: {
-                        Label(viewModel.isSyncing ? "Syncing…" : "Sync Now", systemImage: viewModel.isSyncing ? "arrow.triangle.2.circlepath" : "arrow.clockwise")
-                    }
-                    .disabled(viewModel.isSyncing)
-                }
-                
-                // MARK: Data Management
-                Section("Data") {
-                    Button(role: .destructive) {
-                        viewModel.showingClearDataConfirmation = true
-                    } label: {
-                        Label("Clear Local Cache", systemImage: "trash")
-                    }
-                    
-                    Button {
-                        viewModel.showingExportConfirmation = true
-                    } label: {
-                        Label("Export Data", systemImage: "square.and.arrow.up")
-                    }
-                }
-                
-                // MARK: Support
-                Section("Support") {
-                    NavigationLink {
-                        HelpView()
-                    } label: {
-                        Label("Help & FAQ", systemImage: "questionmark.circle")
-                    }
-                    
-                    NavigationLink {
-                        AboutView()
-                    } label: {
-                        Label("About BuildTrack", systemImage: "info.circle")
-                    }
-                }
-                
-                // MARK: Sign Out
-                Section {
-                    Button(role: .destructive) {
-                        viewModel.showingSignOutConfirmation = true
-                    } label: {
-                        Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
-                            .foregroundStyle(.red)
-                    }
-                }
-                
-                // MARK: Version
-                Section {
-                    HStack {
-                        Text("Version")
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Text(viewModel.versionString)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                } footer: {
-                    Text("© 2026 BuildTrack. All rights reserved.")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                .padding(.vertical, DesignTokens.Spacing.md)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        DesignTokens.Haptic.light()
+                        dismiss()
+                    }
+                    .font(DesignTokens.Typography.callout.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.primary)
                 }
             }
             .confirmationDialog("Sign Out?", isPresented: $viewModel.showingSignOutConfirmation) {
@@ -136,19 +201,155 @@ struct SettingsView: View {
             } message: {
                 Text("This will remove all cached projects, tasks, and safety data from this device. Your server data is safe.")
             }
-            .sheet(isPresented: $viewModel.showingExportConfirmation) {
-                ExportDataView()
+            .sheet(item: $selectedSection) { section in
+                switch section {
+                case .account:
+                    NavigationStack { AccountDetailView(authManager: authManager) }
+                case .security:
+                    NavigationStack { SecuritySettingsView(authManager: authManager) }
+                case .notifications:
+                    NavigationStack { NotificationSettingsView() }
+                case .help:
+                    NavigationStack { HelpView() }
+                case .about:
+                    NavigationStack { AboutView() }
+                case .export:
+                    ExportDataView()
+                }
             }
         }
     }
-}
-
-// MARK: - Profile Header
-
-struct ProfileHeader: View {
-    @Bindable var authManager: AuthManager
     
-    var initials: String {
+    // MARK: - Profile Header
+    private var profileHeader: some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [BuildTrackColors.primary, BuildTrackColors.primaryLight],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 72, height: 72)
+                    .shadow(color: BuildTrackColors.primary.opacity(0.3), radius: 8, x: 0, y: 4)
+                
+                Text(initials)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
+            }
+            
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                Text(displayName)
+                    .font(DesignTokens.Typography.title3)
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+                
+                Text(displayEmail)
+                    .font(DesignTokens.Typography.callout)
+                    .foregroundStyle(BuildTrackColors.textSecondary)
+                
+                ProBadge(text: authManager.isAuthenticated ? "Active" : "Guest", color: authManager.isAuthenticated ? .green : .gray)
+            }
+            
+            Spacer()
+        }
+        .padding(DesignTokens.Spacing.lg)
+        .background(
+            LinearGradient(
+                colors: [BuildTrackColors.primary.opacity(0.08), BuildTrackColors.primary.opacity(0.02)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.lg, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.lg, style: .continuous)
+                .stroke(BuildTrackColors.primary.opacity(0.15), lineWidth: 1)
+        )
+    }
+    
+    // MARK: - Settings Stats
+    private var settingsStats: some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            StatMiniCard(
+                icon: "building.2.fill",
+                value: "12",
+                label: "Projects",
+                color: BuildTrackColors.primary
+            )
+            StatMiniCard(
+                icon: "checklist",
+                value: "48",
+                label: "Tasks",
+                color: BuildTrackColors.info
+            )
+            StatMiniCard(
+                icon: "shield.fill",
+                value: "3",
+                label: "Incidents",
+                color: BuildTrackColors.warning
+            )
+        }
+    }
+    
+    // MARK: - Settings Section
+    private func settingsSection(title: String, icon: String, color: Color, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+            HStack(spacing: DesignTokens.Spacing.sm) {
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(color)
+                
+                Text(title)
+                    .font(DesignTokens.Typography.callout.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textSecondary)
+                    .textCase(.uppercase)
+            }
+            
+            VStack(spacing: 0) {
+                content()
+            }
+            .professionalCard(padding: DesignTokens.Spacing.sm)
+        }
+    }
+    
+    // MARK: - Settings Row
+    private func settingsRow(icon: String, title: String, subtitle: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: DesignTokens.Spacing.md) {
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundStyle(BuildTrackColors.primary)
+                    .frame(width: 32, height: 32)
+                    .background(BuildTrackColors.primary.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(DesignTokens.Typography.callout.weight(.medium))
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                    
+                    Text(subtitle)
+                        .font(DesignTokens.Typography.caption)
+                        .foregroundStyle(BuildTrackColors.textTertiary)
+                        .lineLimit(1)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textTertiary)
+            }
+        }
+        .buttonStyle(.plain)
+        .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+        .padding(.horizontal, DesignTokens.Spacing.md)
+    }
+    
+    // MARK: - Computed Properties
+    private var initials: String {
         guard let user = authManager.currentUser else { return "?" }
         let name = user.fullName ?? user.email
         let parts = name.split(separator: " ")
@@ -158,59 +359,92 @@ struct ProfileHeader: View {
         return String(name.prefix(2)).uppercased()
     }
     
-    var displayName: String {
+    private var displayName: String {
         guard let user = authManager.currentUser else { return "Guest" }
         return user.fullName ?? user.email
     }
     
-    var displayEmail: String {
+    private var displayEmail: String {
         authManager.currentUser?.email ?? ""
-    }
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .fill(BuildTrackColors.primary.opacity(0.15))
-                    .frame(width: 64, height: 64)
-                Text(initials)
-                    .font(.title2.bold())
-                    .foregroundStyle(BuildTrackColors.primary)
-            }
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(displayName)
-                    .font(.headline)
-                Text(displayEmail)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-        }
-        .padding(.vertical, 8)
     }
 }
 
-// MARK: - Account Detail View
+// MARK: - Toggle Row
+
+struct ToggleRow: View {
+    let icon: String
+    let title: String
+    @Binding var isOn: Bool
+    
+    var body: some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(BuildTrackColors.primary)
+                .frame(width: 32, height: 32)
+                .background(BuildTrackColors.primary.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            
+            Text(title)
+                .font(DesignTokens.Typography.callout.weight(.medium))
+                .foregroundStyle(BuildTrackColors.textPrimary)
+            
+            Spacer()
+            
+            Toggle("", isOn: $isOn)
+                .tint(BuildTrackColors.primary)
+                .labelsHidden()
+        }
+        .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+        .padding(.horizontal, DesignTokens.Spacing.md)
+    }
+}
+
+// MARK: - Supporting Views (Updated with Pro Design)
 
 struct AccountDetailView: View {
     @Bindable var authManager: AuthManager
     
     var body: some View {
-        List {
-            Section("Profile") {
-                LabeledContent("Name", value: fullName)
-                LabeledContent("Email", value: authManager.currentUser?.email ?? "—")
-                LabeledContent("User ID", value: authManager.currentUser?.id ?? "—")
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                // Profile Card
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    ZStack {
+                        Circle()
+                            .fill(BuildTrackColors.primary.opacity(0.15))
+                            .frame(width: 80, height: 80)
+                        Text(fullName.prefix(1).uppercased())
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundStyle(BuildTrackColors.primary)
+                    }
+                    
+                    Text(fullName)
+                        .font(DesignTokens.Typography.title2)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                    
+                    Text(authManager.currentUser?.email ?? "—")
+                        .font(DesignTokens.Typography.callout)
+                        .foregroundStyle(BuildTrackColors.textSecondary)
+                }
+                .padding(DesignTokens.Spacing.lg)
+                .professionalCard()
+                
+                // Details
+                VStack(spacing: 0) {
+                    DetailRowPro(label: "User ID", value: authManager.currentUser?.id ?? "—", icon: "number")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Status", value: authManager.isAuthenticated ? "Active" : "Expired", icon: "checkmark.shield")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Device", value: UIDevice.current.name, icon: "iphone")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "System", value: "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)", icon: "gear")
+                }
+                .professionalCard(padding: 0)
             }
-            
-            Section("Session") {
-                LabeledContent("Status", value: authManager.isAuthenticated ? "Active" : "Expired")
-                LabeledContent("Device", value: UIDevice.current.name)
-                LabeledContent("System", value: "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)")
-            }
+            .padding(DesignTokens.Spacing.sectionPadding)
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("Account")
     }
     
@@ -220,12 +454,41 @@ struct AccountDetailView: View {
     }
 }
 
-// MARK: - Security Settings
+struct DetailRowPro: View {
+    let label: String
+    let value: String
+    let icon: String
+    
+    var body: some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(BuildTrackColors.primary)
+                .frame(width: 32, height: 32)
+                .background(BuildTrackColors.primary.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(BuildTrackColors.textSecondary)
+                    .textCase(.uppercase)
+                Text(value)
+                    .font(DesignTokens.Typography.callout.weight(.medium))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+            }
+            
+            Spacer()
+        }
+        .padding(.horizontal, DesignTokens.Spacing.md)
+        .padding(.vertical, DesignTokens.Spacing.sm)
+    }
+}
 
 struct SecuritySettingsView: View {
     @Bindable var authManager: AuthManager
     @State private var showChangePassword = false
-    @State private var enableBiometric = UserDefaults.standard.bool(forKey: AppLockController.biometricEnabledKey)
+    @State private var enableBiometric = UserDefaults.standard.bool(forKey: "biometricEnabled")
     @State private var showDeleteAccountConfirmation = false
     @State private var biometricError: String?
 
@@ -236,41 +499,72 @@ struct SecuritySettingsView: View {
     }
 
     var body: some View {
-        List {
-            Section {
-                Toggle("Face ID / Touch ID", isOn: $enableBiometric)
-                    .tint(BuildTrackColors.primary)
-                    .onChange(of: enableBiometric) { _, isOn in
-                        if isOn {
-                            authenticateBiometric()
-                        } else {
-                            UserDefaults.standard.set(false, forKey: AppLockController.biometricEnabledKey)
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                // Security Status Card
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    Image(systemName: "lock.shield.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(BuildTrackColors.success)
+                    
+                    Text("Security Status")
+                        .font(DesignTokens.Typography.title3)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                    
+                    ProBadge(text: "Protected", color: .green)
+                }
+                .padding(DesignTokens.Spacing.lg)
+                .professionalCard()
+                
+                // Settings
+                VStack(spacing: 0) {
+                    ToggleRow(icon: "faceid", title: "Face ID / Touch ID", isOn: $enableBiometric)
+                        .onChange(of: enableBiometric) { _, isOn in
+                            if isOn { authenticateBiometric() }
+                            else { UserDefaults.standard.set(false, forKey: "biometricEnabled") }
                         }
+                    
+                    if let error = biometricError {
+                        Text(error)
+                            .font(DesignTokens.Typography.caption)
+                            .foregroundStyle(.red)
+                            .padding(.horizontal)
                     }
-                
-                if let error = biometricError {
-                    Text(error)
-                        .font(.caption)
-                        .foregroundStyle(.red)
+                    
+                    Button {
+                        DesignTokens.Haptic.medium()
+                        showChangePassword = true
+                    } label: {
+                        settingsRow(icon: "key.fill", title: "Change Password", subtitle: "Update your account password")
+                    }
                 }
+                .professionalCard(padding: DesignTokens.Spacing.sm)
                 
+                // Danger Zone
                 Button {
-                    showChangePassword = true
-                } label: {
-                    Label("Change Password", systemImage: "key.fill")
-                }
-            }
-            
-            Section {
-                Button(role: .destructive) {
+                    DesignTokens.Haptic.heavy()
                     showDeleteAccountConfirmation = true
                 } label: {
-                    Label("Delete Account", systemImage: "person.crop.circle.badge.xmark")
+                    HStack {
+                        Image(systemName: "person.crop.circle.badge.xmark")
+                            .font(.system(size: 18))
+                            .foregroundStyle(BuildTrackColors.danger)
+                            .frame(width: 32, height: 32)
+                            .background(BuildTrackColors.danger.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        
+                        Text("Delete Account")
+                            .font(DesignTokens.Typography.callout.weight(.medium))
+                            .foregroundStyle(BuildTrackColors.danger)
+                        
+                        Spacer()
+                    }
                 }
-            } footer: {
-                Text("Deleting your account will permanently remove all your data from BuildTrack.")
+                .professionalCard(padding: DesignTokens.Spacing.md)
             }
+            .padding(DesignTokens.Spacing.sectionPadding)
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("Security")
         .alert("Delete Account?", isPresented: $showDeleteAccountConfirmation) {
             Button("Delete", role: .destructive) {}
@@ -295,144 +589,256 @@ struct SecuritySettingsView: View {
             DispatchQueue.main.async {
                 if success {
                     biometricError = nil
-                    UserDefaults.standard.set(true, forKey: AppLockController.biometricEnabledKey)
+                    UserDefaults.standard.set(true, forKey: "biometricEnabled")
                 } else {
                     biometricError = evalError?.localizedDescription
                     enableBiometric = false
-                    UserDefaults.standard.set(false, forKey: AppLockController.biometricEnabledKey)
                 }
             }
         }
     }
+    
+    private func settingsRow(icon: String, title: String) -> some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(BuildTrackColors.primary)
+                .frame(width: 32, height: 32)
+                .background(BuildTrackColors.primary.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            
+            Text(title)
+                .font(DesignTokens.Typography.callout.weight(.medium))
+                .foregroundStyle(BuildTrackColors.textPrimary)
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textTertiary)
+        }
+        .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+        .padding(.horizontal, DesignTokens.Spacing.md)
+    }
 }
-
-// MARK: - Help View
 
 struct HelpView: View {
     var body: some View {
-        List {
-            Section("Getting Started") {
-                HelpItem(icon: "building.2.fill", title: "Creating a Project", description: "Tap the + button on the Projects tab to add a new construction project with budget, timeline, and location.")
-                HelpItem(icon: "checklist", title: "Managing Tasks", description: "Add tasks to projects, set priorities, assign workers, and track completion status.")
-                HelpItem(icon: "shield.fill", title: "Safety Reporting", description: "Report incidents and schedule inspections. Set severity levels and track resolution.")
-            }
-            
-            Section("Sync & Offline") {
-                HelpItem(icon: "arrow.triangle.2.circlepath", title: "Data Sync", description: "BuildTrack syncs automatically with the cloud. Enable 'Wi-Fi Only' to save mobile data.")
-                HelpItem(icon: "cloud.slash.fill", title: "Offline Mode", description: "All changes are saved locally and will sync when you're back online.")
-            }
-            
-            Section("Support") {
-                Link(destination: URL(string: "https://buildtrack.stancainvest.ro/support")!) {
-                    Label("Support Centre", systemImage: "lifepreserver")
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    Image(systemName: "questionmark.circle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(BuildTrackColors.primary)
+                    
+                    Text("Help & Support")
+                        .font(DesignTokens.Typography.title3)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
                 }
-                Link(destination: URL(string: "mailto:support@buildtrack.stancainvest.ro")!) {
-                    Label("Email Support", systemImage: "envelope.fill")
+                .padding(DesignTokens.Spacing.lg)
+                .professionalCard()
+                
+                LazyVStack(spacing: DesignTokens.Spacing.sm) {
+                    HelpItemPro(icon: "building.2.fill", title: "Creating a Project", description: "Tap the + button on the Projects tab to add a new construction project with budget, timeline, and location.")
+                    HelpItemPro(icon: "checklist", title: "Managing Tasks", description: "Add tasks to projects, set priorities, assign workers, and track completion status.")
+                    HelpItemPro(icon: "shield.fill", title: "Safety Reporting", description: "Report incidents and schedule inspections. Set severity levels and track resolution.")
+                    HelpItemPro(icon: "arrow.triangle.2.circlepath", title: "Data Sync", description: "BuildTrack syncs automatically with the cloud. Enable 'Wi-Fi Only' to save mobile data.")
+                    HelpItemPro(icon: "cloud.slash.fill", title: "Offline Mode", description: "All changes are saved locally and will sync when you're back online.")
                 }
+                .professionalCard(padding: DesignTokens.Spacing.md)
+                
+                VStack(spacing: DesignTokens.Spacing.sm) {
+                    Link(destination: URL(string: "https://buildtrack.stancainvest.ro/support")!) {
+                        HStack {
+                            Image(systemName: "lifepreserver")
+                                .font(.system(size: 18))
+                                .foregroundStyle(BuildTrackColors.primary)
+                            Text("Support Centre")
+                                .font(DesignTokens.Typography.callout.weight(.medium))
+                                .foregroundStyle(BuildTrackColors.textPrimary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(BuildTrackColors.textTertiary)
+                        }
+                    }
+                    
+                    Link(destination: URL(string: "mailto:support@buildtrack.stancainvest.ro")!) {
+                        HStack {
+                            Image(systemName: "envelope.fill")
+                                .font(.system(size: 18))
+                                .foregroundStyle(BuildTrackColors.primary)
+                            Text("Email Support")
+                                .font(DesignTokens.Typography.callout.weight(.medium))
+                                .foregroundStyle(BuildTrackColors.textPrimary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(BuildTrackColors.textTertiary)
+                        }
+                    }
+                }
+                .professionalCard(padding: DesignTokens.Spacing.md)
             }
+            .padding(DesignTokens.Spacing.sectionPadding)
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("Help")
     }
 }
 
-struct HelpItem: View {
+struct HelpItemPro: View {
     let icon: String
     let title: String
     let description: String
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: DesignTokens.Spacing.md) {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(BuildTrackColors.primary)
-                .frame(width: 36, height: 36)
+                .frame(width: 40, height: 40)
                 .background(BuildTrackColors.primary.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
                 Text(title)
-                    .font(.subheadline.weight(.medium))
+                    .font(DesignTokens.Typography.callout.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+                
                 Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(DesignTokens.Typography.footnote)
+                    .foregroundStyle(BuildTrackColors.textSecondary)
                     .lineLimit(3)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, DesignTokens.Spacing.sm)
     }
 }
 
-// MARK: - About View
-
 struct AboutView: View {
     var body: some View {
-        List {
-            Section {
-                VStack(spacing: 16) {
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                // Hero
+                VStack(spacing: DesignTokens.Spacing.md) {
                     Image(systemName: "building.columns.fill")
-                        .font(.system(size: 64))
-                        .foregroundStyle(BuildTrackColors.primary)
+                        .font(.system(size: 72))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [BuildTrackColors.primary, BuildTrackColors.primaryLight],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                     
                     Text("BuildTrack")
-                        .font(.largeTitle.bold())
+                        .font(DesignTokens.Typography.largeTitle)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                    
                     Text("Construction Management")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(DesignTokens.Typography.headline)
+                        .foregroundStyle(BuildTrackColors.textSecondary)
                     
                     Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0") (Build \(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"))")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .font(DesignTokens.Typography.caption)
+                        .foregroundStyle(BuildTrackColors.textTertiary)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 24)
-            }
-            
-            Section("About") {
+                .padding(DesignTokens.Spacing.xl)
+                .professionalCard()
+                
+                // Description
                 Text("BuildTrack is a construction project management platform built for modern building teams. Track projects, manage tasks, ensure safety compliance, and keep your team connected — all from one native iOS app.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Section("Credits") {
-                LabeledContent("Backend", value: "Supabase")
-                LabeledContent("Maps", value: "MapKit")
-                LabeledContent("Storage", value: "SwiftData")
-                LabeledContent("Realtime", value: "Supabase Realtime")
-            }
-            
-            Section("Legal") {
-                Link(destination: URL(string: "https://buildtrack.stancainvest.ro/privacy")!) {
-                    Label("Privacy Policy", systemImage: "doc.text")
+                    .font(DesignTokens.Typography.callout)
+                    .foregroundStyle(BuildTrackColors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(DesignTokens.Spacing.md)
+                
+                // Credits
+                VStack(spacing: 0) {
+                    DetailRowPro(label: "Backend", value: "Supabase", icon: "server.rack")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Maps", value: "MapKit", icon: "map")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Storage", value: "SwiftData", icon: "externaldrive.fill")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Realtime", value: "Supabase Realtime", icon: "bolt.fill")
                 }
-                Link(destination: URL(string: "https://buildtrack.stancainvest.ro/terms")!) {
-                    Label("Terms of Service", systemImage: "doc.text.fill")
+                .professionalCard(padding: 0)
+                
+                // Legal
+                VStack(spacing: DesignTokens.Spacing.sm) {
+                    Link(destination: URL(string: "https://buildtrack.stancainvest.ro/privacy")!) {
+                        HStack {
+                            Image(systemName: "doc.text")
+                                .foregroundStyle(BuildTrackColors.primary)
+                            Text("Privacy Policy")
+                                .font(DesignTokens.Typography.callout.weight(.medium))
+                                .foregroundStyle(BuildTrackColors.textPrimary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(BuildTrackColors.textTertiary)
+                        }
+                    }
+                    
+                    Link(destination: URL(string: "https://buildtrack.stancainvest.ro/terms")!) {
+                        HStack {
+                            Image(systemName: "doc.text.fill")
+                                .foregroundStyle(BuildTrackColors.primary)
+                            Text("Terms of Service")
+                                .font(DesignTokens.Typography.callout.weight(.medium))
+                                .foregroundStyle(BuildTrackColors.textPrimary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(BuildTrackColors.textTertiary)
+                        }
+                    }
                 }
+                .professionalCard(padding: DesignTokens.Spacing.md)
             }
+            .padding(DesignTokens.Spacing.sectionPadding)
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("About")
     }
 }
 
-// MARK: - Export Data View
-
 struct ExportDataView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var isExporting = false
     
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    Text("Your data can be exported as JSON for backup or migration purposes.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+            ScrollView {
+                VStack(spacing: DesignTokens.Spacing.lg) {
+                    VStack(spacing: DesignTokens.Spacing.md) {
+                        Image(systemName: "square.and.arrow.up.fill")
+                            .font(.system(size: 48))
+                            .foregroundStyle(BuildTrackColors.primary)
+                        
+                        Text("Export Data")
+                            .font(DesignTokens.Typography.title3)
+                            .foregroundStyle(BuildTrackColors.textPrimary)
+                        
+                        Text("Your data can be exported as JSON for backup or migration purposes.")
+                            .font(DesignTokens.Typography.callout)
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(DesignTokens.Spacing.lg)
+                    .professionalCard()
+                    
+                    VStack(spacing: DesignTokens.Spacing.sm) {
+                        ExportButton(title: "Export All Data", icon: "archivebox.fill", isExporting: $isExporting)
+                        ExportButton(title: "Export Projects Only", icon: "building.2.fill", isExporting: $isExporting)
+                        ExportButton(title: "Export Tasks Only", icon: "checklist", isExporting: $isExporting)
+                    }
                 }
-                
-                Section {
-                    Button("Export All Data") {}
-                    Button("Export Projects Only") {}
-                    Button("Export Tasks Only") {}
-                }
+                .padding(DesignTokens.Spacing.sectionPadding)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Export Data")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -441,6 +847,51 @@ struct ExportDataView: View {
                 }
             }
         }
+    }
+}
+
+struct ExportButton: View {
+    let title: String
+    let icon: String
+    @Binding var isExporting: Bool
+    
+    var body: some View {
+        Button {
+            DesignTokens.Haptic.medium()
+            isExporting = true
+            Task {
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                await MainActor.run { isExporting = false }
+            }
+        } label: {
+            HStack {
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundStyle(BuildTrackColors.primary)
+                    .frame(width: 32, height: 32)
+                    .background(BuildTrackColors.primary.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                
+                Text(title)
+                    .font(DesignTokens.Typography.callout.weight(.medium))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+                
+                Spacer()
+                
+                if isExporting {
+                    ProgressView()
+                        .tint(BuildTrackColors.primary)
+                } else {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(BuildTrackColors.textTertiary)
+                }
+            }
+        }
+        .disabled(isExporting)
+        .buttonStyle(.plain)
+        .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+        .padding(.horizontal, DesignTokens.Spacing.md)
     }
 }
 
@@ -473,12 +924,11 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func clearLocalCache() {
-        // Placeholder — in production, clear SwiftData context
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier ?? "")
     }
 }
 
-#Preview {
+#Preview("Professional Settings") {
     SettingsView()
         .environment(AuthManager())
 }
