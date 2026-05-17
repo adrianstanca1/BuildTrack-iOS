@@ -26,7 +26,7 @@ struct ProjectsListView: View {
                 case .loaded, .refreshing:
                     mainContent
                 case .error(let message):
-                    ErrorView(message: message) {
+                    ProjectErrorView(message: message) {
                         Task { await viewModel.loadProjects(context: modelContext) }
                     }
                 }
@@ -355,7 +355,7 @@ enum ProjectSortBy {
 
 @MainActor
 final class ProjectsListViewModel: ObservableObject {
-    @Published var loadingState: LoadingState = .idle
+    @Published var loadingState: ProjectLoadingState = .idle
     @Published var searchQuery = ""
     @Published var sortBy: ProjectSortBy = .updatedAt
     
@@ -369,13 +369,13 @@ final class ProjectsListViewModel: ObservableObject {
     }
 }
 
-enum LoadingState: Equatable {
+enum ProjectProjectLoadingState: Equatable {
     case idle, loading, loaded, refreshing, error(String)
 }
 
 // MARK: - Error View
 
-struct ErrorView: View {
+struct ProjectErrorView: View {
     let message: String
     let retry: () -> Void
     

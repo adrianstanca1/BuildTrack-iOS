@@ -543,7 +543,7 @@ struct SafetyDetailView: View {
                         .font(DesignTokens.Typography.callout.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
-                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .frame(height: 48)
                         .background(BuildTrackColors.primary)
                         .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
                     }
@@ -558,7 +558,7 @@ struct SafetyDetailView: View {
                         .font(DesignTokens.Typography.callout.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
-                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .frame(height: 48)
                         .background(BuildTrackColors.danger)
                         .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
                     }

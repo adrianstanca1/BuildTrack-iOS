@@ -420,7 +420,7 @@ struct WorkerFormViewPro: View {
                     }
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
-                    .frame(height: DesignTokens.Spacing.buttonHeight)
+                    .frame(height: 48)
                     .background(
                         isValid
                         ? BuildTrackColors.primary

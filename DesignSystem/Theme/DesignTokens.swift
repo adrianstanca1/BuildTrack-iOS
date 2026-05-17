@@ -35,6 +35,7 @@ enum DesignTokens {
         static let sectionPadding: CGFloat = 20
         static let cardPadding: CGFloat = 16
         static let listRowHeight: CGFloat = 56
+        static let buttonHeight: CGFloat = 48
         static let minTapTarget: CGFloat = 44
     }
     

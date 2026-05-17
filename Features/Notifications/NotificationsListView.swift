@@ -160,7 +160,7 @@ struct NotificationDetailView: View {
                             .font(DesignTokens.Typography.callout.weight(.semibold))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
-                            .frame(height: DesignTokens.Spacing.buttonHeight)
+                            .frame(height: 48)
                             .background(BuildTrackColors.primary)
                             .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
                         }
@@ -176,7 +176,7 @@ struct NotificationDetailView: View {
                         .font(DesignTokens.Typography.callout.weight(.semibold))
                         .foregroundStyle(BuildTrackColors.textSecondary)
                         .frame(maxWidth: .infinity)
-                        .frame(height: DesignTokens.Spacing.buttonHeight)
+                        .frame(height: 48)
                         .background(BuildTrackColors.textTertiary.opacity(0.12))
                         .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
                     }
