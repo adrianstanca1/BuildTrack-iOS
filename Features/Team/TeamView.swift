@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Team View
+// MARK: - Professional Team View
 
 @MainActor
 struct TeamView: View {
@@ -10,8 +10,7 @@ struct TeamView: View {
     @State private var showAddWorker = false
     @State private var searchQuery = ""
     @State private var roleFilter: WorkerRole? = nil
-    @State private var showDeleteConfirmation = false
-    @State private var workerToDelete: Worker?
+    @State private var selectedWorker: Worker?
 
     var filteredWorkers: [Worker] {
         var result = allWorkers
@@ -31,71 +30,215 @@ struct TeamView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
-                    SearchBar(query: $searchQuery, placeholder: "Search team members...")
+                VStack(spacing: DesignTokens.Spacing.lg) {
+                    // Search Bar
+                    ProSearchBar(query: $searchQuery, placeholder: "Search team members...")
+                        .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                        .fadeIn(delay: 0)
 
-                    // Role filter chips
+                    // Role Filter Chips
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            FilterChip(label: "All", isSelected: roleFilter == nil) { roleFilter = nil }
+                        HStack(spacing: DesignTokens.Spacing.sm) {
+                            ProFilterChip(label: "All", isSelected: roleFilter == nil) {
+                                DesignTokens.Haptic.light()
+                                roleFilter = nil
+                            }
                             ForEach(WorkerRole.allCases, id: \.self) { role in
-                                FilterChip(label: role.label, isSelected: roleFilter == role) { roleFilter = role }
+                                ProFilterChip(label: role.label, isSelected: roleFilter == role) {
+                                    DesignTokens.Haptic.light()
+                                    roleFilter = role
+                                }
                             }
                         }
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
                     }
+                    .fadeIn(delay: 0.05)
 
-                    // Stats
-                    HStack(spacing: 12) {
-                        SummaryCard(title: "Total", value: "\(allWorkers.count)", icon: "person.3", color: BuildTrackColors.primary)
-                        SummaryCard(title: "Active", value: "\(allWorkers.filter { $0.isActive }.count)", icon: "person.fill.checkmark", color: .green)
-                        SummaryCard(title: "On Leave", value: "\(allWorkers.filter { !$0.isActive }.count)", icon: "person.fill.xmark", color: .orange)
+                    // Stats Row
+                    HStack(spacing: DesignTokens.Spacing.md) {
+                        StatMiniCard(
+                            icon: "person.3.fill",
+                            value: "\(allWorkers.count)",
+                            label: "Total",
+                            color: BuildTrackColors.primary
+                        )
+                        StatMiniCard(
+                            icon: "person.fill.checkmark",
+                            value: "\(allWorkers.filter { $0.isActive }.count)",
+                            label: "Active",
+                            color: BuildTrackColors.success
+                        )
+                        StatMiniCard(
+                            icon: "person.fill.xmark",
+                            value: "\(allWorkers.filter { !$0.isActive }.count)",
+                            label: "Inactive",
+                            color: BuildTrackColors.warning
+                        )
                     }
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.1)
 
-                    // Worker list
+                    // Worker List
                     if filteredWorkers.isEmpty {
-                        EmptyStateView(
+                        ProEmptyState(
                             icon: "person.3",
                             title: "No Team Members",
-                            message: "Add workers to build your project teams."
+                            message: "Add workers to build your project teams.",
+                            action: { showAddWorker = true }
                         )
-                        .padding(.top, 40)
+                        .padding(.top, DesignTokens.Spacing.xl)
+                        .fadeIn(delay: 0.15)
                     } else {
-                        LazyVStack(spacing: 10) {
+                        LazyVStack(spacing: DesignTokens.Spacing.md) {
                             ForEach(filteredWorkers) { worker in
-                                NavigationLink {
-                                    WorkerDetailView(worker: worker)
-                                } label: {
-                                    WorkerRowCard(worker: worker)
-                                }
-                                .buttonStyle(.plain)
+                                WorkerCardPro(worker: worker)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        DesignTokens.Haptic.medium()
+                                        selectedWorker = worker
+                                    }
                             }
                         }
+                        .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                        .fadeIn(delay: 0.15)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.vertical, DesignTokens.Spacing.md)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Team")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showAddWorker = true } label: {
+                    Button {
+                        DesignTokens.Haptic.medium()
+                        showAddWorker = true
+                    } label: {
                         Image(systemName: "plus")
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(BuildTrackColors.primary)
+                            .frame(width: 36, height: 36)
+                            .background(BuildTrackColors.primary.opacity(0.12))
+                            .clipShape(Circle())
                     }
                 }
             }
             .sheet(isPresented: $showAddWorker) {
-                WorkerFormView()
+                NavigationStack {
+                    WorkerFormViewPro()
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Cancel") { showAddWorker = false }
+                            }
+                        }
+                }
+            }
+            .sheet(item: $selectedWorker) { worker in
+                NavigationStack {
+                    WorkerDetailView(worker: worker)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button("Done") { selectedWorker = nil }
+                            }
+                        }
+                }
             }
         }
     }
 }
 
-// MARK: - Worker Form View
+// MARK: - Professional Worker Card
 
-struct WorkerFormView: View {
+struct WorkerCardPro: View {
+    let worker: Worker
+    @Environment(\.modelContext) private var modelContext
+    @State private var showDeleteConfirmation = false
+
+    var body: some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            // Avatar
+            ZStack {
+                Circle()
+                    .fill(worker.isActive ? BuildTrackColors.primary.opacity(0.15) : BuildTrackColors.textTertiary.opacity(0.15))
+                    .frame(width: 52, height: 52)
+
+                Text(worker.initials)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(worker.isActive ? BuildTrackColors.primary : BuildTrackColors.textTertiary)
+            }
+
+            // Info
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                Text(worker.name)
+                    .font(DesignTokens.Typography.callout.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+
+                Text(worker.role.label)
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(BuildTrackColors.textSecondary)
+
+                HStack(spacing: DesignTokens.Spacing.xs) {
+                    Image(systemName: worker.isActive ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .font(.system(size: 10))
+                        .foregroundStyle(worker.isActive ? BuildTrackColors.success : BuildTrackColors.textTertiary)
+
+                    Text(worker.isActive ? "Active" : "Inactive")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(worker.isActive ? BuildTrackColors.success : BuildTrackColors.textTertiary)
+                }
+            }
+
+            Spacer()
+
+            // Cert count
+            if !worker.certifications.isEmpty {
+                HStack(spacing: 2) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 10))
+                        .foregroundStyle(BuildTrackColors.info)
+                    Text("\(worker.certifications.count)")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(BuildTrackColors.info)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(BuildTrackColors.info.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+            }
+
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textTertiary)
+        }
+        .padding(DesignTokens.Spacing.md)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                .stroke(BuildTrackColors.border, lineWidth: 0.5)
+        )
+        .contextMenu {
+            Button(role: .destructive) {
+                showDeleteConfirmation = true
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .alert("Delete \(worker.name)?", isPresented: $showDeleteConfirmation) {
+            Button("Delete", role: .destructive) {
+                modelContext.delete(worker)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently remove this worker from your team.")
+        }
+    }
+}
+
+// MARK: - Professional Worker Form
+
+struct WorkerFormViewPro: View {
     var worker: Worker?
 
     @Environment(\.dismiss) private var dismiss
@@ -123,256 +266,213 @@ struct WorkerFormView: View {
     var isValid: Bool { !name.trimmingCharacters(in: .whitespaces).isEmpty }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Details") {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Name").font(.caption).foregroundStyle(.secondary)
-                        TextField("Full name", text: $name)
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Role").font(.caption).foregroundStyle(.secondary)
-                        Picker("Role", selection: $role) {
-                            ForEach(WorkerRole.allCases, id: \.self) { r in
-                                Text(r.label).tag(r)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Phone").font(.caption).foregroundStyle(.secondary)
-                        TextField("Phone number", text: $phone)
-                            .keyboardType(.phonePad)
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Email").font(.caption).foregroundStyle(.secondary)
-                        TextField("Email address", text: $email)
-                            .keyboardType(.emailAddress)
-                            .textInputAutocapitalization(.never)
-                    }
-                    Toggle("Active", isOn: $isActive)
-                }
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                // Header
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    ZStack {
+                        Circle()
+                            .fill(BuildTrackColors.primary.opacity(0.15))
+                            .frame(width: 80, height: 80)
 
-                Section("Certifications") {
-                    ForEach(certifications, id: \.self) { cert in
-                        HStack {
-                            Image(systemName: "checkmark.seal.fill")
-                                .foregroundStyle(BuildTrackColors.primary)
-                            Text(cert)
-                                .font(.subheadline)
-                            Spacer()
-                            Button {
-                                certifications.removeAll { $0 == cert }
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundStyle(.red)
+                        Text(isEditing ? String(name.prefix(2)).uppercased() : "+")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundStyle(BuildTrackColors.primary)
+                    }
+
+                    Text(isEditing ? "Edit Worker" : "New Worker")
+                        .font(DesignTokens.Typography.title2)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                }
+                .padding(DesignTokens.Spacing.lg)
+                .professionalCard()
+
+                // Form Fields
+                VStack(spacing: 0) {
+                    ProTextField(title: "Full Name", text: $name, icon: "person.fill", placeholder: "Enter worker's name")
+
+                    Divider().padding(.leading, 44)
+
+                    HStack {
+                        Image(systemName: "briefcase.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(BuildTrackColors.primary)
+                            .frame(width: 32, height: 32)
+                            .background(BuildTrackColors.primary.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Role")
+                                .font(DesignTokens.Typography.caption)
+                                .foregroundStyle(BuildTrackColors.textSecondary)
+
+                            Picker("Role", selection: $role) {
+                                ForEach(WorkerRole.allCases, id: \.self) { r in
+                                    Text(r.label).tag(r)
+                                }
                             }
-                            .buttonStyle(.plain)
+                            .pickerStyle(.menu)
+                        }
+
+                        Spacer()
+                    }
+                    .frame(minHeight: DesignTokens.Spacing.listRowHeight)
+                    .padding(.horizontal, DesignTokens.Spacing.md)
+
+                    Divider().padding(.leading, 44)
+
+                    ProTextField(title: "Phone", text: $phone, icon: "phone.fill", placeholder: "Phone number", keyboardType: .phonePad)
+
+                    Divider().padding(.leading, 44)
+
+                    ProTextField(title: "Email", text: $email, icon: "envelope.fill", placeholder: "Email address", keyboardType: .emailAddress)
+
+                    Divider().padding(.leading, 44)
+
+                    ToggleRow(icon: "checkmark.circle.fill", title: "Active Status", isOn: $isActive)
+                }
+                .professionalCard(padding: DesignTokens.Spacing.sm)
+
+                // Certifications
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+                    HStack {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(BuildTrackColors.info)
+                            .frame(width: 32, height: 32)
+                            .background(BuildTrackColors.info.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                        Text("Certifications")
+                            .font(DesignTokens.Typography.callout.weight(.semibold))
+                            .foregroundStyle(BuildTrackColors.textPrimary)
+
+                        Spacer()
+
+                        Text("\(certifications.count)")
+                            .font(DesignTokens.Typography.caption.weight(.semibold))
+                            .foregroundStyle(BuildTrackColors.textTertiary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(BuildTrackColors.textTertiary.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                    .padding(.horizontal, DesignTokens.Spacing.md)
+
+                    if !certifications.isEmpty {
+                        ForEach(certifications, id: \.self) { cert in
+                            HStack {
+                                Image(systemName: "checkmark.seal.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(BuildTrackColors.success)
+
+                                Text(cert)
+                                    .font(DesignTokens.Typography.callout)
+                                    .foregroundStyle(BuildTrackColors.textPrimary)
+
+                                Spacer()
+
+                                Button {
+                                    DesignTokens.Haptic.medium()
+                                    certifications.removeAll { $0 == cert }
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .font(.system(size: 18))
+                                        .foregroundStyle(BuildTrackColors.danger)
+                                }
+                            }
+                            .padding(.vertical, DesignTokens.Spacing.sm)
+                            .padding(.horizontal, DesignTokens.Spacing.md)
                         }
                     }
-                    HStack {
-                        TextField("Add certification", text: $newCertification)
+
+                    // Add certification
+                    HStack(spacing: DesignTokens.Spacing.sm) {
+                        ProTextField(title: "", text: $newCertification, icon: "", placeholder: "Add certification...")
+                            .padding(.horizontal, DesignTokens.Spacing.md)
+
                         Button {
-                            let trimmed = newCertification.trimmingCharacters(in: .whitespaces)
-                            if !trimmed.isEmpty, !certifications.contains(trimmed) {
-                                certifications.append(trimmed)
+                            DesignTokens.Haptic.medium()
+                            if !newCertification.isEmpty {
+                                certifications.append(newCertification)
                                 newCertification = ""
                             }
                         } label: {
                             Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 28))
                                 .foregroundStyle(BuildTrackColors.primary)
                         }
-                        .buttonStyle(.plain)
                     }
+                    .padding(.vertical, DesignTokens.Spacing.sm)
                 }
-            }
-            .navigationTitle(isEditing ? "Edit Worker" : "New Worker")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        save()
-                        dismiss()
+                .professionalCard(padding: DesignTokens.Spacing.md)
+
+                // Save Button
+                Button {
+                    DesignTokens.Haptic.success()
+                    save()
+                } label: {
+                    HStack {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text(isEditing ? "Update Worker" : "Add Worker")
+                            .font(DesignTokens.Typography.callout.weight(.semibold))
                     }
-                    .disabled(!isValid)
-                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: DesignTokens.Spacing.buttonHeight)
+                    .background(
+                        isValid
+                        ? BuildTrackColors.primary
+                        : BuildTrackColors.textTertiary
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
                 }
+                .disabled(!isValid)
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
             }
+            .padding(.vertical, DesignTokens.Spacing.md)
         }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(isEditing ? "Edit Worker" : "New Worker")
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private func save() {
-        let trimmedName = name.trimmingCharacters(in: .whitespaces)
-        if let worker {
-            worker.name = trimmedName
-            worker.role = role
+        if let worker = worker {
+            worker.name = name
+            worker.roleRaw = role.rawValue
             worker.phone = phone
             worker.email = email
             worker.isActive = isActive
             worker.certifications = certifications
         } else {
             let newWorker = Worker(
-                name: trimmedName,
-                role: role,
+                name: name,
+                roleRaw: role.rawValue,
                 phone: phone,
                 email: email,
+                isActive: isActive,
                 certifications: certifications
             )
-            newWorker.isActive = isActive
             modelContext.insert(newWorker)
         }
-        try? modelContext.save()
+        dismiss()
     }
 }
 
-// MARK: - Worker Detail View
+// MARK: - Worker Initials Extension
 
-struct WorkerDetailView: View {
-    let worker: Worker
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
-    @State private var showEdit = false
-    @State private var showDeleteConfirmation = false
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // Header
-                CardView {
-                    HStack(spacing: 16) {
-                        Circle()
-                            .fill(BuildTrackColors.primary.opacity(0.12))
-                            .frame(width: 64, height: 64)
-                            .overlay(
-                                Text(initials)
-                                    .font(.title3.weight(.bold))
-                                    .foregroundStyle(BuildTrackColors.primary)
-                            )
-
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(worker.name)
-                                .font(.title2.bold())
-                                .foregroundStyle(BuildTrackColors.textPrimary)
-
-                            HStack(spacing: 6) {
-                                Text(worker.role.label)
-                                    .font(.caption2.weight(.medium))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 4)
-                                    .background(roleColor)
-                                    .clipShape(Capsule())
-
-                                Text(worker.isActive ? "Active" : "Inactive")
-                                    .font(.caption2.weight(.medium))
-                                    .foregroundStyle(worker.isActive ? .green : .gray)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 4)
-                                    .background(worker.isActive ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
-                                    .clipShape(Capsule())
-                            }
-                        }
-
-                        Spacer()
-                    }
-                }
-
-                // Contact
-                CardView {
-                    SectionHeader(title: "Contact")
-                    VStack(spacing: 12) {
-                        if !worker.phone.isEmpty {
-                            DetailRow(icon: "phone", label: "Phone", value: worker.phone)
-                        }
-                        if !worker.email.isEmpty {
-                            Divider()
-                            DetailRow(icon: "envelope", label: "Email", value: worker.email)
-                        }
-                    }
-                }
-
-                // Certifications
-                if !worker.certifications.isEmpty {
-                    CardView {
-                        SectionHeader(title: "Certifications")
-                        VStack(alignment: .leading, spacing: 8) {
-                            ForEach(worker.certifications, id: \.self) { cert in
-                                HStack(spacing: 8) {
-                                    Image(systemName: "checkmark.seal.fill")
-                                        .font(.caption)
-                                        .foregroundStyle(BuildTrackColors.primary)
-                                    Text(cert)
-                                        .font(.subheadline)
-                                        .foregroundStyle(BuildTrackColors.textPrimary)
-                                    Spacer()
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Actions
-                VStack(spacing: 12) {
-                    Button { showEdit = true } label: {
-                        Label("Edit Worker", systemImage: "pencil")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-
-                    Button(role: .destructive) { showDeleteConfirmation = true } label: {
-                        Label("Delete", systemImage: "trash")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                }
-            }
-            .padding()
+extension Worker {
+    var initials: String {
+        let parts = name.split(separator: " ")
+        if parts.count >= 2 {
+            return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased()
         }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle("Team Member")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showEdit) {
-            WorkerFormView(worker: worker)
-        }
-        .confirmationDialog("Delete Team Member?", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role: .destructive) {
-                modelContext.delete(worker)
-                dismiss()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This will permanently delete \(worker.name).")
-        }
-    }
-
-    private var initials: String {
-        let parts = worker.name.split(separator: " ")
-        let first = parts.first?.prefix(1).uppercased() ?? "?"
-        let last = parts.count > 1 ? parts.last?.prefix(1).uppercased() ?? "" : ""
-        return first + last
-    }
-
-    private var roleColor: Color {
-        switch worker.role {
-        case .foreman: return .blue
-        case .supervisor: return .indigo
-        case .electrician: return .yellow
-        case .plumber: return .cyan
-        case .carpenter: return .orange
-        case .engineer: return .purple
-        case .operator: return .green
-        case .labourer: return .gray
-        case .safetyOfficer: return .green
-        }
+        return String(name.prefix(2)).uppercased()
     }
 }
 
-#Preview {
+#Preview("Professional Team") {
     TeamView()
-        .modelContainer(for: [Worker.self, Project.self])
 }
