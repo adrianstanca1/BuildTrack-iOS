@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Reports & Analytics View
+// MARK: - Professional Reports & Analytics View
 
 struct ReportsView: View {
     @Query(sort: \Project.updatedAt, order: .reverse) private var projects: [Project]
@@ -36,40 +36,48 @@ struct ReportsView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                // Period selector
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                // Period Selector
                 periodSelector
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0)
                 
-                // Generate Report button
+                // Generate Report
                 generateReportSection
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.05)
                 
-                // Summary cards
+                // Summary Cards
                 summaryCards
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.1)
                 
-                // Budget health
+                // Budget Health
                 budgetHealthSection
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.15)
                 
-                // Project status breakdown
+                // Status Breakdown
                 statusBreakdownSection
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.2)
                 
-                // Tasks analytics
+                // Tasks Analytics
                 tasksAnalyticsSection
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.25)
                 
-                // Safety summary
+                // Safety Summary
                 safetySummarySection
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.3)
                 
-                // Top projects by budget
+                // Top Projects
                 topProjectsSection
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                    .fadeIn(delay: 0.35)
             }
-            .padding(.vertical)
+            .padding(.vertical, DesignTokens.Spacing.md)
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Reports & Analytics")
@@ -79,19 +87,19 @@ struct ReportsView: View {
     
     private var periodSelector: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
+            HStack(spacing: DesignTokens.Spacing.sm) {
                 ForEach(ReportPeriod.allCases, id: \.self) { period in
                     Button {
+                        DesignTokens.Haptic.light()
                         withAnimation(.spring(response: 0.3)) {
                             selectedPeriod = period
                         }
                     } label: {
                         Text(period.label)
-                            .font(.subheadline)
-                            .fontWeight(selectedPeriod == period ? .semibold : .regular)
+                            .font(DesignTokens.Typography.callout.weight(selectedPeriod == period ? .semibold : .medium))
                             .foregroundStyle(selectedPeriod == period ? .white : BuildTrackColors.primary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, DesignTokens.Spacing.md)
+                            .padding(.vertical, DesignTokens.Spacing.sm)
                             .background(
                                 Capsule()
                                     .fill(selectedPeriod == period ? BuildTrackColors.primary : BuildTrackColors.primary.opacity(0.1))
@@ -109,31 +117,39 @@ struct ReportsView: View {
         NavigationLink {
             DocumentGeneratorView()
         } label: {
-            HStack(spacing: 12) {
-                Image(systemName: "doc.badge.plus")
-                    .font(.system(size: 24))
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .background(BuildTrackColors.primary)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            HStack(spacing: DesignTokens.Spacing.md) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(BuildTrackColors.primary)
+                        .frame(width: 48, height: 48)
+                    
+                    Image(systemName: "doc.badge.plus")
+                        .font(.system(size: 22))
+                        .foregroundStyle(.white)
+                }
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Generate Report")
-                        .font(.headline)
-                        .foregroundStyle(Color(.label))
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(BuildTrackColors.textPrimary)
                     Text("Create PDF reports from templates")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(DesignTokens.Typography.caption)
+                        .foregroundStyle(BuildTrackColors.textSecondary)
                 }
                 
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-                    .foregroundStyle(.tertiary)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textTertiary)
             }
-            .padding(12)
+            .padding(DesignTokens.Spacing.md)
             .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                    .stroke(BuildTrackColors.border, lineWidth: 0.5)
+            )
         }
         .buttonStyle(.plain)
     }
@@ -141,30 +157,53 @@ struct ReportsView: View {
     // MARK: - Summary Cards
     
     private var summaryCards: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            StatCard(icon: "building.2.fill", label: "Active Projects", value: activeProjectsCount, color: BuildTrackColors.success)
-            StatCard(icon: "list.clipboard", label: "Open Tasks", value: openTasksCount, color: BuildTrackColors.info)
-            StatCard(icon: "checkmark.circle.fill", label: "Completed Tasks", value: completedTasksCount, color: BuildTrackColors.primary)
-            StatCard(icon: "exclamationmark.triangle.fill", label: "Incidents", value: incidentsCount, color: BuildTrackColors.danger)
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignTokens.Spacing.md) {
+            StatMiniCard(
+                icon: "building.2.fill",
+                value: "\(activeProjectsCount)",
+                label: "Active Projects",
+                color: BuildTrackColors.success
+            )
+            StatMiniCard(
+                icon: "list.clipboard",
+                value: "\(openTasksCount)",
+                label: "Open Tasks",
+                color: BuildTrackColors.info
+            )
+            StatMiniCard(
+                icon: "checkmark.circle.fill",
+                value: "\(completedTasksCount)",
+                label: "Completed",
+                color: BuildTrackColors.primary
+            )
+            StatMiniCard(
+                icon: "exclamationmark.triangle.fill",
+                value: "\(incidentsCount)",
+                label: "Incidents",
+                color: BuildTrackColors.danger
+            )
         }
     }
     
     // MARK: - Budget Health
     
     private var budgetHealthSection: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Budget Health")
-                
-                // Total budget vs spent
-                HStack(spacing: 20) {
-                    BudgetMetricCard(
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+            Text("Budget Health")
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+                .textCase(.uppercase)
+                .padding(.horizontal, DesignTokens.Spacing.md)
+            
+            VStack(spacing: DesignTokens.Spacing.md) {
+                HStack(spacing: DesignTokens.Spacing.md) {
+                    BudgetMetricCardPro(
                         label: "Total Budget",
                         value: formatCurrency(totalBudget),
-                        color: .blue,
+                        color: BuildTrackColors.info,
                         icon: "creditcard.fill"
                     )
-                    BudgetMetricCard(
+                    BudgetMetricCardPro(
                         label: "Spent to Date",
                         value: formatCurrency(totalSpent),
                         color: BuildTrackColors.primary,
@@ -172,426 +211,350 @@ struct ReportsView: View {
                     )
                 }
                 
-                Divider()
-                
-                // Burn rate
-                VStack(alignment: .leading, spacing: 6) {
+                // Progress bar
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
                     HStack {
                         Text("Budget Utilisation")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(DesignTokens.Typography.callout)
+                            .foregroundStyle(BuildTrackColors.textSecondary)
                         Spacer()
                         Text("\(Int(budgetUtilisation * 100))%")
-                            .font(.subheadline.bold())
+                            .font(DesignTokens.Typography.callout.weight(.semibold))
                             .foregroundStyle(budgetUtilisationColor)
                     }
                     
                     GeometryReader { geometry in
                         ZStack(alignment: .leading) {
                             Capsule()
-                                .fill(Color(.systemGray5))
+                                .fill(BuildTrackColors.textTertiary.opacity(0.2))
                                 .frame(height: 8)
                             
                             Capsule()
                                 .fill(budgetUtilisationColor)
                                 .frame(width: max(geometry.size.width * CGFloat(budgetUtilisation), 4), height: 8)
-                                .animation(.easeInOut(duration: 0.8), value: budgetUtilisation)
                         }
                     }
                     .frame(height: 8)
-                    
-                    Text(remainingBudgetText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                
-                // Over-budget projects
-                if !overBudgetProjects.isEmpty {
-                    Divider()
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Over Budget Alert")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.red)
-                        
-                        ForEach(overBudgetProjects.prefix(3)) { project in
-                            HStack {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.red)
-                                    .font(.caption)
-                                Text(project.name)
-                                    .font(.caption)
-                                Spacer()
-                                Text(formatCurrency(project.spentToDate - project.budget))
-                                    .font(.caption.bold())
-                                    .foregroundStyle(.red)
-                            }
-                        }
-                    }
                 }
             }
+            .padding(DesignTokens.Spacing.md)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                    .stroke(BuildTrackColors.border, lineWidth: 0.5)
+            )
         }
     }
     
     // MARK: - Status Breakdown
     
     private var statusBreakdownSection: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Project Status Breakdown")
-                
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                    StatusCountCard(status: .planning, count: planningCount, total: projects.count)
-                    StatusCountCard(status: .active, count: activeCount, total: projects.count)
-                    StatusCountCard(status: .onHold, count: onHoldCount, total: projects.count)
-                    StatusCountCard(status: .completed, count: completedCount, total: projects.count)
-                    StatusCountCard(status: .cancelled, count: cancelledCount, total: projects.count)
-                }
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+            Text("Project Status")
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+                .textCase(.uppercase)
+                .padding(.horizontal, DesignTokens.Spacing.md)
+            
+            HStack(spacing: DesignTokens.Spacing.md) {
+                StatusBreakdownCard(label: "Planning", count: planningCount, color: BuildTrackColors.info)
+                StatusBreakdownCard(label: "Active", count: activeCount, color: BuildTrackColors.primary)
+                StatusBreakdownCard(label: "On Hold", count: onHoldCount, color: BuildTrackColors.warning)
+                StatusBreakdownCard(label: "Completed", count: completedCount, color: BuildTrackColors.success)
             }
+            .padding(DesignTokens.Spacing.md)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                    .stroke(BuildTrackColors.border, lineWidth: 0.5)
+            )
         }
     }
     
     // MARK: - Tasks Analytics
     
     private var tasksAnalyticsSection: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Tasks Overview")
-                
-                // Priority breakdown
-                HStack(spacing: 12) {
-                    TaskPriorityBar(label: "Critical", count: criticalTaskCount, total: tasks.count, color: .red)
-                    TaskPriorityBar(label: "High", count: highTaskCount, total: tasks.count, color: .orange)
-                    TaskPriorityBar(label: "Medium", count: mediumTaskCount, total: tasks.count, color: .blue)
-                    TaskPriorityBar(label: "Low", count: lowTaskCount, total: tasks.count, color: .gray)
-                }
-                
-                Divider()
-                
-                // Completion rate
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Completion Rate")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text("\(completionRate)%")
-                            .font(.title3.bold())
-                            .foregroundStyle(completionRateColor)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 4) {
-                        Text("Overdue")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text("\(overdueTaskCount)")
-                            .font(.title3.bold())
-                            .foregroundStyle(overdueTaskCount > 0 ? .red : .green)
-                    }
-                }
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+            Text("Tasks Overview")
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+                .textCase(.uppercase)
+                .padding(.horizontal, DesignTokens.Spacing.md)
+            
+            HStack(spacing: DesignTokens.Spacing.md) {
+                TaskAnalyticsCard(
+                    icon: "checklist",
+                    value: "\(tasks.count)",
+                    label: "Total Tasks",
+                    color: BuildTrackColors.primary
+                )
+                TaskAnalyticsCard(
+                    icon: "clock.fill",
+                    value: "\(overdueTasksCount)",
+                    label: "Overdue",
+                    color: BuildTrackColors.danger
+                )
+                TaskAnalyticsCard(
+                    icon: "calendar.badge.checkmark",
+                    value: "\(dueThisWeekCount)",
+                    label: "Due This Week",
+                    color: BuildTrackColors.success
+                )
             }
+            .padding(DesignTokens.Spacing.md)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                    .stroke(BuildTrackColors.border, lineWidth: 0.5)
+            )
         }
     }
     
     // MARK: - Safety Summary
     
     private var safetySummarySection: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Safety Summary")
-                
-                HStack(spacing: 12) {
-                    SafetyMetricCard(
-                        label: "Open Incidents",
-                        value: openIncidentsCount,
-                        color: .red,
-                        icon: "exclamationmark.shield.fill"
-                    )
-                    SafetyMetricCard(
-                        label: "Resolved",
-                        value: resolvedIncidentsCount,
-                        color: .green,
-                        icon: "checkmark.shield.fill"
-                    )
-                }
-                
-                if !recentIncidents.isEmpty {
-                    Divider()
-                    Text("Recent Incidents")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    
-                    ForEach(recentIncidents.prefix(3)) { incident in
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(severityColor(incident.severity))
-                                .font(.caption)
-                            Text(incident.title)
-                                .font(.caption)
-                                .lineLimit(1)
-                            Spacer()
-                            SeverityBadge(severity: incident.severity)
-                        }
-                    }
-                }
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+            Text("Safety Summary")
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+                .textCase(.uppercase)
+                .padding(.horizontal, DesignTokens.Spacing.md)
+            
+            HStack(spacing: DesignTokens.Spacing.md) {
+                SafetySummaryCard(
+                    icon: "exclamationmark.triangle.fill",
+                    value: "\(highSeverityCount)",
+                    label: "High Severity",
+                    color: BuildTrackColors.danger
+                )
+                SafetySummaryCard(
+                    icon: "checkmark.shield.fill",
+                    value: "\(resolvedIncidentsCount)",
+                    label: "Resolved",
+                    color: BuildTrackColors.success
+                )
             }
+            .padding(DesignTokens.Spacing.md)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                    .stroke(BuildTrackColors.border, lineWidth: 0.5)
+            )
         }
     }
     
     // MARK: - Top Projects
     
     private var topProjectsSection: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Top Projects by Budget")
-                
-                ForEach(filteredProjects.sorted { $0.budget > $1.budget }.prefix(5)) { project in
-                    HStack {
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+            Text("Top Projects by Budget")
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+                .textCase(.uppercase)
+                .padding(.horizontal, DesignTokens.Spacing.md)
+            
+            LazyVStack(spacing: DesignTokens.Spacing.sm) {
+                ForEach(topProjects.prefix(5)) { project in
+                    HStack(spacing: DesignTokens.Spacing.md) {
+                        ZStack {
+                            Circle()
+                                .fill(BuildTrackColors.primary.opacity(0.15))
+                                .frame(width: 36, height: 36)
+                            
+                            Image(systemName: "building.2")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(BuildTrackColors.primary)
+                        }
+                        
                         VStack(alignment: .leading, spacing: 2) {
                             Text(project.name)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                            Text(project.clientName)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(DesignTokens.Typography.callout.weight(.semibold))
+                                .foregroundStyle(BuildTrackColors.textPrimary)
                                 .lineLimit(1)
+                            
+                            if let budget = project.budget {
+                                Text(formatCurrency(budget))
+                                    .font(DesignTokens.Typography.caption)
+                                    .foregroundStyle(BuildTrackColors.textSecondary)
+                            }
                         }
+                        
                         Spacer()
-                        VStack(alignment: .trailing, spacing: 2) {
-                            Text(formatCurrency(project.budget))
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                            Text("\(Int(project.progress))% complete")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        
+                        if let progress = project.progress {
+                            Text("\(Int(progress))%")
+                                .font(DesignTokens.Typography.caption.weight(.semibold))
+                                .foregroundStyle(BuildTrackColors.primary)
                         }
                     }
-                    if project.id != filteredProjects.sorted(by: { $0.budget > $1.budget }).prefix(5).last?.id {
-                        Divider()
-                    }
+                    .padding(.vertical, DesignTokens.Spacing.sm)
+                    .padding(.horizontal, DesignTokens.Spacing.md)
                 }
             }
+            .padding(.vertical, DesignTokens.Spacing.sm)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                    .stroke(BuildTrackColors.border, lineWidth: 0.5)
+            )
         }
     }
     
     // MARK: - Computed Properties
     
-    var activeProjectsCount: Int { filteredProjects.filter { $0.status == .active }.count }
-    var openTasksCount: Int { tasks.filter { $0.status != .completed }.count }
-    var completedTasksCount: Int { tasks.filter { $0.status == .completed }.count }
-    var incidentsCount: Int { incidents.count }
+    private var activeProjectsCount: Int { filteredProjects.filter { $0.status == .active }.count }
+    private var openTasksCount: Int { tasks.filter { $0.status != .completed }.count }
+    private var completedTasksCount: Int { tasks.filter { $0.status == .completed }.count }
+    private var incidentsCount: Int { incidents.count }
+    private var totalBudget: Double { filteredProjects.compactMap { $0.budget }.reduce(0, +) }
+    private var totalSpent: Double { filteredProjects.compactMap { $0.spent }.reduce(0, +) }
+    private var budgetUtilisation: Double { totalBudget > 0 ? totalSpent / totalBudget : 0 }
+    private var budgetUtilisationColor: Color { budgetUtilisation > 0.9 ? .red : budgetUtilisation > 0.7 ? .orange : .green }
+    private var planningCount: Int { filteredProjects.filter { $0.status == .planning }.count }
+    private var activeCount: Int { filteredProjects.filter { $0.status == .active }.count }
+    private var onHoldCount: Int { filteredProjects.filter { $0.status == .onHold }.count }
+    private var completedCount: Int { filteredProjects.filter { $0.status == .completed }.count }
+    private var overdueTasksCount: Int { tasks.filter { $0.isOverdue }.count }
+    private var dueThisWeekCount: Int { tasks.filter { $0.isDueThisWeek }.count }
+    private var highSeverityCount: Int { incidents.filter { $0.severity == .high }.count }
+    private var resolvedIncidentsCount: Int { incidents.filter { $0.incidentStatus == .resolved }.count }
+    private var topProjects: [Project] { filteredProjects.sorted { ($0.budget ?? 0) > ($1.budget ?? 0) } }
     
-    var totalBudget: Double { filteredProjects.reduce(0) { $0 + $1.budget } }
-    var totalSpent: Double { filteredProjects.reduce(0) { $0 + $1.spentToDate } }
-    var budgetUtilisation: Double { totalBudget > 0 ? totalSpent / totalBudget : 0 }
-    var budgetUtilisationColor: Color {
-        switch budgetUtilisation {
-        case 0..<0.6: .green
-        case 0.6..<0.85: .orange
-        default: .red
-        }
-    }
-    var remainingBudgetText: String {
-        let remaining = totalBudget - totalSpent
-        return remaining >= 0
-            ? "\(formatCurrency(remaining)) remaining"
-            : "\(formatCurrency(abs(remaining))) over budget"
-    }
-    var overBudgetProjects: [Project] {
-        filteredProjects.filter { $0.spentToDate > $0.budget && $0.budget > 0 }
-    }
-    
-    var planningCount: Int { filteredProjects.filter { $0.status == .planning }.count }
-    var activeCount: Int { filteredProjects.filter { $0.status == .active }.count }
-    var onHoldCount: Int { filteredProjects.filter { $0.status == .onHold }.count }
-    var completedCount: Int { filteredProjects.filter { $0.status == .completed }.count }
-    var cancelledCount: Int { filteredProjects.filter { $0.status == .cancelled }.count }
-    
-    var criticalTaskCount: Int { tasks.filter { $0.priority == .critical }.count }
-    var highTaskCount: Int { tasks.filter { $0.priority == .high }.count }
-    var mediumTaskCount: Int { tasks.filter { $0.priority == .medium }.count }
-    var lowTaskCount: Int { tasks.filter { $0.priority == .low }.count }
-    var completionRate: Int {
-        guard !tasks.isEmpty else { return 0 }
-        return Int(round(Double(completedTasksCount) / Double(tasks.count) * 100))
-    }
-    var completionRateColor: Color {
-        switch completionRate {
-        case 0..<40: .red
-        case 40..<70: .orange
-        default: .green
-        }
-    }
-    var overdueTaskCount: Int {
-        let now = Date()
-        return tasks.filter { task in
-            guard let due = task.dueDate else { return false }
-            return due < now && task.status != .completed
-        }.count
-    }
-    
-    var openIncidentsCount: Int { incidents.filter { $0.incidentStatus == .open || $0.incidentStatus == .investigating }.count }
-    var resolvedIncidentsCount: Int { incidents.filter { $0.incidentStatus == .resolved || $0.incidentStatus == .closed }.count }
-    var recentIncidents: [Incident] { Array(incidents.prefix(10)) }
-    
-    // MARK: - Helpers
-    
-    func formatCurrency(_ value: Double) -> String {
+    private func formatCurrency(_ value: Double) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "GBP"
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: value)) ?? "£0"
-    }
-    
-    func severityColor(_ severity: IncidentSeverity) -> Color {
-        switch severity {
-        case .low: .yellow
-        case .medium: .orange
-        case .high: .red
-        case .critical: .purple
-        }
+        return formatter.string(from: NSNumber(value: value)) ?? "£0.00"
     }
 }
 
-// MARK: - Supporting Types
+// MARK: - Supporting Views
 
-enum ReportPeriod: String, CaseIterable, Identifiable {
-    case allTime, thisWeek, thisMonth, thisQuarter, thisYear
-    
-    var id: String { rawValue }
-    var label: String {
-        switch self {
-        case .allTime: "All Time"
-        case .thisWeek: "This Week"
-        case .thisMonth: "This Month"
-        case .thisQuarter: "This Quarter"
-        case .thisYear: "This Year"
-        }
-    }
-}
-
-struct BudgetMetricCard: View {
+struct BudgetMetricCardPro: View {
     let label: String
     let value: String
     let color: Color
     let icon: String
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: DesignTokens.Spacing.sm) {
             Image(systemName: icon)
-                .font(.title2)
+                .font(.system(size: 24))
                 .foregroundStyle(color)
+            
             Text(value)
-                .font(.headline.bold())
-                .foregroundStyle(Color(.label))
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textPrimary)
+            
             Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+                .font(DesignTokens.Typography.caption)
+                .foregroundStyle(BuildTrackColors.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
+        .padding(DesignTokens.Spacing.md)
         .background(color.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
     }
 }
 
-struct StatusCountCard: View {
-    let status: ProjectStatus
-    let count: Int
-    let total: Int
-    
-    var percentage: Double { total > 0 ? Double(count) / Double(total) : 0 }
-    
-    var body: some View {
-        VStack(spacing: 6) {
-            Image(systemName: status.icon)
-                .font(.title3)
-                .foregroundStyle(BuildTrackColors.statusColor(status))
-            Text("\(count)")
-                .font(.title3.bold())
-            Text(status.label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            
-            GeometryReader { geometry in
-                Capsule()
-                    .fill(BuildTrackColors.statusColor(status))
-                    .frame(width: max(geometry.size.width * CGFloat(percentage), 4), height: 4)
-            }
-            .frame(height: 4)
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 4)
-    }
-}
-
-struct TaskPriorityBar: View {
+struct StatusBreakdownCard: View {
     let label: String
     let count: Int
-    let total: Int
     let color: Color
     
-    var percentage: Double { total > 0 ? Double(count) / Double(total) : 0 }
-    
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: DesignTokens.Spacing.xs) {
             Text("\(count)")
-                .font(.subheadline.bold())
+                .font(DesignTokens.Typography.callout.weight(.bold))
                 .foregroundStyle(color)
-            GeometryReader { geometry in
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(color.opacity(0.2))
-                    .overlay(
-                        VStack {
-                            Spacer()
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(color)
-                                .frame(height: max(geometry.size.height * CGFloat(percentage), 2))
-                        }
-                    )
-            }
-            .frame(height: 60)
+            
             Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(BuildTrackColors.textSecondary)
         }
         .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignTokens.Spacing.sm)
     }
 }
 
-struct SafetyMetricCard: View {
-    let label: String
-    let value: Int
-    let color: Color
+struct TaskAnalyticsCard: View {
     let icon: String
+    let value: String
+    let label: String
+    let color: Color
     
     var body: some View {
-        HStack(spacing: 12) {
+        VStack(spacing: DesignTokens.Spacing.sm) {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.system(size: 22))
                 .foregroundStyle(color)
-                .frame(width: 44, height: 44)
-                .background(color.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            VStack(alignment: .leading, spacing: 2) {
-                Text("\(value)")
-                    .font(.title3.bold())
-                Text(label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Text(value)
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(BuildTrackColors.textPrimary)
             
-            Spacer()
+            Text(label)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(BuildTrackColors.textSecondary)
         }
         .frame(maxWidth: .infinity)
     }
 }
 
-#Preview {
-    NavigationStack {
-        ReportsView()
-            .modelContainer(for: [Project.self, TaskItem.self, Incident.self])
+struct SafetySummaryCard: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.sm) {
+            Image(systemName: icon)
+                .font(.system(size: 22))
+                .foregroundStyle(color)
+            
+            Text(value)
+                .font(DesignTokens.Typography.callout.weight(.semibold))
+                .foregroundStyle(color)
+            
+            Text(label)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(BuildTrackColors.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
     }
+}
+
+// MARK: - Report Period
+
+enum ReportPeriod: String, CaseIterable {
+    case allTime, thisWeek, thisMonth, thisQuarter, thisYear
+    
+    var label: String {
+        switch self {
+        case .allTime: return "All Time"
+        case .thisWeek: return "This Week"
+        case .thisMonth: return "This Month"
+        case .thisQuarter: return "This Quarter"
+        case .thisYear: return "This Year"
+        }
+    }
+}
+
+// MARK: - Document Generator View (Placeholder)
+
+struct DocumentGeneratorView: View {
+    var body: some View {
+        Text("Document Generator")
+            .navigationTitle("Generate Report")
+    }
+}
+
+#Preview("Professional Reports") {
+    ReportsView()
 }
