@@ -5,7 +5,7 @@ import SwiftData
 
 struct InvoicesListView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var viewModel = InvoiceViewModel()
+    @State private var viewModel = InvoicesListViewModel()
     @State private var showNewInvoice = false
     @State private var searchQuery = ""
     @State private var statusFilter: InvoiceStatus? = nil
@@ -376,13 +376,12 @@ struct InvoiceDetailView: View {
 // MARK: - View Model
 
 @MainActor
-final class InvoiceViewModel: ObservableObject {
+final class InvoicesListViewModel: ObservableObject {
     @Published var invoices: [Invoice] = []
     @Published var totalOutstanding: Double = 0
     @Published var overdueInvoices: [Invoice] = []
     
     init() {
-        // Sample data for preview
         loadSampleData()
     }
     
@@ -397,20 +396,7 @@ final class InvoiceViewModel: ObservableObject {
     }
 }
 
-// MARK: - Models
-
-struct Invoice: Identifiable {
-    let id = UUID()
-    let invoiceNumber: String
-    let vendor: String
-    let amount: Double
-    let status: InvoiceStatus
-    let dueDate: Date
-}
-
-enum InvoiceStatus: String, CaseIterable {
-    case draft, sent, paid, overdue, cancelled
-    
+extension InvoiceStatus {
     var label: String {
         switch self {
         case .draft: return "Draft"
