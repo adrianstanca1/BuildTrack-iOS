@@ -1,17 +1,18 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Tasks List View
+// MARK: - Professional Tasks List View
 
 @MainActor
 struct TasksListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \TaskItem.updatedAt, order: .reverse) private var allTasks: [TaskItem]
-    @State private var viewModel = TaskViewModel()
     @State private var showNewTask = false
     @State private var searchQuery = ""
     @State private var statusFilter: TaskStatus? = nil
     @State private var priorityFilter: TaskPriority? = nil
+    @State private var selectedTask: TaskItem?
+    @State private var animateCards = false
 
     var filteredTasks: [TaskItem] {
         var result = allTasks
@@ -67,94 +68,180 @@ struct TasksListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: DesignTokens.Spacing.lg) {
                     // Search
-                    SearchBar(query: $searchQuery, placeholder: "Search tasks...")
+                    ProSearchBar(text: $searchQuery, placeholder: "Search tasks...")
+                        .fadeIn(delay: 0)
 
-                    // Filter chips
+                    // Stats Row
+                    statsRow
+                        .fadeIn(delay: 0.1)
+
+                    // Filter Chips
                     filterChips
+                        .fadeIn(delay: 0.15)
 
-                    // Stats
-                    HStack(spacing: 12) {
-                        SummaryCard(title: "Total", value: "\(filteredTasks.count)", icon: "checklist", color: BuildTrackColors.primary)
-                        SummaryCard(title: "Done", value: "\(filteredTasks.filter { $0.status == .completed }.count)", icon: "checkmark.circle", color: .green)
-                        SummaryCard(title: "Pending", value: "\(filteredTasks.filter { $0.status != .completed }.count)", icon: "clock", color: .orange)
-                    }
-
-                    // Task groups
+                    // Task Groups
                     if filteredTasks.isEmpty {
-                        EmptyStateView(
+                        ProEmptyState(
                             icon: "checklist",
                             title: "No Tasks",
-                            message: "Create your first task to get started."
-                        )
-                        .padding(.top, 40)
+                            message: "Create your first task to get started with project management.",
+                            actionTitle: "Add Task"
+                        ) {
+                            DesignTokens.Haptic.medium()
+                            showNewTask = true
+                        }
+                        .padding(.top, DesignTokens.Spacing.xl)
                     } else {
-                        LazyVStack(spacing: 16) {
-                            ForEach(groupedTasks, id: \.0) { group in
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text(group.0)
-                                        .font(.headline.weight(.semibold))
-                                        .foregroundStyle(groupColor(group.0))
-                                        .padding(.horizontal, 4)
-
-                                    LazyVStack(spacing: 8) {
-                                        ForEach(group.1) { task in
-                                            NavigationLink {
-                                                TaskDetailView(task: task)
-                                            } label: {
-                                                TaskRowCard(task: task)
-                                            }
-                                            .buttonStyle(.plain)
-                                        }
-                                    }
-                                }
+                        LazyVStack(spacing: DesignTokens.Spacing.lg) {
+                            ForEach(Array(groupedTasks.enumerated()), id: \.element.0) { index, group in
+                                taskGroupSection(title: group.0, tasks: group.1, delay: Double(index) * 0.1)
                             }
                         }
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                .padding(.vertical, DesignTokens.Spacing.md)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Tasks")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showNewTask = true } label: {
-                        Image(systemName: "plus")
+                    Button {
+                        DesignTokens.Haptic.medium()
+                        showNewTask = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 22))
                             .foregroundStyle(BuildTrackColors.primary)
+                            .frame(width: DesignTokens.Spacing.minTapTarget, height: DesignTokens.Spacing.minTapTarget)
+                            .background(BuildTrackColors.primary.opacity(0.1))
+                            .clipShape(Circle())
                     }
+                    .accessibleTapTarget(label: "Add new task", hint: "Double tap to create a new task")
                 }
             }
             .sheet(isPresented: $showNewTask) {
                 TaskFormView()
             }
+            .sheet(item: $selectedTask) { task in
+                NavigationStack {
+                    TaskDetailView(task: task)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button("Done") { selectedTask = nil }
+                            }
+                        }
+                }
+            }
         }
     }
 
+    // MARK: - Stats Row
+    private var statsRow: some View {
+        HStack(spacing: DesignTokens.Spacing.md) {
+            StatMiniCard(
+                icon: "checklist",
+                value: "\(filteredTasks.count)",
+                label: "Total",
+                color: BuildTrackColors.primary
+            )
+            StatMiniCard(
+                icon: "checkmark.circle.fill",
+                value: "\(filteredTasks.filter { $0.status == .completed }.count)",
+                label: "Done",
+                color: BuildTrackColors.success
+            )
+            StatMiniCard(
+                icon: "clock.fill",
+                value: "\(filteredTasks.filter { $0.status != .completed }.count)",
+                label: "Pending",
+                color: BuildTrackColors.warning
+            )
+        }
+    }
+
+    // MARK: - Filter Chips
     private var filterChips: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
             // Status filters
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    FilterChip(label: "All", isSelected: statusFilter == nil) { statusFilter = nil }
-                    ForEach(TaskStatus.allCases, id: \.self) { status in
-                        FilterChip(label: status.label, isSelected: statusFilter == status) { statusFilter = status }
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
-
-            // Priority filters (only show if no status filter)
-            if statusFilter == nil {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        FilterChip(label: "All Priorities", isSelected: priorityFilter == nil) { priorityFilter = nil }
-                        ForEach(TaskPriority.allCases, id: \.self) { priority in
-                            FilterChip(label: priority.label, isSelected: priorityFilter == priority) { priorityFilter = priority }
+                HStack(spacing: DesignTokens.Spacing.sm) {
+                    FilterChipPro(label: "All", isSelected: statusFilter == nil) {
+                        withAnimation(.spring(response: 0.3)) {
+                            DesignTokens.Haptic.selection()
+                            statusFilter = nil
                         }
                     }
-                    .padding(.horizontal, 16)
+                    ForEach(TaskStatus.allCases, id: \.self) { status in
+                        FilterChipPro(label: status.label, isSelected: statusFilter == status) {
+                            withAnimation(.spring(response: 0.3)) {
+                                DesignTokens.Haptic.selection()
+                                statusFilter = status
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+            }
+            .padding(.horizontal, -DesignTokens.Spacing.sectionPadding)
+
+            // Priority filters
+            if statusFilter == nil {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: DesignTokens.Spacing.sm) {
+                        FilterChipPro(label: "All Priorities", isSelected: priorityFilter == nil) {
+                            withAnimation(.spring(response: 0.3)) {
+                                DesignTokens.Haptic.selection()
+                                priorityFilter = nil
+                            }
+                        }
+                        ForEach(TaskPriority.allCases, id: \.self) { priority in
+                            FilterChipPro(label: priority.label, isSelected: priorityFilter == priority) {
+                                withAnimation(.spring(response: 0.3)) {
+                                    DesignTokens.Haptic.selection()
+                                    priorityFilter = priority
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                }
+                .padding(.horizontal, -DesignTokens.Spacing.sectionPadding)
+            }
+        }
+    }
+
+    // MARK: - Task Group Section
+    private func taskGroupSection(title: String, tasks: [TaskItem], delay: Double) -> some View {
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
+            HStack {
+                Text(title)
+                    .font(DesignTokens.Typography.title3)
+                    .foregroundStyle(groupColor(title))
+                
+                Spacer()
+                
+                Text("\(tasks.count)")
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(BuildTrackColors.textTertiary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(BuildTrackColors.textTertiary.opacity(0.12))
+                    .clipShape(Capsule())
+            }
+
+            LazyVStack(spacing: DesignTokens.Spacing.sm) {
+                ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
+                    TaskRowCardPro(task: task)
+                        .contentTransition(.opacity)
+                        .onTapGesture {
+                            DesignTokens.Haptic.light()
+                            selectedTask = task
+                        }
+                        .fadeIn(delay: delay + Double(index) * 0.05)
                 }
             }
         }
@@ -172,158 +259,78 @@ struct TasksListView: View {
     }
 }
 
-// MARK: - Task Detail View
+// MARK: - Task Row Card Pro
 
-struct TaskDetailView: View {
+struct TaskRowCardPro: View {
     let task: TaskItem
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
-    @State private var showEdit = false
-    @State private var showDeleteConfirmation = false
-
+    
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                CardView {
-                    VStack(spacing: 12) {
-                        HStack(alignment: .top) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(task.title)
-                                    .font(.title2.bold())
-                                if !task.assignedTo.isEmpty {
-                                    Label(task.assignedTo, systemImage: "person.fill")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            Spacer()
-                            PriorityBadge(priority: task.priority)
+        HStack(spacing: DesignTokens.Spacing.md) {
+            // Priority indicator
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(priorityColor)
+                .frame(width: 4, height: 44)
+            
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                Text(task.title)
+                    .font(DesignTokens.Typography.callout.weight(.semibold))
+                    .foregroundStyle(BuildTrackColors.textPrimary)
+                    .lineLimit(1)
+                
+                HStack(spacing: DesignTokens.Spacing.sm) {
+                    ProBadge(text: task.status.label, color: statusColor)
+                    
+                    if !task.assignedTo.isEmpty {
+                        HStack(spacing: 2) {
+                            Image(systemName: "person")
+                                .font(.caption2)
+                            Text(task.assignedTo)
+                                .font(.caption2)
                         }
-
-                        HStack(spacing: 8) {
-                            Text(task.status.label)
-                                .font(.caption2.weight(.medium))
-                                .foregroundStyle(statusColor)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(statusColor.opacity(0.12))
-                                .clipShape(Capsule())
-
-                            if let due = task.dueDate {
-                                Label(due.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
-                                    .font(.caption2)
-                                    .foregroundStyle(isOverdue ? .red : BuildTrackColors.textTertiary)
-                            }
-                        }
+                        .foregroundStyle(BuildTrackColors.textTertiary)
                     }
-                }
-
-                if !task.descriptionText.isEmpty {
-                    CardView {
-                        SectionHeader(title: "Description")
-                        Text(task.descriptionText)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                CardView {
-                    SectionHeader(title: "Details")
-                    VStack(spacing: 12) {
-                        DetailRow(icon: "calendar", label: "Created", value: task.createdAt.formatted(date: .abbreviated, time: .shortened))
-                        Divider()
-                        DetailRow(icon: "flag", label: "Status", value: task.status.label)
-                        Divider()
-                        DetailRow(icon: "exclamationmark.circle", label: "Priority", value: task.priority.label)
-                        if !task.assignedTo.isEmpty {
-                            Divider()
-                            DetailRow(icon: "person", label: "Assigned To", value: task.assignedTo)
-                        }
-                        if let due = task.dueDate {
-                            Divider()
-                            DetailRow(icon: "calendar.badge.clock", label: "Due Date", value: due.formatted(date: .abbreviated, time: .shortened))
-                        }
-                    }
-                }
-
-                if task.project != nil {
-                    CardView {
-                        SectionHeader(title: "Project")
-                        HStack {
-                            Image(systemName: "building.2.fill")
-                                .foregroundStyle(BuildTrackColors.primary)
-                            Text(task.project!.name)
-                                .font(.subheadline.weight(.medium))
-                            Spacer()
-                        }
-                    }
-                }
-
-                VStack(spacing: 12) {
-                    if task.status != .completed {
-                        Button {
-                            withAnimation(.spring(response: 0.3)) {
-                                task.status = .completed
-                                task.updatedAt = Date()
-                                try? modelContext.save()
-                            }
-                        } label: {
-                            Label("Mark Complete", systemImage: "checkmark.circle.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .tint(BuildTrackColors.success)
-                    } else {
-                        Button {
-                            withAnimation(.spring(response: 0.3)) {
-                                task.status = .pending
-                                task.updatedAt = Date()
-                                try? modelContext.save()
-                            }
-                        } label: {
-                            Label("Reopen Task", systemImage: "arrow.uturn.backward.circle.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.large)
-                        .tint(.orange)
-                    }
-
-                    Button { showEdit = true } label: {
-                        Label("Edit Task", systemImage: "pencil")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-
-                    Button(role: .destructive) { showDeleteConfirmation = true } label: {
-                        Label("Delete", systemImage: "trash")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
                 }
             }
-            .padding()
-        }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle("Task Details")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showEdit) {
-            TaskFormView(task: task)
-        }
-        .confirmationDialog("Delete Task?", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role: .destructive) {
-                modelContext.delete(task)
-                dismiss()
+            
+            Spacer()
+            
+            // Due date or checkmark
+            if task.status == .completed {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(BuildTrackColors.success)
+                    .font(.system(size: 20))
+            } else if let due = task.dueDate {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(due, style: .date)
+                        .font(.caption2)
+                        .foregroundStyle(isOverdue ? .red : BuildTrackColors.textTertiary)
+                    
+                    if isOverdue {
+                        Text("Overdue")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.red)
+                    }
+                }
             }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This will permanently delete \(task.title).")
+        }
+        .padding(DesignTokens.Spacing.cardPadding)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.lg, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.lg, style: .continuous)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
+        )
+    }
+    
+    private var priorityColor: Color {
+        switch task.priority {
+        case .low: return .green
+        case .medium: return .orange
+        case .high: return .red
+        case .critical: return .purple
         }
     }
-
+    
     private var statusColor: Color {
         switch task.status {
         case .pending: return .blue
@@ -332,14 +339,70 @@ struct TaskDetailView: View {
         case .blocked: return .red
         }
     }
-
+    
     private var isOverdue: Bool {
         guard let due = task.dueDate else { return false }
         return due < Date() && task.status != .completed
     }
 }
 
-#Preview {
+// MARK: - Stat Mini Card
+
+struct StatMiniCard: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.xs) {
+            Image(systemName: icon)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 40, height: 40)
+                .background(color.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.sm, style: .continuous))
+            
+            Text(value)
+                .font(DesignTokens.Typography.title3)
+                .foregroundStyle(BuildTrackColors.textPrimary)
+            
+            Text(label)
+                .font(DesignTokens.Typography.caption)
+                .foregroundStyle(BuildTrackColors.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignTokens.Spacing.md)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+    }
+}
+
+// MARK: - Filter Chip Pro
+
+struct FilterChipPro: View {
+    let label: String
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(isSelected ? .white : BuildTrackColors.textSecondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(isSelected ? BuildTrackColors.primary : Color(.tertiarySystemFill))
+                .clipShape(Capsule())
+                .animation(.spring(response: 0.3), value: isSelected)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Preview
+
+#Preview("Professional Tasks List") {
     TasksListView()
         .modelContainer(for: [TaskItem.self, Project.self])
 }
