@@ -32,7 +32,7 @@ struct TeamView: View {
             ScrollView {
                 VStack(spacing: DesignTokens.Spacing.lg) {
                     // Search Bar
-                    ProSearchBar(query: $searchQuery, placeholder: "Search team members...")
+                    ProSearchBar(text: $searchQuery, placeholder: "Search team members...")
                         .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
                         .fadeIn(delay: 0)
 
@@ -470,6 +470,146 @@ extension Worker {
             return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased()
         }
         return String(name.prefix(2)).uppercased()
+    }
+}
+
+// MARK: - Worker Detail View (embedded)
+
+struct WorkerDetailView: View {
+    let worker: Worker
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @State private var showEditSheet = false
+    @State private var showDeleteConfirm = false
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                // Header
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    ZStack {
+                        Circle()
+                            .fill(worker.isActive ? BuildTrackColors.primary.opacity(0.15) : BuildTrackColors.textTertiary.opacity(0.15))
+                            .frame(width: 80, height: 80)
+                        
+                        Text(worker.initials)
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundStyle(worker.isActive ? BuildTrackColors.primary : BuildTrackColors.textTertiary)
+                    }
+                    
+                    Text(worker.name)
+                        .font(DesignTokens.Typography.title2)
+                        .foregroundStyle(BuildTrackColors.textPrimary)
+                    
+                    Text(worker.role.label)
+                        .font(DesignTokens.Typography.callout)
+                        .foregroundStyle(BuildTrackColors.textSecondary)
+                    
+                    ProBadge(text: worker.isActive ? "Active" : "Inactive", color: worker.isActive ? .green : .gray)
+                }
+                .padding(DesignTokens.Spacing.lg)
+                .professionalCard()
+                
+                // Details
+                VStack(alignment: .leading, spacing: 0) {
+                    DetailRowPro(label: "Phone", value: worker.phone, icon: "phone.fill")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Email", value: worker.email, icon: "envelope.fill")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Role", value: worker.role.label, icon: "briefcase.fill")
+                    Divider().padding(.leading, 44)
+                    DetailRowPro(label: "Status", value: worker.isActive ? "Active" : "Inactive", icon: "checkmark.circle.fill")
+                }
+                .professionalCard(padding: 0)
+                
+                // Certifications
+                if !worker.certifications.isEmpty {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                        Text("Certifications")
+                            .font(DesignTokens.Typography.callout.weight(.semibold))
+                            .foregroundStyle(BuildTrackColors.textSecondary)
+                        
+                        ForEach(worker.certifications, id: \.self) { cert in
+                            HStack {
+                                Image(systemName: "checkmark.seal.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(BuildTrackColors.success)
+                                Text(cert)
+                                    .font(DesignTokens.Typography.callout)
+                                    .foregroundStyle(BuildTrackColors.textPrimary)
+                                Spacer()
+                            }
+                        }
+                    }
+                    .padding(DesignTokens.Spacing.md)
+                    .professionalCard()
+                }
+                
+                // Actions
+                HStack(spacing: DesignTokens.Spacing.md) {
+                    Button {
+                        showEditSheet = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "pencil")
+                            Text("Edit")
+                        }
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .background(BuildTrackColors.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    }
+                    
+                    Button {
+                        showDeleteConfirm = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Delete")
+                        }
+                        .font(DesignTokens.Typography.callout.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .background(BuildTrackColors.danger)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    }
+                }
+                .padding(.horizontal, DesignTokens.Spacing.sectionPadding)
+                .padding(.top, DesignTokens.Spacing.md)
+            }
+            .padding(.vertical, DesignTokens.Spacing.md)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Worker Details")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done") { dismiss() }
+            }
+        }
+        .sheet(isPresented: $showEditSheet) {
+            NavigationStack {
+                WorkerFormViewPro(worker: worker)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") { showEditSheet = false }
+                        }
+                    }
+            }
+        }
+        .alert("Delete \(worker.name)?", isPresented: $showDeleteConfirm) {
+            Button("Delete", role: .destructive) {
+                modelContext.delete(worker)
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently remove this worker from your team.")
+        }
     }
 }
 

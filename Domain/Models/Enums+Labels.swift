@@ -35,3 +35,15 @@ extension DailyReportStatus {
         switch self { case .draft: return "gray"; case .submitted: return "blue"; case .approved: return "green"; case .rejected: return "red" }
     }
 }
+
+extension ProjectStatus {
+    var label: String {
+        switch self {
+        case .planning: return "Planning"
+        case .active: return "Active"
+        case .onHold: return "On Hold"
+        case .completed: return "Completed"
+        case .cancelled: return "Cancelled"
+        }
+    }
+}

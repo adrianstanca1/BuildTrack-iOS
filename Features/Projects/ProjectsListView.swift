@@ -213,7 +213,7 @@ struct ProjectCardPro: View {
                         .foregroundStyle(BuildTrackColors.textPrimary)
                         .lineLimit(1)
                     
-                    Text(project.status.label)
+                    Text(project.status.rawValue.capitalized)
                         .font(DesignTokens.Typography.caption)
                         .foregroundStyle(statusColor)
                 }
@@ -412,18 +412,6 @@ struct ProjectErrorView: View {
 }
 
 // MARK: - Project Status Extension
-
-extension ProjectStatus {
-    var label: String {
-        switch self {
-        case .planning: return "Planning"
-        case .active: return "Active"
-        case .onHold: return "On Hold"
-        case .completed: return "Completed"
-        case .cancelled: return "Cancelled"
-        }
-    }
-}
 
 #Preview("Professional Projects") {
     ProjectsListView()

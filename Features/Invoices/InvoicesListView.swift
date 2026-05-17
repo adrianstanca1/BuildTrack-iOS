@@ -218,10 +218,10 @@ struct InvoiceCardPro: View {
     private var statusColor: Color {
         switch invoice.status {
         case .draft: return BuildTrackColors.textTertiary
-        case .sent: return BuildTrackColors.info
+        case .pending: return BuildTrackColors.info
         case .paid: return BuildTrackColors.success
         case .overdue: return BuildTrackColors.danger
-        case .cancelled: return BuildTrackColors.textTertiary
+        case .overdue: return BuildTrackColors.textTertiary
         }
     }
 }
@@ -365,10 +365,10 @@ struct InvoiceDetailView: View {
     private var statusColor: Color {
         switch invoice.status {
         case .draft: return BuildTrackColors.textTertiary
-        case .sent: return BuildTrackColors.info
+        case .pending: return BuildTrackColors.info
         case .paid: return BuildTrackColors.success
         case .overdue: return BuildTrackColors.danger
-        case .cancelled: return BuildTrackColors.textTertiary
+        case .overdue: return BuildTrackColors.textTertiary
         }
     }
 }
@@ -388,7 +388,7 @@ final class InvoicesListViewModel: ObservableObject {
     private func loadSampleData() {
         invoices = [
             Invoice(invoiceNumber: "INV-001", vendor: "ABC Construction", amount: 5000, status: .paid, dueDate: Date()),
-            Invoice(invoiceNumber: "INV-002", vendor: "XYZ Supplies", amount: 3200, status: .sent, dueDate: Date().addingTimeInterval(86400 * 7)),
+            Invoice(invoiceNumber: "INV-002", vendor: "XYZ Supplies", amount: 3200, status: .pending, dueDate: Date().addingTimeInterval(86400 * 7)),
             Invoice(invoiceNumber: "INV-003", vendor: "Steel Works Ltd", amount: 8500, status: .overdue, dueDate: Date().addingTimeInterval(-86400 * 5))
         ]
         totalOutstanding = invoices.filter { $0.status != .paid }.reduce(0) { $0 + $1.amount }
@@ -400,10 +400,10 @@ extension InvoiceStatus {
     var label: String {
         switch self {
         case .draft: return "Draft"
-        case .sent: return "Sent"
+        case .pending: return "Pending"
+        case .approved: return "Approved"
         case .paid: return "Paid"
         case .overdue: return "Overdue"
-        case .cancelled: return "Cancelled"
         }
     }
 }
