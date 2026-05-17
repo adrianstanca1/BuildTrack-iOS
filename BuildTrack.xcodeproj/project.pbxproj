@@ -52,6 +52,7 @@
 		781FC2DC183896D893718FB3 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0283DBEBC53CABB3C04380AF /* AuthView.swift */; };
 		789F1A6D2BAE4BD1B6B5C4E7 /* PunchPhotoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9BB65CC89045E6A82ECC19 /* PunchPhotoStore.swift */; };
 		7C7C87D7ECEF8AD1312E5C4A /* SubmittalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E66933292CF3A9C6BB411D9 /* SubmittalDetailView.swift */; };
+		8AFA3FF63AFF78927A886782 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1643E34EA533A13A3952D /* DesignTokens.swift */; };
 		8E7DC067F61148FB547B7D32 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966E632424A2553F490AAC7 /* Logger.swift */; };
 		92B157AA7CA458B2B4957794 /* BudgetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6D61B4F11108A6E9424C28 /* BudgetListView.swift */; };
 		94E3FA4666B5128804E743EA /* DailyReportsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A8FF1A270281AFDC626754 /* DailyReportsListView.swift */; };
@@ -184,6 +185,7 @@
 		CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemsListView.swift; path = PunchItemsListView.swift; sourceTree = "<group>"; };
 		CC6AB1695E95420492A86C81 /* RFIsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RFIsListView.swift; path = RFIsListView.swift; sourceTree = "<group>"; };
 		D323B87440814918A4C2AC1A /* PunchItemDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemDetailView.swift; path = PunchItemDetailView.swift; sourceTree = "<group>"; };
+		D5A1643E34EA533A13A3952D /* DesignTokens.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DesignTokens.swift; path = DesignSystem/Theme/DesignTokens.swift; sourceTree = "<group>"; };
 		D7C076947DFA3A753EBFF5DB /* PermitDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PermitDetailView.swift; path = PermitDetailView.swift; sourceTree = "<group>"; };
 		D904F035A2406B5C25955205 /* TimesheetDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimesheetDetailView.swift; path = TimesheetDetailView.swift; sourceTree = "<group>"; };
 		D91C917D67FC3AFCEF42BBF3 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -413,6 +415,7 @@
 			isa = PBXGroup;
 			children = (
 				23581831C03B81FA179AD1B0 /* Colors.swift */,
+				D5A1643E34EA533A13A3952D /* DesignTokens.swift */,
 			);
 			name = Theme;
 			sourceTree = "<group>";
@@ -832,6 +835,7 @@
 				C2F6AE9AB2036852B12383B6 /* TimesheetViewModel.swift in Sources */,
 				4961BF0C1A65C2C1E5EC2250 /* EquipmentViewModel.swift in Sources */,
 				A8AC88902B8D27FAB567C38B /* MaterialViewModel.swift in Sources */,
+				8AFA3FF63AFF78927A886782 /* DesignTokens.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
