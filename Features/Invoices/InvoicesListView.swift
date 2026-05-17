@@ -366,9 +366,9 @@ struct InvoiceDetailView: View {
         switch invoice.status {
         case .draft: return BuildTrackColors.textTertiary
         case .pending: return BuildTrackColors.info
+        case .approved: return BuildTrackColors.success
         case .paid: return BuildTrackColors.success
         case .overdue: return BuildTrackColors.danger
-        case .overdue: return BuildTrackColors.textTertiary
         }
     }
 }

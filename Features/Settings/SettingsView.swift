@@ -535,7 +535,9 @@ struct SecuritySettingsView: View {
                         DesignTokens.Haptic.medium()
                         showChangePassword = true
                     } label: {
-                        settingsRow(icon: "key.fill", title: "Change Password", subtitle: "Update your account password")
+                        settingsRow(icon: "key.fill", title: "Change Password", subtitle: "Update your account password") {
+                            showChangePassword = true
+                        }
                     }
                 }
                 .professionalCard(padding: DesignTokens.Spacing.sm)

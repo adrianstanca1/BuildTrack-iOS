@@ -36,14 +36,3 @@ extension DailyReportStatus {
     }
 }
 
-extension ProjectStatus {
-    var label: String {
-        switch self {
-        case .planning: return "Planning"
-        case .active: return "Active"
-        case .onHold: return "On Hold"
-        case .completed: return "Completed"
-        case .cancelled: return "Cancelled"
-        }
-    }
-}

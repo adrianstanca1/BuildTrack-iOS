@@ -376,8 +376,8 @@ struct ReportsView: View {
                                 .foregroundStyle(BuildTrackColors.textPrimary)
                                 .lineLimit(1)
                             
-                            if let budget = project.budget {
-                                Text(formatCurrency(budget))
+                            if project.budget > 0 {
+                                Text(formatCurrency(project.budget))
                                     .font(DesignTokens.Typography.caption)
                                     .foregroundStyle(BuildTrackColors.textSecondary)
                             }
@@ -385,8 +385,8 @@ struct ReportsView: View {
                         
                         Spacer()
                         
-                        if let progress = project.progress {
-                            Text("\(Int(progress))%")
+                        if project.progress > 0 {
+                            Text("\(Int(project.progress))%")
                                 .font(DesignTokens.Typography.caption.weight(.semibold))
                                 .foregroundStyle(BuildTrackColors.primary)
                         }
@@ -412,7 +412,7 @@ struct ReportsView: View {
     private var completedTasksCount: Int { tasks.filter { $0.status == .completed }.count }
     private var incidentsCount: Int { incidents.count }
     private var totalBudget: Double { filteredProjects.compactMap { $0.budget }.reduce(0, +) }
-    private var totalSpent: Double { filteredProjects.compactMap { $0.spent }.reduce(0, +) }
+    private var totalSpent: Double { 0 } // Placeholder - Project model doesn't have spent property
     private var budgetUtilisation: Double { totalBudget > 0 ? totalSpent / totalBudget : 0 }
     private var budgetUtilisationColor: Color { budgetUtilisation > 0.9 ? .red : budgetUtilisation > 0.7 ? .orange : .green }
     private var planningCount: Int { filteredProjects.filter { $0.status == .planning }.count }
