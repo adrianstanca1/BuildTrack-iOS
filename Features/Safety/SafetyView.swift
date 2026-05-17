@@ -242,10 +242,10 @@ struct IncidentCardPro: View {
 
     private var statusColor: Color {
         switch incident.incidentStatus {
-        case .open: return .orange
-        case .inProgress: return .blue
-        case .resolved: return .green
-        case .closed: return .gray
+        case .open: return BuildTrackColors.warning
+        case .investigating: return BuildTrackColors.info
+        case .resolved: return BuildTrackColors.success
+        case .closed: return BuildTrackColors.textTertiary
         }
     }
 }

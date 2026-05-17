@@ -488,7 +488,7 @@ struct DetailRowPro: View {
 struct SecuritySettingsView: View {
     @Bindable var authManager: AuthManager
     @State private var showChangePassword = false
-    @State private var enableBiometric = UserDefaults.standard.bool(forKey: "biometricEnabled")
+    @State private var enableBiometric = UserDefaults.standard.bool(forKey: AppLockController.biometricEnabledKey)
     @State private var showDeleteAccountConfirmation = false
     @State private var biometricError: String?
 
@@ -521,7 +521,7 @@ struct SecuritySettingsView: View {
                     ToggleRow(icon: "faceid", title: "Face ID / Touch ID", isOn: $enableBiometric)
                         .onChange(of: enableBiometric) { _, isOn in
                             if isOn { authenticateBiometric() }
-                            else { UserDefaults.standard.set(false, forKey: "biometricEnabled") }
+                            else { UserDefaults.standard.set(false, forKey: AppLockController.biometricEnabledKey) }
                         }
                     
                     if let error = biometricError {
@@ -589,7 +589,7 @@ struct SecuritySettingsView: View {
             DispatchQueue.main.async {
                 if success {
                     biometricError = nil
-                    UserDefaults.standard.set(true, forKey: "biometricEnabled")
+                    UserDefaults.standard.set(true, forKey: AppLockController.biometricEnabledKey)
                 } else {
                     biometricError = evalError?.localizedDescription
                     enableBiometric = false

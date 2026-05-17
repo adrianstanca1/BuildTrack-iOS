@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0014141F4C344261AB325919 /* RFIsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6AB1695E95420492A86C81 /* RFIsListView.swift */; };
 		066324BA21E0C31342E0A127 /* TaskFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */; };
+		166324BA21E0C31342E0A128 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20B3D24B657BFA91098EB8 /* TaskDetailView.swift */; };
 		07B77CFEB850D673B7844770 /* TimesheetRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA32EE7D4E5AD61CC4E7BFA /* TimesheetRepository.swift */; };
 		0E424178C6144574B7ECDE0D /* DrawingsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B182827DEF2B42EE97449377 /* DrawingsListView.swift */; };
 		1680DF484BE24F3DAD9E626C /* RFIDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36228357B471FB7C45792 /* RFIDetailView.swift */; };
@@ -43,6 +44,7 @@
 		57251D3CA18F8B5F7955D8F7 /* SubmittalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9F38D75E513C8C9DEF91A8 /* SubmittalViewModel.swift */; };
 		5A6A7166BB69B5DA50CBE32B /* MeetingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CB4143664EB360FBD5ADBF /* MeetingDetailView.swift */; };
 		5FE46148EF985C54747DAADE /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7224C276E61116FDCA43B8 /* SafetyView.swift */; };
+		6FE46148EF985C54747DAADF /* SafetyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A7224C276E61116FDCA43B9 /* SafetyDetailView.swift */; };
 		61FB2132A01E4C7E9FD87C00 /* PunchItemsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */; };
 		6765FAF8AE771A0A1AB33A14 /* InvoicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */; };
 		679AC9D0AB0CD4ACA24D32A8 /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE78034236F6C245988FA41 /* InvoiceDetailView.swift */; };
@@ -131,7 +133,8 @@
 		2F12F25506C667C58BE0124E /* Config-Production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Config-Production.xcconfig"; sourceTree = "<group>"; };
 		384C7D75B6A7146DADE0A928 /* EquipmentListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EquipmentListView.swift; path = EquipmentListView.swift; sourceTree = "<group>"; };
 		39B89C6CC0B5DAF540D3E436 /* Config-Development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Config-Development.xcconfig"; sourceTree = "<group>"; };
-		3A7224C276E61116FDCA43B8 /* SafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyView.swift; path = Features/Safety/SafetyView.swift; sourceTree = "<group>"; };
+		3A7224C276E61116FDCA43B8 /* SafetyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyView.swift; path = Features/Safety/SafetyView.swift; sourceTree = "<group>";
+		4A7224C276E61116FDCA43B9 /* SafetyDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SafetyDetailView.swift; path = Features/Safety/SafetyDetailView.swift; sourceTree = "<group>"; };
 		3FE63CD413B21D291FB044B7 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingView.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		43246BE8A835FD2ACB9EF021 /* DailyReportFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReportFormView.swift; path = DailyReportFormView.swift; sourceTree = "<group>"; };
 		46572E81D098EBFDA1387BCA /* AuthViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthViewModel.swift; path = Infrastructure/ViewModels/AuthViewModel.swift; sourceTree = "<group>"; };
@@ -179,7 +182,8 @@
 		BCEDBD9CEF6C9B64ACD7CDB1 /* TeamView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TeamView.swift; path = Features/Team/TeamView.swift; sourceTree = "<group>"; };
 		BD3574B8F4B0722D19A5DD50 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = App/ContentView.swift; sourceTree = "<group>"; };
 		BDD2AE0D40904B910463CFF1 /* InvoicesListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoicesListView.swift; path = InvoicesListView.swift; sourceTree = "<group>"; };
-		BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskFormView.swift; path = Features/Tasks/TaskFormView.swift; sourceTree = "<group>"; };
+		BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskFormView.swift; path = Features/Tasks/TaskFormView.swift; sourceTree = "<group>";
+		CF20B3D24B657BFA91098EB8 /* TaskDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskDetailView.swift; path = Features/Tasks/TaskDetailView.swift; sourceTree = "<group>"; };
 		C1182F75D129277D83B1B5B4 /* MapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MapView.swift; path = Features/Map/MapView.swift; sourceTree = "<group>"; };
 		CABEAD921C2AF9B2FDF3742A /* InvoiceViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvoiceViewModel.swift; path = Infrastructure/ViewModels/InvoiceViewModel.swift; sourceTree = "<group>"; };
 		CBE150D35B724C559CBEED51 /* PunchItemsListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PunchItemsListView.swift; path = PunchItemsListView.swift; sourceTree = "<group>"; };
@@ -234,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				BF20B3D24B657BFA91098EB7 /* TaskFormView.swift */,
+				CF20B3D24B657BFA91098EB8 /* TaskDetailView.swift */,
 				969CF44267F7B74B5A53F2C8 /* TasksListView.swift */,
 			);
 			name = Tasks;
@@ -313,6 +318,7 @@
 			isa = PBXGroup;
 			children = (
 				3A7224C276E61116FDCA43B8 /* SafetyView.swift */,
+				4A7224C276E61116FDCA43B9 /* SafetyDetailView.swift */,
 			);
 			name = Safety;
 			sourceTree = "<group>";
@@ -757,8 +763,10 @@
 				FEDF9E94B70E1FB15B6DB8DA /* ProjectsListView.swift in Sources */,
 				ED035B9DDC0EBF36611B7375 /* ReportsView.swift in Sources */,
 				5FE46148EF985C54747DAADE /* SafetyView.swift in Sources */,
+				6FE46148EF985C54747DAADF /* SafetyDetailView.swift in Sources */,
 				9AB386FE6517ED7D130FEBD0 /* SettingsView.swift in Sources */,
 				066324BA21E0C31342E0A127 /* TaskFormView.swift in Sources */,
+				166324BA21E0C31342E0A128 /* TaskDetailView.swift in Sources */,
 				B3DAB9583C42244A7CDBAAD1 /* TasksListView.swift in Sources */,
 				3E843BD6D35E9F5FB2408D2F /* TeamView.swift in Sources */,
 				393D9D3BF937C57794A15348 /* DeepLinkRouter.swift in Sources */,
