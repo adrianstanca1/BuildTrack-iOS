@@ -127,22 +127,27 @@ jobs:
             -exportPath "build/BuildTrack.ipa" \
             -exportOptionsPlist build/ExportOptions.plist
 
-      - name: Setup App Store Connect API key
-        run: |
-          mkdir -p ~/.appstoreconnect/private_keys
-          echo "$ASC_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
-          chmod 600 ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
-
-      - name: Upload to TestFlight
+      - name: Locate exported IPA
+        id: locate_ipa
         run: |
           IPA_PATH=$(find build/BuildTrack.ipa -name "*.ipa" -type f | head -1)
-          echo "Uploading: $IPA_PATH"
-          ls -la "$IPA_PATH" 2>/dev/null || true
-          xcrun altool --upload-app \
-            --type ios \
-            --file "$IPA_PATH" \
-            --apiKey "$ASC_KEY_ID" \
-            --apiIssuer "$ASC_ISSUER_ID"
+          if [ -z "$IPA_PATH" ]; then
+            echo "::error::No .ipa found under build/BuildTrack.ipa/"
+            ls -la build/ || true
+            exit 1
+          fi
+          echo "Found IPA: $IPA_PATH"
+          ls -la "$IPA_PATH"
+          echo "ipa_path=$IPA_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v3
+        with:
+          app-path: ${{ steps.locate_ipa.outputs.ipa_path }}
+          app-type: ios
+          api-key-id: ${{ secrets.ASC_KEY_ID }}
+          issuer-id: ${{ secrets.ASC_ISSUER_ID }}
+          api-private-key: ${{ secrets.ASC_PRIVATE_KEY }}
 
       - name: Upload artifacts
         if: always()
