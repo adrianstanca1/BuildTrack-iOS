@@ -1,0 +1,8 @@
+# Known false-positives + historical leaks already triaged.
+# Auto-generated 2026-05-17. New findings should be reviewed before adding here.
+
+04ed22d5ca1e36ea4e7e15db8cd25efd3dc500c4:BuildTrack/Config-Development.xcconfig:generic-api-key:7
+04ed22d5ca1e36ea4e7e15db8cd25efd3dc500c4:BuildTrack/Config-Production.xcconfig:generic-api-key:15
+22b68fe1defc7d2b43eb5669e3d72355d95476d5:BuildTrack/Config-Development.xcconfig:jwt:7
+22b68fe1defc7d2b43eb5669e3d72355d95476d5:Infrastructure/Supabase/SupabaseManager.swift:jwt:35
+22b68fe1defc7d2b43eb5669e3d72355d95476d5:scripts/build-production.sh:generic-api-key:52
